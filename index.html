@@ -1,3 +1,2310 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سِمْط | منصة أدبية تربوية</title>
+
+  <style>
+    :root {
+      --navy: #0f1a2b;
+      --gold: #c89d5c;
+      --ivory: #f2ede4;
+      --greige: #8c857a;
+      --white: #ffffff;
+      --ink: #1f2630;
+      --line: rgba(200, 157, 92, 0.32);
+      --soft-shadow: 0 22px 70px rgba(15, 26, 43, 0.12);
+      --hard-shadow: 0 30px 80px rgba(15, 26, 43, 0.22);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 6%, rgba(255, 255, 255, 0.88), transparent 26%),
+        linear-gradient(180deg, #fbf8f2 0%, var(--ivory) 48%, #fbf8f2 100%);
+      color: var(--ink);
+      font-family: "Cairo", Tahoma, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, textarea {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .hero-wrap {
+      min-height: 100vh;
+      position: relative;
+      padding: 24px 0 64px;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(242, 237, 228, 0.97) 0%, rgba(255, 255, 255, 0.92) 48%, rgba(15, 26, 43, 0.97) 48%, rgba(15, 26, 43, 0.98) 100%);
+    }
+
+    .hero-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 100%;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1300' height='780' viewBox='0 0 1300 780'%3E%3Cg fill='none'%3E%3Cpath d='M-80 610 C160 510, 360 650, 620 520 S990 360, 1400 510' stroke='%23c89d5c' stroke-width='2' opacity='.32'/%3E%3Cpath d='M-20 650 C220 540, 430 700, 650 570 S960 420, 1380 560' stroke='%23ffffff' stroke-width='2' opacity='.5'/%3E%3Cpath d='M80 130 C34 112, 12 80, 0 38 M105 112 C72 86, 60 48, 62 0 M130 130 C148 98, 184 74, 226 64' stroke='%238c857a' stroke-width='9' stroke-linecap='round' opacity='.18'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: center;
+      pointer-events: none;
+    }
+
+    nav {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(200, 157, 92, 0.22);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 26px;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .logo-img {
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      border-radius: 50%;
+      box-shadow: 0 10px 26px rgba(15, 26, 43, 0.12);
+    }
+
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      background: var(--white);
+      box-shadow: inset 0 0 0 7px rgba(200, 157, 92, 0.08);
+      position: relative;
+    }
+
+    .logo-mark::before,
+    .logo-mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #fff, #eee4d3 52%, var(--gold));
+      box-shadow: 0 8px 18px rgba(15, 26, 43, 0.16);
+    }
+
+    .logo-mark::before {
+      width: 15px;
+      height: 15px;
+      top: 8px;
+      right: 14px;
+    }
+
+    .logo-mark::after {
+      width: 10px;
+      height: 10px;
+      top: 25px;
+      right: 24px;
+      background: var(--navy);
+    }
+
+    .logo-mark span {
+      position: absolute;
+      bottom: 6px;
+      color: var(--gold);
+      font-size: 21px;
+      line-height: 1;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 2px;
+      flex-wrap: nowrap;
+      color: var(--navy);
+      min-width: 0;
+      flex: 1;
+    }
+
+    .nav-links a {
+      padding: 8px 7px;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(15, 26, 43, 0.78);
+      border-bottom: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      color: var(--navy);
+      border-color: var(--gold);
+    }
+
+    .hero {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 58px;
+      align-items: center;
+      padding-top: 76px;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 26px;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    h1 {
+      max-width: 680px;
+      color: var(--navy);
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    h1 span {
+      color: var(--gold);
+    }
+
+    .hero-copy {
+      max-width: 650px;
+      margin: 26px 0 34px;
+      color: #404650;
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 2.05;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 22px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: var(--navy);
+      box-shadow: 0 18px 42px rgba(15, 26, 43, 0.2);
+    }
+
+    .btn-secondary {
+      color: var(--navy);
+      background: rgba(255, 255, 255, 0.55);
+      border-color: var(--gold);
+    }
+
+    .hero-login {
+      margin-top: 16px;
+      width: min(520px, 100%);
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      box-shadow: 0 18px 42px rgba(15, 26, 43, 0.08);
+    }
+
+    .login-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .login-row input {
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fffaf2;
+      color: var(--navy);
+      outline: 0;
+      font-size: 13px;
+    }
+
+    .forgot-link {
+      margin-top: 8px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--greige);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .login-message {
+      min-height: 22px;
+      margin-top: 8px;
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .brand-stage {
+      min-height: 610px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      color: #fff;
+    }
+
+    .brand-card {
+      width: min(480px, 100%);
+      padding: 0;
+      text-align: center;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      position: relative;
+    }
+
+    .brand-card::before {
+      content: none;
+    }
+
+    .hero-logo {
+      position: relative;
+      z-index: 1;
+      width: min(390px, 100%);
+      aspect-ratio: 1;
+      object-fit: contain;
+      border-radius: 50%;
+      filter: drop-shadow(0 24px 42px rgba(15, 26, 43, 0.18));
+    }
+
+    .necklace {
+      width: 174px;
+      height: 250px;
+      margin: 0 auto 22px;
+      position: relative;
+    }
+
+    .necklace::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-right: 2px solid var(--gold);
+      border-radius: 50%;
+      transform: rotate(-25deg);
+      opacity: 0.82;
+    }
+
+    .bead {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 28%, #fff, #eee1ce 50%, var(--gold));
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24);
+    }
+
+    .bead.dark {
+      background: radial-gradient(circle at 35% 28%, #4e5964, var(--navy) 62%, #050b13);
+    }
+
+    .bead.one { width: 16px; height: 16px; top: 6px; right: 78px; }
+    .bead.two { width: 20px; height: 20px; top: 34px; right: 70px; }
+    .bead.three { width: 25px; height: 25px; top: 62px; right: 54px; }
+    .bead.four { width: 30px; height: 30px; top: 94px; right: 34px; }
+    .bead.five { width: 38px; height: 38px; top: 132px; right: 28px; }
+    .bead.six { width: 27px; height: 27px; top: 176px; right: 68px; }
+
+    .pen {
+      position: absolute;
+      top: 178px;
+      right: 76px;
+      width: 34px;
+      height: 76px;
+      background: linear-gradient(180deg, #efd19b, var(--gold));
+      clip-path: polygon(50% 0, 100% 32%, 62% 100%, 38% 100%, 0 32%);
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .pen::after {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      top: 36px;
+      right: 13px;
+      border-radius: 50%;
+      background: var(--navy);
+    }
+
+    .book {
+      width: 250px;
+      height: 86px;
+      margin: -20px auto 0;
+      position: relative;
+    }
+
+    .book::before,
+    .book::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 50%;
+      height: 70px;
+      border-bottom: 6px solid var(--gold);
+      background: repeating-linear-gradient(170deg, transparent 0 13px, rgba(255, 255, 255, 0.74) 14px 16px);
+    }
+
+    .book::before {
+      right: 50%;
+      border-radius: 0 0 0 70px;
+      transform: skewY(-9deg);
+    }
+
+    .book::after {
+      right: 0;
+      border-radius: 0 0 70px 0;
+      transform: skewY(9deg);
+    }
+
+    .brand-card h2 {
+      margin-top: 12px;
+      color: #fff;
+      font-size: clamp(44px, 6vw, 74px);
+      line-height: 1;
+    }
+
+    .brand-card p {
+      margin-top: 14px;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.9;
+    }
+
+    section {
+      padding: 84px 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 34px;
+      color: var(--navy);
+      text-align: center;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: "";
+      width: min(150px, 18vw);
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .section-title h2 {
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.3;
+    }
+
+    .section-lead {
+      max-width: 780px;
+      margin: -16px auto 38px;
+      text-align: center;
+      color: #54575c;
+      font-size: 18px;
+      line-height: 2;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .meaning-stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .meaning-card {
+      padding: 26px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 40px rgba(15, 26, 43, 0.06);
+    }
+
+    .meaning-card h3 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--navy);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .meaning-card h3::before {
+      content: "";
+      width: 4px;
+      height: 28px;
+      background: var(--gold);
+    }
+
+    .meaning-card p {
+      color: #585b60;
+      line-height: 1.95;
+    }
+
+    .academy {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(242, 237, 228, 0.92)),
+        radial-gradient(circle at 18% 0%, rgba(200, 157, 92, 0.12), transparent 26%);
+    }
+
+    .pathway {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .step {
+      min-height: 270px;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      box-shadow: 0 18px 48px rgba(15, 26, 43, 0.07);
+      transition: transform 0.24s ease, box-shadow 0.24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .step::after {
+      content: attr(data-index);
+      position: absolute;
+      left: 18px;
+      bottom: -18px;
+      color: rgba(200, 157, 92, 0.14);
+      font-size: 92px;
+      font-weight: 900;
+    }
+
+    .icon {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      background: #fffaf2;
+      font-size: 24px;
+    }
+
+    .step h3 {
+      color: var(--navy);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .step p {
+      color: #5d6065;
+      line-height: 1.9;
+    }
+
+    .academy-board {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: 0.76fr 1.24fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .lesson-menu,
+    .lesson-view,
+    .idea-lab,
+    .review-panel,
+    .submission-panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 48px rgba(15, 26, 43, 0.07);
+    }
+
+    .lesson-menu {
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .lesson-tab {
+      width: 100%;
+      padding: 15px 16px;
+      text-align: right;
+      color: var(--navy);
+      background: #fffaf2;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .lesson-tab span {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .lesson-tab.active,
+    .lesson-tab:hover {
+      border-color: var(--gold);
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .lesson-view {
+      padding: 28px;
+      min-height: 270px;
+    }
+
+    .lesson-view small {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .lesson-view h3 {
+      margin: 10px 0 12px;
+      color: var(--navy);
+      font-size: 30px;
+    }
+
+    .lesson-view p,
+    .lesson-view li {
+      color: #55595f;
+      line-height: 1.9;
+    }
+
+    .lesson-view ul {
+      margin: 16px 22px 0 0;
+    }
+
+    .interactive-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 26px;
+    }
+
+    .idea-lab,
+    .review-panel,
+    .submission-panel {
+      padding: 24px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+      color: var(--navy);
+    }
+
+    .panel-title h3 {
+      font-size: 26px;
+    }
+
+    .panel-title span {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .prompt-box {
+      min-height: 120px;
+      padding: 18px;
+      color: var(--navy);
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.26);
+      line-height: 1.9;
+      font-weight: 700;
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .mini-btn {
+      min-height: 42px;
+      padding: 9px 14px;
+      border: 1px solid var(--gold);
+      color: var(--navy);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .mini-btn.primary {
+      color: #fff;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #42464d;
+      line-height: 1.7;
+      cursor: pointer;
+    }
+
+    .check-item input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold);
+    }
+
+    .score-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      padding: 8px 10px;
+      color: #fff;
+      background: var(--navy);
+      font-weight: 900;
+    }
+
+    .journey-panel {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 34px;
+      align-items: center;
+      padding: 42px;
+      background: var(--navy);
+      color: #fff;
+      box-shadow: var(--hard-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .journey-panel::before {
+      content: "";
+      position: absolute;
+      inset: auto -10% -38% auto;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      border-radius: 50%;
+    }
+
+    .journey-panel h2 {
+      color: #fff;
+      font-size: clamp(32px, 4vw, 48px);
+      margin-bottom: 16px;
+    }
+
+    .journey-panel p {
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 2;
+      font-size: 18px;
+    }
+
+    .level-list {
+      display: grid;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .level-row {
+      display: grid;
+      grid-template-columns: 128px 1fr 48px;
+      align-items: center;
+      gap: 14px;
+      color: #fff;
+    }
+
+    .bar {
+      height: 10px;
+      background: rgba(255, 255, 255, 0.14);
+      overflow: hidden;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), #f2d6a0);
+    }
+
+    .badge-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .badge {
+      padding: 14px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      font-weight: 800;
+    }
+
+    .badge.unlocked {
+      color: var(--navy);
+      background: linear-gradient(135deg, #fff8e8, var(--gold));
+      border-color: var(--gold);
+    }
+
+    .writer-studio {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .toolbox {
+      padding: 28px;
+      background:
+        linear-gradient(180deg, rgba(15, 26, 43, 0.95), rgba(15, 26, 43, 0.9)),
+        var(--navy);
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .toolbox h3 {
+      color: #f0d6ab;
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    .toolbox p {
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 1.95;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip {
+      padding: 8px 12px;
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: rgba(255, 255, 255, 0.06);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .editor {
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .editor-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      color: var(--navy);
+      border-bottom: 1px solid rgba(200, 157, 92, 0.24);
+      background: #fffaf2;
+      font-weight: 800;
+    }
+
+    .editor-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .editor-mark {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .editor-mark span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .editor-mark span:nth-child(2) { background: var(--navy); }
+    .editor-mark span:nth-child(3) { background: var(--ivory); border: 1px solid var(--gold); }
+
+    textarea {
+      width: 100%;
+      min-height: 320px;
+      padding: 28px;
+      border: 0;
+      outline: 0;
+      resize: vertical;
+      color: var(--navy);
+      background: repeating-linear-gradient(0deg, #fff 0 39px, rgba(200, 157, 92, 0.16) 40px);
+      font-size: 19px;
+      line-height: 2.1;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(200, 157, 92, 0.24);
+    }
+
+    .stat {
+      padding: 18px;
+      color: var(--navy);
+      background: var(--ivory);
+      border-left: 1px solid rgba(200, 157, 92, 0.24);
+      font-weight: 800;
+    }
+
+    .stat:last-child {
+      border-left: 0;
+    }
+
+    .toast {
+      min-height: 24px;
+      margin-top: 12px;
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    .lexicon {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(242, 237, 228, 0.92)),
+        radial-gradient(circle at 88% 12%, rgba(200, 157, 92, 0.14), transparent 28%);
+    }
+
+    .lexicon-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .smart-writing {
+      margin-bottom: 22px;
+      padding: 24px;
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.38);
+      box-shadow: var(--hard-shadow);
+    }
+
+    .smart-writing h3 {
+      color: #f1d8ae;
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .smart-writing p {
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 1.9;
+      margin-bottom: 16px;
+    }
+
+    .need-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .need-tab {
+      min-height: 44px;
+      padding: 8px 10px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .need-tab.active,
+    .need-tab:hover {
+      background: linear-gradient(135deg, #fff8e8, var(--gold));
+      color: var(--navy);
+    }
+
+    .suggestion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .suggestion-box {
+      min-height: 190px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      line-height: 1.9;
+    }
+
+    .suggestion-box h4 {
+      color: #f1d8ae;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .suggestion-box ul {
+      margin-right: 20px;
+    }
+
+    .lexicon-card {
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .lexicon-card h3 {
+      color: var(--navy);
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .lexicon-card p {
+      color: #5a5d62;
+      line-height: 1.9;
+      margin-bottom: 16px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .search-row input {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fffaf2;
+      color: var(--navy);
+      outline: 0;
+    }
+
+    .word-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .word-chip {
+      padding: 8px 11px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: rgba(255, 250, 242, 0.86);
+      color: var(--navy);
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .result-box {
+      min-height: 220px;
+      padding: 18px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: #42464d;
+      line-height: 1.9;
+    }
+
+    .result-box h4 {
+      color: var(--navy);
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .result-box strong {
+      color: var(--gold);
+    }
+
+    .magazine-grid {
+      display: grid;
+      grid-template-columns: 1.16fr 0.84fr;
+      gap: 22px;
+    }
+
+    .cover-story {
+      min-height: 430px;
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      background:
+        linear-gradient(to top, rgba(15, 26, 43, 0.96), rgba(15, 26, 43, 0.42)),
+        radial-gradient(circle at 18% 22%, rgba(200, 157, 92, 0.28), transparent 24%),
+        linear-gradient(135deg, #0f1a2b, #1f2d40);
+      box-shadow: var(--hard-shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-story::before {
+      content: "";
+      position: absolute;
+      inset: auto -10% -34% auto;
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      border-radius: 50%;
+    }
+
+    .cover-story::after {
+      content: "";
+      position: absolute;
+      left: 34px;
+      top: 34px;
+      width: 180px;
+      height: 86px;
+      background:
+        repeating-linear-gradient(170deg, transparent 0 14px, rgba(255, 255, 255, 0.62) 15px 17px);
+      border-bottom: 4px solid var(--gold);
+      opacity: 0.32;
+    }
+
+    .cover-story small,
+    .cover-story h3,
+    .cover-story p {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cover-story small,
+    .issue small {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .cover-story h3 {
+      max-width: 650px;
+      margin: 12px 0 14px;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.25;
+    }
+
+    .cover-story p {
+      max-width: 620px;
+      color: rgba(255, 255, 255, 0.82);
+      line-height: 2;
+      font-size: 18px;
+    }
+
+    .issue-list {
+      display: grid;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .issue {
+      padding: 24px;
+      border-bottom: 1px solid rgba(200, 157, 92, 0.24);
+    }
+
+    .issue:last-child {
+      border-bottom: 0;
+    }
+
+    .issue h3 {
+      margin: 10px 0;
+      color: var(--navy);
+      font-size: 24px;
+    }
+
+    .issue p {
+      color: #5a5d62;
+      line-height: 1.85;
+    }
+
+    .submission-panel {
+      margin-top: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fffaf2;
+      color: var(--navy);
+      outline: 0;
+    }
+
+    .submission-preview {
+      margin-top: 16px;
+      padding: 18px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: #54575c;
+      line-height: 1.9;
+    }
+
+    .analytics-panel {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .analytics-card {
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .analytics-card h3 {
+      color: var(--navy);
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .dash-stat {
+      padding: 16px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .dash-stat strong {
+      display: block;
+      color: var(--gold);
+      font-size: 30px;
+      margin-bottom: 4px;
+    }
+
+    .section-meter {
+      display: grid;
+      gap: 11px;
+    }
+
+    .meter-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 42px;
+      gap: 10px;
+      align-items: center;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .meter-track {
+      height: 10px;
+      background: var(--ivory);
+      overflow: hidden;
+    }
+
+    .meter-track span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold), #f2d6a0);
+    }
+
+    footer {
+      padding: 44px 0;
+      text-align: center;
+      color: #fff;
+      background: var(--navy);
+      border-top: 4px solid var(--gold);
+    }
+
+    footer strong {
+      display: block;
+      color: #f1d8ae;
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .copyright {
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.68);
+    }
+
+    @media (max-width: 980px) {
+      .hero-wrap {
+        background:
+          linear-gradient(180deg, rgba(242, 237, 228, 0.98) 0%, rgba(255, 255, 255, 0.92) 48%, rgba(15, 26, 43, 0.98) 48%, rgba(15, 26, 43, 0.98) 100%);
+      }
+
+      .hero,
+      .concept-grid,
+      .meaning-stack,
+      .journey-panel,
+      .writer-studio,
+      .magazine-grid,
+      .academy-board,
+      .interactive-grid,
+      .lexicon-grid,
+      .suggestion-grid,
+      .analytics-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-stage {
+        min-height: 560px;
+      }
+
+      .pathway,
+      .stats,
+      .badge-row,
+      .form-grid,
+      .need-grid,
+      .stat-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 24px, 1160px);
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .hero {
+        padding-top: 46px;
+      }
+
+      .actions,
+      .pathway,
+      .stats,
+      .badge-row,
+      .form-grid,
+      .need-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .login-row {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-card {
+        padding: 0;
+      }
+
+      .section-title {
+        gap: 10px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        width: 36px;
+      }
+
+      .pathway {
+        display: grid;
+      }
+
+      .journey-panel {
+        padding: 28px;
+      }
+
+      .level-row {
+        grid-template-columns: 1fr;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .meter-row {
+        grid-template-columns: 1fr;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero-wrap">
+    <nav class="shell">
+      <a class="logo" href="#">
+        <img class="logo-img" src="logo-simt.png" alt="شعار سِمْط">
+        <span>سِمْط</span>
+      </a>
+      <div class="nav-links" aria-label="روابط الموقع">
+        <a href="#about">فكرة المشروع</a>
+        <a href="#academy">معسكر سِمْط</a>
+        <a href="#journey">رحلة الطالبة</a>
+        <a href="#editor">محرر الكتابة</a>
+        <a href="#lexicon">المعجم</a>
+        <a href="#magazine">المجلة</a>
+      </div>
+    </nav>
+
+    <div class="shell hero">
+      <div>
+        <div class="eyebrow">مشروع أدبي تربوي</div>
+        <h1>نعقد الحرف.. <span>لنصنع أثرًا</span></h1>
+        <p class="hero-copy">
+          منصة تربوية أدبية تهدف إلى تنمية مهارات الكتابة الإبداعية لدى طالبات المرحلة الثانوية، وصناعة جيل يكتب بذوق ووعي وأثر.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#editor">ابدئي رحلة الكتابة</a>
+          <a class="btn btn-secondary" href="#about">اكتشفي الهوية</a>
+        </div>
+        <div class="hero-login">
+          <div class="login-row">
+            <input id="loginName" type="text" autocomplete="username" placeholder="اسم المستخدم">
+            <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور">
+            <button class="mini-btn primary" id="loginButton">دخول</button>
+          </div>
+          <button class="forgot-link" id="forgotButton">نسيت كلمة المرور؟</button>
+          <div class="login-message" id="authMessage" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="brand-stage" aria-label="هوية سِمْط البصرية">
+        <div class="brand-card">
+          <img class="hero-logo" src="logo-simt.png" alt="شعار سِمْط: نعقد الحرف لنصنع أثرًا">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="about">
+      <div class="shell">
+        <div class="section-title"><h2>فكرة المشروع ومعنى الاسم</h2></div>
+        <p class="section-lead">
+          الهوية البصرية لسِمْط تقوم على اللؤلؤ والقلم والكتاب؛ معرفة تلتقط الفكرة، وتنظمها، ثم تمنحها أثرًا جميلًا.
+        </p>
+
+        <div class="concept-grid">
+          <div class="meaning-stack">
+            <article class="meaning-card">
+              <h3>فكرة المشروع</h3>
+              <p>مشروع أدبي تربوي يساعد الطالبة على تنمية مهارات الكتابة الإبداعية، من الفكرة الأولى حتى النص المصقول القابل للنشر.</p>
+            </article>
+            <article class="meaning-card">
+              <h3>معنى سِمْط</h3>
+              <p>السِّمْط هو العقد المنظوم من اللؤلؤ، والصف المنتظم، والطريق الواضح؛ ولذلك أصبح رمزًا لتشكيل المهارات والأفكار اللغوية.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="academy" id="academy">
+      <div class="shell">
+        <div class="section-title"><h2>معسكر سِمْط</h2></div>
+        <p class="section-lead">مسارات تدريبية قصيرة تساعد الطالبة على بناء المقال خطوة بخطوة، دون أن تفقد صوتها الخاص.</p>
+
+        <div class="pathway">
+          <article class="step" data-index="01">
+            <div class="icon">✦</div>
+            <h3>توليد الأفكار</h3>
+            <p>أسئلة محفزة تساعد الطالبة على اكتشاف زوايا متعددة للموضوع واختيار الفكرة الأقوى.</p>
+          </article>
+          <article class="step" data-index="02">
+            <div class="icon">◌</div>
+            <h3>بناء المقدمة</h3>
+            <p>تدريب على افتتاحية جاذبة تناسب المقال: سؤال، مشهد، اقتباس، أو مدخل تأملي.</p>
+          </article>
+          <article class="step" data-index="03">
+            <div class="icon">▱</div>
+            <h3>تنظيم الفقرات</h3>
+            <p>تعلّم الربط بين الأفكار وبناء فقرة متماسكة تجمع الفكرة والشرح والمثال.</p>
+          </article>
+          <article class="step" data-index="04">
+            <div class="icon">◆</div>
+            <h3>التحرير اللغوي</h3>
+            <p>مراجعة الأخطاء، تحسين الأسلوب، تهذيب التكرار، وتقوية الثروة اللغوية.</p>
+          </article>
+        </div>
+
+        <div class="academy-board">
+          <div class="lesson-menu" aria-label="دروس معسكر سمط">
+            <button class="lesson-tab active" data-lesson="idea"><span>01</span> توليد الأفكار</button>
+            <button class="lesson-tab" data-lesson="intro"><span>02</span> المقدمة الجاذبة</button>
+            <button class="lesson-tab" data-lesson="body"><span>03</span> الفقرة المتماسكة</button>
+            <button class="lesson-tab" data-lesson="edit"><span>04</span> التحرير النهائي</button>
+          </div>
+          <article class="lesson-view" id="lessonView">
+            <small>الدرس الأول</small>
+            <h3>توليد الأفكار</h3>
+            <p>ابدئي بسؤال واحد واضح، ثم اكتبي ثلاث إجابات مختلفة قبل اختيار الفكرة الأعمق. الفكرة الجيدة ليست الأطول، بل الأكثر قابلية للتحليل.</p>
+            <ul>
+              <li>ما السؤال الذي يحرك الموضوع؟</li>
+              <li>ما المثال الأقرب لحياة الطالبة؟</li>
+              <li>ما الأثر الذي تريدين تركه في القارئ؟</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="interactive-grid">
+          <div class="idea-lab">
+            <div class="panel-title">
+              <h3>مولد فكرة</h3>
+              <span>إلهام</span>
+            </div>
+            <div class="prompt-box" id="promptBox">اضغطي على "فكرة جديدة" لتحصلي على سؤال يساعدك في بداية المقال.</div>
+            <div class="mini-actions">
+              <button class="mini-btn primary" id="newPrompt">فكرة جديدة</button>
+              <button class="mini-btn" id="sendPrompt">انقليها للمحرر</button>
+            </div>
+          </div>
+
+          <div class="review-panel">
+            <div class="panel-title">
+              <h3>تقييم ذاتي</h3>
+              <span class="score-pill" id="reviewScore">0%</span>
+            </div>
+            <div class="checklist" id="reviewChecklist">
+              <label class="check-item"><input type="checkbox"> كتبت مقدمة واضحة وجاذبة.</label>
+              <label class="check-item"><input type="checkbox"> كل فقرة تحتوي فكرة واحدة رئيسية.</label>
+              <label class="check-item"><input type="checkbox"> استخدمت مثالًا أو شاهدًا مناسبًا.</label>
+              <label class="check-item"><input type="checkbox"> راجعت التكرار والأخطاء الإملائية.</label>
+              <label class="check-item"><input type="checkbox"> الخاتمة تترك أثرًا واضحًا.</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="journey">
+      <div class="shell">
+        <div class="journey-panel">
+          <div>
+            <h2>رحلة الطالبة في سِمْط</h2>
+            <p>من كاتبة مبتدئة إلى صانعة أثر، تظهر رحلة التطور عبر مستويات واضحة ومؤشرات تقدم تشجع الطالبة على الاستمرار.</p>
+          </div>
+          <div class="level-list">
+            <div class="level-row">
+              <strong>كاتبة مبتدئة</strong>
+              <div class="bar"><span style="width: 92%"></span></div>
+              <span>92%</span>
+            </div>
+            <div class="level-row">
+              <strong>ناسجة أفكار</strong>
+              <div class="bar"><span style="width: 76%"></span></div>
+              <span>76%</span>
+            </div>
+            <div class="level-row">
+              <strong>لؤلؤة سِمْط</strong>
+              <div class="bar"><span style="width: 65%"></span></div>
+              <span>65%</span>
+            </div>
+            <div class="level-row">
+              <strong>صانعة أثر</strong>
+              <div class="bar"><span style="width: 38%"></span></div>
+              <span>38%</span>
+            </div>
+            <div class="badge-row">
+              <div class="badge unlocked" id="badgeStart">بداية</div>
+              <div class="badge" id="badgeWords">50 كلمة</div>
+              <div class="badge" id="badgeReview">مراجعة</div>
+              <div class="badge" id="badgeSubmit">نشر</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="editor">
+      <div class="shell">
+        <div class="section-title"><h2>محرر الكتابة</h2></div>
+        <p class="section-lead">مساحة هادئة للكتابة، تراقب عدد الكلمات والحروف وتغير مستوى الطالبة حسب طول النص.</p>
+
+        <div class="writer-studio">
+          <aside class="toolbox">
+            <div>
+              <h3>مختبر النص</h3>
+              <p>اكتبي مسودتك، ثم راقبي كيف ينتقل النص من فكرة أولى إلى عقد مكتمل من المعنى.</p>
+            </div>
+            <div class="chips">
+              <span class="chip">معرفة</span>
+              <span class="chip">كتابة</span>
+              <span class="chip">تنظيم</span>
+              <span class="chip">إلهام</span>
+              <span class="chip">نمو</span>
+            </div>
+          </aside>
+
+          <div class="editor">
+            <div class="editor-top">
+              <span>مسودة المقال</span>
+              <div class="editor-tools">
+                <button class="mini-btn" id="saveDraft">حفظ</button>
+                <button class="mini-btn" id="clearDraft">تفريغ</button>
+                <div class="editor-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+              </div>
+            </div>
+            <textarea id="writingBox" placeholder="ابدئي كتابة مقالك هنا..."></textarea>
+            <div class="stats">
+              <div class="stat">عدد الكلمات: <span id="words">0</span></div>
+              <div class="stat">عدد الحروف: <span id="chars">0</span></div>
+              <div class="stat">المستوى: <span id="level">كاتبة مبتدئة</span></div>
+            </div>
+            <div class="toast" id="editorToast" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="lexicon" id="lexicon">
+      <div class="shell">
+        <div class="section-title"><h2>معجم سِمْط</h2></div>
+        <p class="section-lead">مساحة مساعدة أثناء الكتابة: تبحث الطالبة عن معنى الكلمة ومترادفاتها وأضدادها، وتستعين بأمثلة بلاغية تصقل الأسلوب.</p>
+
+        <div class="smart-writing">
+          <h3>مساعد الصياغة الذكي</h3>
+          <p>اختاري ما تحتاجينه الآن في النص، وسيقترح سِمْط كلمات وعبارات مناسبة يمكن نقلها مباشرة إلى المحرر.</p>
+          <div class="need-grid" aria-label="احتياج الطالبة أثناء الكتابة">
+            <button class="need-tab active" data-need="intro">مقدمة</button>
+            <button class="need-tab" data-need="argument">حجة</button>
+            <button class="need-tab" data-need="linking">ربط</button>
+            <button class="need-tab" data-need="analysis">تحليل</button>
+            <button class="need-tab" data-need="ending">خاتمة</button>
+            <button class="need-tab" data-need="stronger">كلمة أقوى</button>
+          </div>
+          <div class="suggestion-grid">
+            <div class="suggestion-box" id="phraseSuggestions">
+              <h4>عبارات مقترحة</h4>
+              <ul>
+                <li>من اللافت أن...</li>
+                <li>تتجلى أهمية الموضوع في...</li>
+                <li>لا يمكن النظر إلى هذه الفكرة بمعزل عن...</li>
+              </ul>
+            </div>
+            <div class="suggestion-box" id="sentenceSuggestion">
+              <h4>جملة جاهزة للتطوير</h4>
+              <p>من اللافت أن الكلمة حين تُكتب بوعي تتحول من عبارة عابرة إلى أثر يبقى في الذاكرة.</p>
+            </div>
+          </div>
+          <div class="mini-actions">
+            <button class="mini-btn primary" id="insertSmartSentence">انقلي الجملة للمحرر</button>
+            <button class="mini-btn" id="refreshSmartSuggestion">اقتراح آخر</button>
+          </div>
+        </div>
+
+        <div class="lexicon-grid">
+          <article class="lexicon-card">
+            <h3>معجم الكلمات</h3>
+            <p>اكتبي كلمة أو اختاري من الكلمات المقترحة لعرض المعنى والمترادفات والتضاد.</p>
+            <div class="search-row">
+              <input id="wordSearch" type="text" placeholder="مثال: أثر، إلهام، وعي">
+              <button class="mini-btn primary" id="lookupWord">ابحثي</button>
+            </div>
+            <div class="word-chips" aria-label="كلمات مقترحة">
+              <button class="word-chip" data-word="أثر">أثر</button>
+              <button class="word-chip" data-word="إلهام">إلهام</button>
+              <button class="word-chip" data-word="وعي">وعي</button>
+              <button class="word-chip" data-word="فكرة">فكرة</button>
+              <button class="word-chip" data-word="بلاغة">بلاغة</button>
+            </div>
+            <div class="result-box" id="wordResult">
+              <h4>اختاري كلمة</h4>
+              <p>ستظهر هنا المعاني والمترادفات والأضداد، مع مثال يمكن استخدامه في الكتابة.</p>
+            </div>
+            <div class="mini-actions">
+              <button class="mini-btn" id="insertWordExample">انقلي المثال للمحرر</button>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <section id="magazine">
+      <div class="shell">
+        <div class="section-title"><h2>مجلة سِمْط</h2></div>
+        <p class="section-lead">مساحة لنشر إبداعات الطالبات ومقالاتهن المتميزة، بروح تحريرية راقية تنتمي للهوية نفسها.</p>
+
+        <div class="magazine-grid">
+          <article class="cover-story">
+            <small>مقال الشهر</small>
+            <h3>حين يصبح الحرف أثرًا</h3>
+            <p>عرض لأفضل مقال مكتوب من الطالبات، مع إبراز نقاط القوة في الفكرة والبناء والأسلوب.</p>
+          </article>
+          <div class="issue-list">
+            <article class="issue">
+              <small>خاطرة أدبية</small>
+              <h3>نصوص وجدانية</h3>
+              <p>مساحة للكتابة الحرة التي تكشف حس الطالبة وصورتها اللغوية.</p>
+            </article>
+            <article class="issue">
+              <small>مفردة العدد</small>
+              <h3>ثراء لغوي</h3>
+              <p>تعزيز الحصيلة اللغوية بمفردات عربية أصيلة وأمثلة سياقية.</p>
+            </article>
+            <article class="issue">
+              <small>دفتر المحررة</small>
+              <h3>ملاحظات تطوير</h3>
+              <p>تعليقات قصيرة تساعد الطالبة على تحسين النص التالي بثقة وهدوء.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="submission-panel">
+          <div class="panel-title">
+            <h3>إرسال للمجلة</h3>
+            <span>تجريبي</span>
+          </div>
+          <div class="form-grid">
+            <label class="field">
+              عنوان النص
+              <input id="articleTitle" type="text" placeholder="مثال: حين يصبح الحرف أثرًا">
+            </label>
+            <label class="field">
+              نوع المشاركة
+              <select id="articleType">
+                <option>مقال</option>
+                <option>خاطرة</option>
+                <option>مفردة العدد</option>
+              </select>
+            </label>
+            <label class="field full">
+              اسم الطالبة
+              <input id="studentName" type="text" placeholder="اكتبي الاسم هنا">
+            </label>
+          </div>
+          <div class="mini-actions">
+            <button class="mini-btn primary" id="submitArticle">تجهيز بطاقة النشر</button>
+          </div>
+          <div class="submission-preview" id="submissionPreview">ستظهر هنا بطاقة النشر بعد تعبئة البيانات وتجهيز المشاركة.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="analytics">
+      <div class="shell">
+        <div class="section-title"><h2>إحصائيات دخول الموقع</h2></div>
+        <p class="section-lead">إحصائيات محلية بسيطة لعدد الزيارات والدخول وتصفح الأقسام على هذا الجهاز.</p>
+        <div class="analytics-panel">
+          <article class="analytics-card">
+            <h3>نشاط الموقع</h3>
+            <div class="stat-grid">
+              <div class="dash-stat"><strong id="dashVisits">0</strong>زيارات الموقع</div>
+              <div class="dash-stat"><strong id="dashLogins">0</strong>مرات الدخول</div>
+              <div class="dash-stat"><strong id="dashWords">0</strong>كلمات المسودة</div>
+              <div class="dash-stat"><strong id="dashLastLogin">-</strong>آخر دخول</div>
+            </div>
+          </article>
+          <article class="analytics-card">
+            <h3>تصفح الأقسام</h3>
+            <div class="section-meter" id="sectionStats"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="shell">
+      <strong>سِمْط</strong>
+      <p>نحن لا نكتب فقط، بل نبقي أثرًا يبقى.</p>
+      <p class="copyright">حقوق الموقع محفوظة أ. هيا بوغيث</p>
+    </div>
+  </footer>
+
+  <script src="simt-knowledge.js"></script>
+  <script>
+    const box = document.getElementById("writingBox");
+    const words = document.getElementById("words");
+    const chars = document.getElementById("chars");
+    const level = document.getElementById("level");
+    const editorToast = document.getElementById("editorToast");
+    const saveDraft = document.getElementById("saveDraft");
+    const clearDraft = document.getElementById("clearDraft");
+    const newPrompt = document.getElementById("newPrompt");
+    const sendPrompt = document.getElementById("sendPrompt");
+    const promptBox = document.getElementById("promptBox");
+    const reviewChecklist = document.getElementById("reviewChecklist");
+    const reviewScore = document.getElementById("reviewScore");
+    const lessonView = document.getElementById("lessonView");
+    const lessonTabs = document.querySelectorAll(".lesson-tab");
+    const badgeWords = document.getElementById("badgeWords");
+    const badgeReview = document.getElementById("badgeReview");
+    const badgeSubmit = document.getElementById("badgeSubmit");
+    const submitArticle = document.getElementById("submitArticle");
+    const submissionPreview = document.getElementById("submissionPreview");
+    const articleTitle = document.getElementById("articleTitle");
+    const articleType = document.getElementById("articleType");
+    const studentName = document.getElementById("studentName");
+    const wordSearch = document.getElementById("wordSearch");
+    const lookupWord = document.getElementById("lookupWord");
+    const wordResult = document.getElementById("wordResult");
+    const insertWordExample = document.getElementById("insertWordExample");
+    const wordChips = document.querySelectorAll(".word-chip");
+    const rhetoricTabs = document.querySelectorAll(".rhetoric-tab");
+    const rhetoricResult = document.getElementById("rhetoricResult");
+    const insertRhetoricExample = document.getElementById("insertRhetoricExample");
+    const needTabs = document.querySelectorAll(".need-tab");
+    const phraseSuggestions = document.getElementById("phraseSuggestions");
+    const sentenceSuggestion = document.getElementById("sentenceSuggestion");
+    const insertSmartSentence = document.getElementById("insertSmartSentence");
+    const refreshSmartSuggestion = document.getElementById("refreshSmartSuggestion");
+    const authGate = document.getElementById("authGate");
+    const loginName = document.getElementById("loginName");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginButton = document.getElementById("loginButton");
+    const forgotButton = document.getElementById("forgotButton");
+    const authMessage = document.getElementById("authMessage");
+    const studentBadge = document.getElementById("studentBadge");
+    const logoutButton = document.getElementById("logoutButton");
+    const dashVisits = document.getElementById("dashVisits");
+    const dashLogins = document.getElementById("dashLogins");
+    const dashWords = document.getElementById("dashWords");
+    const dashLastLogin = document.getElementById("dashLastLogin");
+    const sectionStats = document.getElementById("sectionStats");
+
+    const lessons = {
+      idea: {
+        label: "الدرس الأول",
+        title: "توليد الأفكار",
+        body: "ابدئي بسؤال واحد واضح، ثم اكتبي ثلاث إجابات مختلفة قبل اختيار الفكرة الأعمق. الفكرة الجيدة ليست الأطول، بل الأكثر قابلية للتحليل.",
+        points: ["ما السؤال الذي يحرك الموضوع؟", "ما المثال الأقرب لحياة الطالبة؟", "ما الأثر الذي تريدين تركه في القارئ؟"]
+      },
+      intro: {
+        label: "الدرس الثاني",
+        title: "المقدمة الجاذبة",
+        body: "المقدمة باب النص. اجعليها قصيرة، واضحة، ومتصلة بالفكرة الأساسية دون أن تكشف كل التفاصيل من السطر الأول.",
+        points: ["ابدئي بصورة أو سؤال.", "اربطي البداية بموضوع المقال.", "اختمي المقدمة بجملة تمهد للفقرات."]
+      },
+      body: {
+        label: "الدرس الثالث",
+        title: "الفقرة المتماسكة",
+        body: "الفقرة القوية تحمل فكرة واحدة، ثم تشرحها، ثم تدعمها بمثال، ثم تربطها بما بعدها بسلاسة.",
+        points: ["جملة فكرة واضحة.", "شرح لا يكرر المقدمة.", "مثال أو موقف يعزز المعنى."]
+      },
+      edit: {
+        label: "الدرس الرابع",
+        title: "التحرير النهائي",
+        body: "التحرير ليس تصحيحًا فقط؛ هو تهذيب للصوت. اقرئي النص بصوت منخفض، واحذفي الزائد، وقوي الجمل الضعيفة.",
+        points: ["قللي التكرار.", "راجعي علامات الترقيم.", "تأكدي أن الخاتمة تحمل أثرًا."]
+      }
+    };
+
+    const prompts = [
+      "اكتبي عن موقف صغير علّمك أن الكلمة قد تغيّر شعور إنسان.",
+      "ما الفكرة التي تتمنين أن تصل لكل طالبة تخاف من الكتابة؟",
+      "قارني بين نص مكتوب بعجلة ونص كُتب بتأنٍ: أين يظهر الأثر؟",
+      "ابدئي مقالك بسؤال: ماذا يحدث حين تصبح اللغة بيتًا آمنًا للفكرة؟",
+      "اختاري مفردة عربية تحبينها، واكتبي كيف يمكن أن تتحول إلى قصة قصيرة."
+    ];
+
+    const dictionary = (window.SIMT_KNOWLEDGE && window.SIMT_KNOWLEDGE.dictionary) || {};
+
+    const writingNeeds = {
+      intro: {
+        title: "مقدمة",
+        phrases: ["من اللافت أن...", "تتجلى أهمية الموضوع في...", "لا يمكن النظر إلى هذه الفكرة بمعزل عن...", "حين نتأمل هذا الموضوع نجد أن..."],
+        sentences: [
+          "من اللافت أن الكلمة حين تُكتب بوعي تتحول من عبارة عابرة إلى أثر يبقى في الذاكرة.",
+          "حين نتأمل هذا الموضوع ندرك أن الكتابة ليست نقلًا للأفكار فقط، بل ترتيب لها ومنحها صوتًا واضحًا.",
+          "تتجلى أهمية هذه الفكرة في قدرتها على ملامسة واقع الطالبة وصناعة وعيها."
+        ]
+      },
+      argument: {
+        title: "حجة",
+        phrases: ["يدل ذلك على...", "ومما يؤكد هذه الفكرة...", "يمكن الاستدلال على ذلك من خلال...", "تتضح قوة الرأي حين..."],
+        sentences: [
+          "ومما يؤكد هذه الفكرة أن النص القوي لا يكتفي بطرح الرأي، بل يدعمه بسبب واضح ومثال مناسب.",
+          "يمكن الاستدلال على ذلك من خلال أثر القراءة في توسيع خيال الطالبة وتحسين لغتها.",
+          "تتضح قوة الرأي حين يرتبط بتجربة قريبة من القارئ لا بمجرد عبارة عامة."
+        ]
+      },
+      linking: {
+        title: "ربط",
+        phrases: ["إضافة إلى ذلك...", "ومن جهة أخرى...", "وبناء على ما سبق...", "على الرغم من ذلك...", "نتيجة لذلك..."],
+        sentences: [
+          "إضافة إلى ذلك، فإن تنظيم الفكرة يمنح النص تماسكًا يجعل القارئ ينتقل بين الجمل بسهولة.",
+          "ومن جهة أخرى، لا يكفي جمال العبارة إذا لم تكن الفكرة واضحة ومتصلة بما قبلها.",
+          "وبناء على ما سبق، يمكن القول إن الكتابة مهارة تنمو بالممارسة والمراجعة."
+        ]
+      },
+      analysis: {
+        title: "تحليل",
+        phrases: ["يعود ذلك إلى...", "يكشف هذا عن...", "يمكن تفسير ذلك بأن...", "لا يقتصر الأمر على... بل يمتد إلى..."],
+        sentences: [
+          "يكشف هذا عن أن الكتابة الواعية تبدأ من فهم الفكرة قبل البحث عن العبارة الجميلة.",
+          "يمكن تفسير ذلك بأن الطالبة حين تمتلك مفردات أدق تصبح أكثر قدرة على التعبير عن شعورها ورأيها.",
+          "لا يقتصر الأمر على تحسين اللغة، بل يمتد إلى بناء الثقة في التفكير والتعبير."
+        ]
+      },
+      ending: {
+        title: "خاتمة",
+        phrases: ["خلاصة القول...", "ومن هنا يتضح أن...", "يبقى الأثر حين...", "وفي الختام..."],
+        sentences: [
+          "خلاصة القول إن الكتابة ليست واجبًا عابرًا، بل مساحة تصنع فيها الطالبة صوتها وأثرها.",
+          "ومن هنا يتضح أن الكلمة الواعية قادرة على أن تبني معنى يبقى بعد انتهاء النص.",
+          "يبقى الأثر حين تكتب الطالبة بصدق، وتراجع بوعي، وتثق بأن لصوتها قيمة."
+        ]
+      },
+      stronger: {
+        title: "كلمة أقوى",
+        phrases: ["جميل ← بديع", "مهم ← جوهري", "واضح ← جلي", "كبير ← عظيم", "حزين ← مثقل"],
+        sentences: [
+          "بدلًا من: هذا موضوع مهم. اكتبي: هذا موضوع جوهري يمس وعي الطالبة وحضور لغتها.",
+          "بدلًا من: كانت الفكرة جميلة. اكتبي: بدت الفكرة بديعة كأنها لؤلؤة اكتمل لمعانها.",
+          "بدلًا من: النص واضح. اكتبي: جاء النص جليًا، مرتب الفكرة، قريبًا من القارئ."
+        ]
+      }
+    };
+
+    const rhetoric = {
+      simile: {
+        title: "التشبيه",
+        meaning: "عقد مشابهة بين شيئين يشتركان في صفة.",
+        example: "كانت الفكرة مثل لؤلؤةٍ خرجت من صمت طويل.",
+        use: "تقريب المعنى ورسم صورة واضحة في ذهن القارئ."
+      },
+      metaphor: {
+        title: "الاستعارة",
+        meaning: "تعبير يصور المعنى بصورة غير مباشرة، كأن تمنحي الشيء صفة شيء آخر.",
+        example: "أشرقت الفكرة في قلبي بعد طول تردد.",
+        use: "إضفاء حياة وجمال على الجملة دون شرح طويل."
+      },
+      metonymy: {
+        title: "الكناية",
+        meaning: "تعبير لا يصرح بالمعنى مباشرة، بل يلمح إليه بعبارة تدل عليه.",
+        example: "رفعت الطالبة رأسها بعد أن أتقنت نصها.",
+        use: "إيصال المعنى بلطف وعمق، مثل الدلالة على الثقة أو الفخر."
+      },
+      contrast: {
+        title: "الطباق",
+        meaning: "جمع كلمتين متضادتين في جملة واحدة لإبراز المعنى.",
+        example: "بين الخوف والشجاعة ولدت أول مسودة.",
+        use: "إظهار الفكرة بقوة من خلال المقارنة بين المعنى وضده."
+      },
+      alliteration: {
+        title: "الجناس",
+        meaning: "تشابه كلمتين في اللفظ واختلافهما في المعنى.",
+        example: "بالقلم تكتب أثرًا، وبالعلم تمنح الأثر معنى.",
+        use: "إضافة إيقاع لغوي لطيف إذا استُخدم دون تكلف."
+      }
+    };
+
+    let currentWordExample = "";
+    let currentRhetoricExample = rhetoric.simile.example;
+    let currentNeed = "intro";
+    let currentSmartSentence = writingNeeds.intro.sentences[0];
+    const sectionLabels = {
+      about: "فكرة المشروع",
+      academy: "معسكر سِمْط",
+      journey: "رحلة الطالبة",
+      editor: "محرر الكتابة",
+      lexicon: "المعجم",
+      magazine: "المجلة",
+      analytics: "الإحصائيات"
+    };
+
+    function readJSON(key, fallback) {
+      try {
+        return JSON.parse(localStorage.getItem(key)) || fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function writeJSON(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function todayLabel() {
+      return new Date().toLocaleDateString("ar-SA", {
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      });
+    }
+
+    function getStudents() {
+      return readJSON("simtStudents", {});
+    }
+
+    function setStudents(students) {
+      writeJSON("simtStudents", students);
+    }
+
+    function getStats() {
+      return readJSON("simtStats", {
+        visits: 0,
+        logins: 0,
+        lastLogin: "-",
+        sections: {}
+      });
+    }
+
+    function setStats(stats) {
+      writeJSON("simtStats", stats);
+    }
+
+    function updateAnalytics() {
+      const stats = getStats();
+      const wordCount = words ? words.textContent : "0";
+      if (dashVisits) dashVisits.textContent = stats.visits || 0;
+      if (dashLogins) dashLogins.textContent = stats.logins || 0;
+      if (dashWords) dashWords.textContent = wordCount;
+      if (dashLastLogin) dashLastLogin.textContent = stats.lastLogin || "-";
+
+      if (sectionStats) {
+        const max = Math.max(1, ...Object.values(stats.sections || {}));
+        sectionStats.innerHTML = Object.keys(sectionLabels).map(function (id) {
+          const value = stats.sections[id] || 0;
+          const width = Math.max(4, Math.round((value / max) * 100));
+          return `
+            <div class="meter-row">
+              <span>${sectionLabels[id]}</span>
+              <div class="meter-track"><span style="width: ${width}%"></span></div>
+              <strong>${value}</strong>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function markVisit() {
+      const stats = getStats();
+      const today = new Date().toDateString();
+      if (localStorage.getItem("simtVisitDate") !== today) {
+        stats.visits += 1;
+        localStorage.setItem("simtVisitDate", today);
+        setStats(stats);
+      }
+      updateAnalytics();
+    }
+
+    function markSection(sectionId) {
+      if (!sectionId || !sectionLabels[sectionId]) return;
+      const key = `simtSectionSeen:${sectionId}`;
+      const now = Date.now();
+      const previous = Number(sessionStorage.getItem(key) || 0);
+      if (now - previous < 6000) return;
+      sessionStorage.setItem(key, String(now));
+
+      const stats = getStats();
+      stats.sections[sectionId] = (stats.sections[sectionId] || 0) + 1;
+      setStats(stats);
+      updateAnalytics();
+    }
+
+    function setLoggedIn(name) {
+      if (authMessage) authMessage.textContent = name ? `مرحبًا ${name}، تم تسجيل الدخول.` : "تم تسجيل الدخول.";
+    }
+
+    function setLoggedOut() {
+      if (authMessage) authMessage.textContent = "";
+    }
+
+    function handleLogin() {
+      const name = loginName ? loginName.value.trim() : "";
+      const password = loginPassword ? loginPassword.value : "";
+      if (!name || !password) {
+        if (authMessage) authMessage.textContent = "اكتبي الاسم وكلمة المرور.";
+        return;
+      }
+
+      const students = getStudents();
+      if (!students[name]) {
+        students[name] = password;
+        setStudents(students);
+        if (authMessage) authMessage.textContent = "تم إنشاء الحساب المحلي.";
+      } else if (students[name] !== password) {
+        if (authMessage) authMessage.textContent = "الاسم أو كلمة المرور غير صحيحة.";
+        return;
+      }
+
+      localStorage.setItem("simtLoggedIn", "true");
+      localStorage.setItem("simtLoggedInName", name);
+      const stats = getStats();
+      stats.logins += 1;
+      stats.lastLogin = todayLabel();
+      setStats(stats);
+      setLoggedIn(name);
+      updateAnalytics();
+    }
+
+    function handleForgotPassword() {
+      const name = loginName ? loginName.value.trim() : "";
+      const newPassword = loginPassword ? loginPassword.value : "";
+      const students = getStudents();
+
+      if (!Object.keys(students).length) {
+        if (authMessage) authMessage.textContent = "لا يوجد حساب محفوظ بعد. اكتبي اسمًا وكلمة مرور لإنشاء حساب.";
+        return;
+      }
+
+      if (!students[name]) {
+        if (authMessage) authMessage.textContent = "اكتبي اسم الطالبة المحفوظ أولًا.";
+        return;
+      }
+
+      if (newPassword.length < 4) {
+        if (authMessage) authMessage.textContent = "اكتبي كلمة مرور جديدة من 4 أحرف أو أكثر.";
+        return;
+      }
+
+      students[name] = newPassword;
+      setStudents(students);
+      if (authMessage) authMessage.textContent = "تم تحديث كلمة المرور. اضغطي دخول.";
+    }
+
+    function showToast(message) {
+      if (!editorToast) return;
+      editorToast.textContent = message;
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(function () {
+        editorToast.textContent = "";
+      }, 2400);
+    }
+
+    function updateWritingStats() {
+      if (!box || !words || !chars || !level) return;
+      const text = box.value.trim();
+      const wordCount = text === "" ? 0 : text.split(/\s+/).length;
+
+      chars.textContent = text.length;
+      words.textContent = wordCount;
+
+      if (wordCount >= 120) {
+        level.textContent = "صانعة أثر";
+      } else if (wordCount >= 70) {
+        level.textContent = "لؤلؤة سِمْط";
+      } else if (wordCount >= 30) {
+        level.textContent = "ناسجة أفكار";
+      } else {
+        level.textContent = "كاتبة مبتدئة";
+      }
+
+      if (badgeWords) {
+        badgeWords.classList.toggle("unlocked", wordCount >= 50);
+      }
+      updateAnalytics();
+    }
+
+    function appendToEditor(text) {
+      if (!box || !text) return;
+      box.value = `${box.value}${box.value.trim() ? "\n\n" : ""}${text}`;
+      box.focus();
+      updateWritingStats();
+      localStorage.setItem("simtDraft", box.value);
+      showToast("تمت الإضافة إلى المحرر.");
+    }
+
+    function renderWord(word) {
+      if (!wordResult) return;
+      const key = Object.keys(dictionary).find(function (item) {
+        return item === word.trim();
+      });
+      const data = dictionary[key];
+
+      if (!data) {
+        currentWordExample = "";
+        wordResult.innerHTML = `
+          <h4>لم أجد الكلمة</h4>
+          <p>جربي إحدى الكلمات المقترحة، أو أضيفي هذه الكلمة لاحقًا إلى معجم المشروع.</p>
+        `;
+        return;
+      }
+
+      currentWordExample = data.example;
+      wordResult.innerHTML = `
+        <h4>${key}</h4>
+        <p><strong>المعنى:</strong> ${data.meaning}</p>
+        <p><strong>المترادفات:</strong> ${data.synonyms.join("، ")}</p>
+        <p><strong>التضاد:</strong> ${data.antonyms.join("، ")}</p>
+        <p><strong>مثال:</strong> ${data.example}</p>
+      `;
+    }
+
+    function renderRhetoric(device) {
+      if (!rhetoricResult || !rhetoric[device]) return;
+      const data = rhetoric[device];
+      currentRhetoricExample = data.example;
+      rhetoricResult.innerHTML = `
+        <h4>${data.title}</h4>
+        <p><strong>المعنى:</strong> ${data.meaning}</p>
+        <p><strong>مثال:</strong> ${data.example}</p>
+        <p><strong>يفيد في:</strong> ${data.use}</p>
+      `;
+    }
+
+    function renderWritingNeed(need, rotate) {
+      const data = writingNeeds[need] || writingNeeds.intro;
+      currentNeed = need;
+      const sentenceIndex = rotate ? Math.floor(Math.random() * data.sentences.length) : 0;
+      currentSmartSentence = data.sentences[sentenceIndex];
+
+      if (phraseSuggestions) {
+        phraseSuggestions.innerHTML = `
+          <h4>عبارات ${data.title}</h4>
+          <ul>${data.phrases.map(function (phrase) { return `<li>${phrase}</li>`; }).join("")}</ul>
+        `;
+      }
+
+      if (sentenceSuggestion) {
+        sentenceSuggestion.innerHTML = `
+          <h4>جملة جاهزة للتطوير</h4>
+          <p>${currentSmartSentence}</p>
+        `;
+      }
+    }
+
+    if (box && words && chars && level) {
+      const savedDraft = localStorage.getItem("simtDraft");
+      if (savedDraft) {
+        box.value = savedDraft;
+      }
+
+      box.addEventListener("input", function () {
+        updateWritingStats();
+        localStorage.setItem("simtDraft", box.value);
+      });
+
+      updateWritingStats();
+    }
+
+    if (saveDraft && box) {
+      saveDraft.addEventListener("click", function () {
+        localStorage.setItem("simtDraft", box.value);
+        showToast("تم حفظ المسودة.");
+      });
+    }
+
+    if (clearDraft && box) {
+      clearDraft.addEventListener("click", function () {
+        box.value = "";
+        localStorage.removeItem("simtDraft");
+        updateWritingStats();
+        showToast("تم تفريغ المسودة.");
+      });
+    }
+
+    lessonTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        const data = lessons[tab.dataset.lesson];
+        if (!data || !lessonView) return;
+        lessonTabs.forEach(function (item) {
+          item.classList.remove("active");
+        });
+        tab.classList.add("active");
+        lessonView.innerHTML = `
+          <small>${data.label}</small>
           <h3>${data.title}</h3>
           <p>${data.body}</p>
           <ul>${data.points.map(function (point) { return `<li>${point}</li>`; }).join("")}</ul>
