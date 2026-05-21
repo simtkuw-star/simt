@@ -1,0 +1,179 @@
+          <h3>${data.title}</h3>
+          <p>${data.body}</p>
+          <ul>${data.points.map(function (point) { return `<li>${point}</li>`; }).join("")}</ul>
+        `;
+      });
+    });
+
+    if (newPrompt && promptBox) {
+      newPrompt.addEventListener("click", function () {
+        const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+        promptBox.textContent = prompt;
+      });
+    }
+
+    if (sendPrompt && promptBox && box) {
+      sendPrompt.addEventListener("click", function () {
+        const prompt = promptBox.textContent.trim();
+        if (!prompt || prompt.includes("اضغطي")) {
+          showToast("اختاري فكرة أولًا.");
+          return;
+        }
+        box.value = `${box.value}${box.value.trim() ? "\n\n" : ""}${prompt}\n`;
+        box.focus();
+        updateWritingStats();
+        localStorage.setItem("simtDraft", box.value);
+        showToast("انتقلت الفكرة للمحرر.");
+      });
+    }
+
+    if (reviewChecklist && reviewScore) {
+      const checks = reviewChecklist.querySelectorAll("input");
+      const updateReview = function () {
+        const done = Array.from(checks).filter(function (item) { return item.checked; }).length;
+        const score = Math.round((done / checks.length) * 100);
+        reviewScore.textContent = `${score}%`;
+        if (badgeReview) {
+          badgeReview.classList.toggle("unlocked", score === 100);
+        }
+      };
+      checks.forEach(function (item, index) {
+        item.checked = localStorage.getItem(`simtReview${index}`) === "true";
+        item.addEventListener("change", function () {
+          localStorage.setItem(`simtReview${index}`, item.checked);
+          updateReview();
+        });
+      });
+      updateReview();
+    }
+
+    if (submitArticle && submissionPreview) {
+      submitArticle.addEventListener("click", function () {
+        const title = articleTitle.value.trim() || "نص بلا عنوان";
+        const type = articleType.value;
+        const name = studentName.value.trim() || "طالبة سِمْط";
+        const wordTotal = words ? words.textContent : "0";
+        submissionPreview.innerHTML = `
+          <strong>${title}</strong><br>
+          نوع المشاركة: ${type}<br>
+          الاسم: ${name}<br>
+          عدد كلمات المسودة الحالية: ${wordTotal}<br>
+          الحالة: جاهزة للمراجعة التحريرية.
+        `;
+        if (badgeSubmit) {
+          badgeSubmit.classList.add("unlocked");
+        }
+      });
+    }
+
+    if (lookupWord && wordSearch) {
+      lookupWord.addEventListener("click", function () {
+        renderWord(wordSearch.value);
+      });
+
+      wordSearch.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          renderWord(wordSearch.value);
+        }
+      });
+    }
+
+    wordChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        if (wordSearch) {
+          wordSearch.value = chip.dataset.word;
+        }
+        renderWord(chip.dataset.word);
+      });
+    });
+
+    if (insertWordExample) {
+      insertWordExample.addEventListener("click", function () {
+        if (!currentWordExample) {
+          showToast("اختاري كلمة من المعجم أولًا.");
+          return;
+        }
+        appendToEditor(currentWordExample);
+      });
+    }
+
+    rhetoricTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        rhetoricTabs.forEach(function (item) {
+          item.classList.remove("active");
+        });
+        tab.classList.add("active");
+        renderRhetoric(tab.dataset.device);
+      });
+    });
+
+    if (insertRhetoricExample) {
+      insertRhetoricExample.addEventListener("click", function () {
+        appendToEditor(currentRhetoricExample);
+      });
+    }
+
+    needTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        needTabs.forEach(function (item) {
+          item.classList.remove("active");
+        });
+        tab.classList.add("active");
+        renderWritingNeed(tab.dataset.need, false);
+      });
+    });
+
+    if (refreshSmartSuggestion) {
+      refreshSmartSuggestion.addEventListener("click", function () {
+        renderWritingNeed(currentNeed, true);
+      });
+    }
+
+    if (insertSmartSentence) {
+      insertSmartSentence.addEventListener("click", function () {
+        appendToEditor(currentSmartSentence);
+      });
+    }
+
+    if (loginButton) {
+      loginButton.addEventListener("click", handleLogin);
+    }
+
+    if (forgotButton) {
+      forgotButton.addEventListener("click", handleForgotPassword);
+    }
+
+    if (loginPassword) {
+      loginPassword.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          handleLogin();
+        }
+      });
+    }
+
+    if (logoutButton) {
+      logoutButton.addEventListener("click", function () {
+        localStorage.removeItem("simtLoggedIn");
+        setLoggedOut();
+      });
+    }
+
+    document.querySelectorAll("main section[id]").forEach(function (section) {
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            markSection(entry.target.id);
+          }
+        });
+      }, { threshold: 0.45 });
+      observer.observe(section);
+    });
+
+    markVisit();
+    const loggedName = localStorage.getItem("simtLoggedInName");
+    if (loggedName && localStorage.getItem("simtLoggedIn") === "true") {
+      setLoggedIn(loggedName);
+    }
+  </script>
+</body>
+</html>
