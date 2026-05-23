@@ -371,7 +371,7 @@
 
     .login-footer {
       display: grid;
-      grid-template-columns: auto auto 1fr;
+      grid-template-columns: auto auto auto 1fr;
       gap: 12px;
       align-items: center;
       margin-top: 12px;
@@ -400,6 +400,23 @@
       font-size: 13px;
       font-weight: 800;
       text-align: left;
+    }
+
+    .account-status,
+    .privacy-note {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: rgba(15, 26, 43, 0.06);
+      border: 1px solid rgba(200, 157, 92, 0.22);
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .privacy-note {
+      background: transparent;
+      color: #63594e;
     }
 
     .brand-stage {
@@ -1823,7 +1840,9 @@
       }
 
       .forgot-link,
-      .login-message {
+      .login-message,
+      .account-status,
+      .privacy-note {
         text-align: center;
       }
 
@@ -1901,8 +1920,11 @@
           <div class="login-footer">
             <button class="mini-btn primary" id="loginButton">دخول / تسجيل</button>
             <button class="forgot-link" id="forgotButton">نسيت كلمة المرور؟</button>
+            <button class="forgot-link" id="logoutButton" hidden>تسجيل الخروج</button>
             <div class="login-message" id="authMessage" aria-live="polite"></div>
           </div>
+          <div class="account-status" id="accountStatus">لم يتم تسجيل الدخول بعد.</div>
+          <div class="privacy-note">تُحفظ المسودة والتقييم داخل حساب الطالبة في Firebase، ولا تظهر لطالبة أخرى.</div>
         </div>
       </div>
 
@@ -2449,6 +2471,7 @@
     const loginButton = document.getElementById("loginButton");
     const forgotButton = document.getElementById("forgotButton");
     const authMessage = document.getElementById("authMessage");
+    const accountStatus = document.getElementById("accountStatus");
     const studentBadge = document.getElementById("studentBadge");
     const logoutButton = document.getElementById("logoutButton");
     const dashVisits = document.getElementById("dashVisits");
@@ -3128,11 +3151,16 @@
     });
 
     window.addEventListener("simtStudentContext", function (event) {
-      if (!currentStudentLine) return;
       const detail = event.detail || {};
+      if (!currentStudentLine) return;
       currentStudentLine.textContent = detail.email
         ? `الحساب الحالي: ${detail.email}`
         : "الحساب الحالي: لم يتم تسجيل الدخول بعد.";
+      if (accountStatus) {
+        accountStatus.textContent = detail.email
+          ? `الحساب النشط: ${detail.email}`
+          : "لم يتم تسجيل الدخول بعد.";
+      }
     });
 
     window.addEventListener("simtRubricSaveStatus", function (event) {
@@ -3304,13 +3332,6 @@
       });
     }
 
-    if (logoutButton) {
-      logoutButton.addEventListener("click", function () {
-        localStorage.removeItem("simtLoggedIn");
-        setLoggedOut();
-      });
-    }
-
     document.querySelectorAll("main section[id]").forEach(function (section) {
       const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
@@ -3328,6 +3349,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=10"></script>
+  <script type="module" src="simt-firebase.js?v=11"></script>
 </body>
 </html>

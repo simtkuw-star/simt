@@ -11,6 +11,7 @@ const loginButton = document.getElementById("loginButton");
 const forgotButton = document.getElementById("forgotButton");
 const authMessage = document.getElementById("authMessage");
 const logoutButton = document.getElementById("logoutButton");
+const accountStatus = document.getElementById("accountStatus");
 
 function showAuthMessage(message) {
   if (authMessage) {
@@ -29,6 +30,18 @@ function markFirebaseMode() {
   if (forgotButton) {
     forgotButton.textContent = "نسيت كلمة المرور؟";
   }
+}
+
+function setLoggedInUi(user) {
+  if (logoutButton) logoutButton.hidden = false;
+  if (loginButton) loginButton.textContent = "تحديث الدخول";
+  if (accountStatus) accountStatus.textContent = `الحساب النشط: ${user.email}`;
+}
+
+function setLoggedOutUi() {
+  if (logoutButton) logoutButton.hidden = true;
+  if (loginButton) loginButton.textContent = "دخول / تسجيل";
+  if (accountStatus) accountStatus.textContent = "لم يتم تسجيل الدخول بعد.";
 }
 
 if (isConfigured && loginButton && emailInput && passwordInput) {
@@ -354,6 +367,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   logoutButton?.addEventListener("click", function () {
     signOut(auth);
+    showAuthMessage("تم تسجيل الخروج.");
   }, true);
 
   onAuthStateChanged(auth, function (user) {
@@ -367,6 +381,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent("simtStudentContext", {
         detail: { uid: user.uid, email: user.email, name: user.displayName || "" }
       }));
+      setLoggedInUi(user);
       localStorage.setItem("simtLoggedIn", "true");
       localStorage.setItem("simtLoggedInName", user.displayName || user.email || "طالبة سِمْط");
       loadStudentWork(user);
@@ -374,6 +389,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       activeUser = null;
       activeUid = "";
       hasLoadedStudentWork = false;
+      setLoggedOutUi();
       window.dispatchEvent(new CustomEvent("simtStudentContext", { detail: {} }));
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       resetStudentWorkspace();
