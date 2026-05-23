@@ -1054,6 +1054,103 @@
       font-weight: 800;
     }
 
+    .teacher-rubric {
+      margin-top: 22px;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .teacher-rubric h3 {
+      color: var(--navy);
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .teacher-rubric > p {
+      color: #5a5d62;
+      line-height: 1.9;
+      margin-bottom: 18px;
+    }
+
+    .rubric-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .rubric-field {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.26);
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .rubric-field span {
+      color: #66605a;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .rubric-field select {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fff;
+      color: var(--navy);
+      font-weight: 800;
+      outline: 0;
+    }
+
+    .rubric-output {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .rubric-score-card,
+    .rubric-notes {
+      padding: 18px;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      background: var(--navy);
+      color: #fff;
+    }
+
+    .rubric-score-card strong {
+      display: block;
+      color: var(--gold);
+      font-size: 34px;
+      margin: 6px 0;
+    }
+
+    .rubric-score-card span {
+      display: block;
+      color: #fff4df;
+      font-weight: 800;
+      line-height: 1.8;
+    }
+
+    .rubric-notes h4 {
+      color: #f1d8ae;
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .rubric-notes ul {
+      display: grid;
+      gap: 8px;
+      margin-right: 18px;
+      color: rgba(255, 255, 255, 0.84);
+      line-height: 1.8;
+    }
+
     .lexicon {
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(242, 237, 228, 0.92)),
@@ -1492,7 +1589,9 @@
       .lexicon-grid,
       .suggestion-grid,
       .analytics-panel,
-      .faq-grid {
+      .faq-grid,
+      .rubric-grid,
+      .rubric-output {
         grid-template-columns: 1fr;
       }
 
@@ -1824,6 +1923,81 @@
             <div class="toast" id="editorToast" aria-live="polite"></div>
           </div>
         </div>
+
+        <div class="teacher-rubric">
+          <h3>بطاقة تقييم النص للمعلمة</h3>
+          <p>تُستخدم هذه البطاقة لتحديد مستوى الطالبة بناءً على جودة النص، لا عدد الكلمات فقط. اختاري درجة من 1 إلى 5 لكل معيار، وستظهر الملاحظات والخطوة التالية تلقائيًا.</p>
+
+          <div class="rubric-grid" id="teacherRubric">
+            <label class="rubric-field">
+              وضوح الفكرة
+              <span>هل الفكرة الرئيسية واضحة ومحددة؟</span>
+              <select data-rubric="idea">
+                <option value="1">1 - غير واضحة</option>
+                <option value="2">2 - تحتاج تحديد</option>
+                <option value="3" selected>3 - مقبولة</option>
+                <option value="4">4 - واضحة</option>
+                <option value="5">5 - عميقة ومؤثرة</option>
+              </select>
+            </label>
+            <label class="rubric-field">
+              تنظيم النص
+              <span>هل يوجد بناء واضح: مقدمة، فقرات، خاتمة؟</span>
+              <select data-rubric="structure">
+                <option value="1">1 - غير منظم</option>
+                <option value="2">2 - يحتاج ترتيب</option>
+                <option value="3" selected>3 - مقبول</option>
+                <option value="4">4 - منظم</option>
+                <option value="5">5 - محكم البناء</option>
+              </select>
+            </label>
+            <label class="rubric-field">
+              الترابط
+              <span>هل تنتقل الجمل والأفكار بسلاسة؟</span>
+              <select data-rubric="cohesion">
+                <option value="1">1 - مفكك</option>
+                <option value="2">2 - روابط قليلة</option>
+                <option value="3" selected>3 - مترابط غالبًا</option>
+                <option value="4">4 - سلس</option>
+                <option value="5">5 - مترابط بإتقان</option>
+              </select>
+            </label>
+            <label class="rubric-field">
+              اللغة والأسلوب
+              <span>هل المفردات مناسبة والأخطاء قليلة؟</span>
+              <select data-rubric="language">
+                <option value="1">1 - أخطاء كثيرة</option>
+                <option value="2">2 - يحتاج مراجعة</option>
+                <option value="3" selected>3 - جيد</option>
+                <option value="4">4 - قوي</option>
+                <option value="5">5 - بليغ ومتقن</option>
+              </select>
+            </label>
+            <label class="rubric-field">
+              الأثر
+              <span>هل يترك النص معنى أو شعورًا واضحًا؟</span>
+              <select data-rubric="impact">
+                <option value="1">1 - لا يظهر الأثر</option>
+                <option value="2">2 - أثر ضعيف</option>
+                <option value="3" selected>3 - أثر مقبول</option>
+                <option value="4">4 - أثر واضح</option>
+                <option value="5">5 - أثر عميق</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="rubric-output">
+            <div class="rubric-score-card">
+              الدرجة الكلية
+              <strong id="rubricTotal">15 / 25</strong>
+              <span id="rubricLevel">المستوى: لؤلؤة سِمْط</span>
+            </div>
+            <div class="rubric-notes">
+              <h4>ملاحظات المعلمة المقترحة</h4>
+              <ul id="rubricNotes"></ul>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2066,6 +2240,10 @@
     const dashWords = document.getElementById("dashWords");
     const dashLastLogin = document.getElementById("dashLastLogin");
     const sectionStats = document.getElementById("sectionStats");
+    const teacherRubric = document.getElementById("teacherRubric");
+    const rubricTotal = document.getElementById("rubricTotal");
+    const rubricLevel = document.getElementById("rubricLevel");
+    const rubricNotes = document.getElementById("rubricNotes");
 
     const lessons = {
       idea: {
@@ -2392,6 +2570,51 @@
       updateAnalytics();
     }
 
+    function getRubricLevel(total) {
+      if (total >= 22) return "صانعة أثر";
+      if (total >= 17) return "لؤلؤة سِمْط";
+      if (total >= 11) return "ناسجة أفكار";
+      return "كاتبة مبتدئة";
+    }
+
+    function updateRubric() {
+      if (!teacherRubric || !rubricTotal || !rubricLevel || !rubricNotes) return;
+      const fields = Array.from(teacherRubric.querySelectorAll("select"));
+      const scores = {};
+      let total = 0;
+
+      fields.forEach(function (field) {
+        const value = Number(field.value);
+        scores[field.dataset.rubric] = value;
+        total += value;
+        localStorage.setItem(`simtRubric:${field.dataset.rubric}`, String(value));
+      });
+
+      const nextLevel = getRubricLevel(total);
+      rubricTotal.textContent = `${total} / 25`;
+      rubricLevel.textContent = `المستوى: ${nextLevel}`;
+      if (level) {
+        level.textContent = nextLevel;
+      }
+
+      const notes = [];
+      if (scores.idea <= 2) notes.push("الفكرة غير محددة بما يكفي؛ على الطالبة أن تكتب جملة واحدة توضّح رأيها أو رسالتها قبل التوسع.");
+      if (scores.structure <= 2) notes.push("تنظيم النص يحتاج ضبطًا؛ يُفضّل تقسيمه إلى مقدمة قصيرة، فقرة فكرة رئيسية، وخاتمة واضحة.");
+      if (scores.cohesion <= 2) notes.push("الانتقال بين الجمل ضعيف؛ تحتاج الطالبة إلى أدوات ربط مثل: إضافة إلى ذلك، ومن جهة أخرى، وبناء على ما سبق.");
+      if (scores.language <= 2) notes.push("توجد حاجة لمراجعة لغوية؛ على الطالبة حذف التكرار، تصحيح الأخطاء، واستبدال الكلمات العامة بمفردات أدق.");
+      if (scores.impact <= 2) notes.push("الأثر غير ظاهر؛ يُفضّل أن تضيف الطالبة مثالًا أو موقفًا أو خاتمة تترك معنى واضحًا لدى القارئ.");
+      if (!notes.length && total < 22) notes.push("النص جيد، والخطوة التالية هي تعميق الفكرة وتقوية الشواهد حتى تنتقل الطالبة إلى مستوى صانعة أثر.");
+      if (total >= 22) notes.push("النص متقدم وواضح الأثر؛ يمكن للطالبة الآن التركيز على صقل الأسلوب ونشر النص في مجلة سِمْط.");
+
+      rubricNotes.innerHTML = notes.map(function (note) {
+        return `<li>${note}</li>`;
+      }).join("");
+
+      if (badgeReview) {
+        badgeReview.classList.toggle("unlocked", total >= 17);
+      }
+    }
+
     function appendToEditor(text) {
       if (!box || !text) return;
       box.value = `${box.value}${box.value.trim() ? "\n\n" : ""}${text}`;
@@ -2547,6 +2770,17 @@
         });
       });
       updateReview();
+    }
+
+    if (teacherRubric) {
+      teacherRubric.querySelectorAll("select").forEach(function (field) {
+        const savedScore = localStorage.getItem(`simtRubric:${field.dataset.rubric}`);
+        if (savedScore) {
+          field.value = savedScore;
+        }
+        field.addEventListener("change", updateRubric);
+      });
+      updateRubric();
     }
 
     if (submitArticle && submissionPreview) {
