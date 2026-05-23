@@ -1933,6 +1933,150 @@
       color: var(--navy);
     }
 
+    .simt-guide {
+      position: fixed;
+      left: 24px;
+      bottom: 24px;
+      z-index: 40;
+      direction: rtl;
+    }
+
+    .guide-toggle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid rgba(200, 157, 92, 0.72);
+      color: #fff;
+      background: var(--navy);
+      box-shadow: 0 18px 42px rgba(15, 26, 43, 0.26);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .guide-toggle svg {
+      width: 30px;
+      height: 30px;
+      color: var(--gold);
+    }
+
+    .guide-panel {
+      width: min(360px, calc(100vw - 34px));
+      max-height: min(620px, calc(100vh - 120px));
+      margin-bottom: 14px;
+      overflow: hidden;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.46);
+      box-shadow: 0 28px 80px rgba(15, 26, 43, 0.24);
+    }
+
+    .guide-panel[hidden] {
+      display: none;
+    }
+
+    .guide-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px;
+      color: #fff;
+      background: var(--navy);
+      border-bottom: 2px solid var(--gold);
+    }
+
+    .guide-head strong {
+      display: block;
+      color: #f5d7a5;
+      font-size: 18px;
+    }
+
+    .guide-head span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .guide-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(200, 157, 92, 0.52);
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .guide-messages {
+      display: grid;
+      gap: 10px;
+      max-height: 285px;
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .guide-message {
+      padding: 11px 13px;
+      color: var(--navy);
+      background: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.25);
+      line-height: 1.75;
+      font-size: 14px;
+    }
+
+    .guide-message.user {
+      color: #fff;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .guide-quick {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 16px 14px;
+    }
+
+    .guide-chip {
+      padding: 7px 10px;
+      border: 1px solid rgba(200, 157, 92, 0.48);
+      color: var(--navy);
+      background: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .guide-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      padding: 14px 16px 16px;
+      border-top: 1px solid rgba(200, 157, 92, 0.28);
+    }
+
+    .guide-form input {
+      min-height: 42px;
+      padding: 9px 11px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fff;
+      color: var(--navy);
+      outline: 0;
+    }
+
+    .guide-form button {
+      min-height: 42px;
+      padding: 8px 13px;
+      border: 1px solid var(--navy);
+      color: #fff;
+      background: var(--navy);
+      cursor: pointer;
+      font-weight: 900;
+    }
+
     .copyright {
       margin-top: 10px;
       font-size: 12px;
@@ -1991,6 +2135,10 @@
       .stat-grid {
         grid-template-columns: 1fr 1fr;
       }
+
+      .guide-panel {
+        width: min(340px, calc(100vw - 28px));
+      }
     }
 
     @media (max-width: 680px) {
@@ -2027,6 +2175,20 @@
 
       .login-row {
         grid-template-columns: 1fr;
+      }
+
+      .simt-guide {
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+      }
+
+      .guide-toggle {
+        margin-right: auto;
+      }
+
+      .guide-panel {
+        width: 100%;
       }
 
       .login-footer {
@@ -2665,6 +2827,37 @@
 
   </main>
 
+  <div class="simt-guide" id="simtGuide">
+    <div class="guide-panel" id="guidePanel" hidden>
+      <div class="guide-head">
+        <div>
+          <strong>مرشدة سِمْط</strong>
+          <span>دليل سريع يشرح الموقع ويقترح لك أين تبدئين</span>
+        </div>
+        <button class="guide-close" id="guideClose" type="button" aria-label="إغلاق المرشدة">×</button>
+      </div>
+      <div class="guide-messages" id="guideMessages" aria-live="polite">
+        <div class="guide-message">مرحبًا، أنا مرشدة سِمْط. اسأليني عن المعسكر، التدريب الفوري، المعجم، محرر الكتابة، أو تسجيل الدخول.</div>
+      </div>
+      <div class="guide-quick">
+        <button class="guide-chip" type="button" data-guide="start">من أين أبدأ؟</button>
+        <button class="guide-chip" type="button" data-guide="training">ما التدريب الفوري؟</button>
+        <button class="guide-chip" type="button" data-guide="dictionary">كيف أستخدم المعجم؟</button>
+        <button class="guide-chip" type="button" data-guide="login">كيف أحفظ شغلي؟</button>
+      </div>
+      <form class="guide-form" id="guideForm">
+        <input id="guideInput" type="text" placeholder="اكتبي سؤالك عن الموقع..." autocomplete="off">
+        <button type="submit">إرسال</button>
+      </form>
+    </div>
+    <button class="guide-toggle" id="guideToggle" type="button" aria-label="فتح مرشدة سِمْط">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 7.5c0-2 1.6-3.5 3.6-3.5h6.8c2 0 3.6 1.5 3.6 3.5v4.8c0 2-1.6 3.5-3.6 3.5h-3.2L8.5 19v-3.2h-.1C6.6 15.8 5 14.3 5 12.3V7.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+        <path d="M8.5 9.4h7M8.5 12.2h4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+    </button>
+  </div>
+
   <footer>
     <div class="shell">
       <strong>سِمْط</strong>
@@ -2777,6 +2970,13 @@
     const evaluateTraining = document.getElementById("evaluateTraining");
     const sendTrainingToEditor = document.getElementById("sendTrainingToEditor");
     const clearTraining = document.getElementById("clearTraining");
+    const guideToggle = document.getElementById("guideToggle");
+    const guidePanel = document.getElementById("guidePanel");
+    const guideClose = document.getElementById("guideClose");
+    const guideMessages = document.getElementById("guideMessages");
+    const guideForm = document.getElementById("guideForm");
+    const guideInput = document.getElementById("guideInput");
+    const guideChips = document.querySelectorAll(".guide-chip");
     let currentTraining = "intro";
     let dashboardStudents = [];
 
@@ -2836,6 +3036,40 @@
       link.download = "simt-students.csv";
       link.click();
       URL.revokeObjectURL(url);
+    }
+
+    const guideReplies = {
+      start: "ابدئي من معسكر سِمْط إذا كنتِ تريدين فهم خطوات المقال، ثم جرّبي التدريب الفوري للمقدمة أو العرض أو الخاتمة. بعدها اكتبي النص الكامل في محرر الكتابة.",
+      training: "التدريب الفوري يعطيك نتيجة مباشرة على جزء واحد من المقال. هو لا يكتب بدل الطالبة، لكنه يوضح هل النص فيه فكرة، ربط، مثال، وأثر.",
+      dictionary: "معجم سِمْط يساعدك في اختيار كلمة أدق. اكتبي الكلمة أو اختاري من الكلمات الجاهزة، ثم اقرئي المعنى والمترادفات والأضداد والمثال.",
+      login: "حتى ينحفظ شغلك، اكتبي اسم الطالبة والبريد وكلمة المرور ثم اضغطي دخول / تسجيل. إذا نسيتي كلمة المرور اضغطي نسيت كلمة المرور.",
+      teacher: "لوحة المعلمة مخصصة للمعلمة فقط. تدخل بحسابها ورمز المعلمة، ثم تشاهد الطالبات وآخر تقييم وتدريب فوري.",
+      editor: "محرر الكتابة هو مساحة كتابة المقال الكامل. يحسب الكلمات والحروف، ويعرض مستوى الطالبة بعد تقييم المعلمة.",
+      camp: "معسكر سِمْط يقسم مهارة الكتابة إلى خطوات: توليد الأفكار، المقدمة، الفقرة، والتحرير النهائي.",
+      magazine: "مجلة سِمْط مساحة لتجهيز بطاقة نشر النصوص المميزة بعد مراجعتها."
+    };
+
+    function guideAnswer(question) {
+      const text = String(question || "").trim();
+      if (!text) return "اكتبي سؤالك أولًا، وأنا أوجهك للقسم المناسب في الموقع.";
+      if (/ابد|بدا|وين|من أين|شلون|كيف/.test(text) && /بدأ|ابدا|أبدأ|الموقع/.test(text)) return guideReplies.start;
+      if (/تدريب|فوري|مقدمة|عرض|خاتمة|نتيجة/.test(text)) return guideReplies.training;
+      if (/معجم|كلمة|معنى|مرادف|مترادف|تضاد|ضد/.test(text)) return guideReplies.dictionary;
+      if (/دخول|تسجيل|حفظ|باس|مرور|نسيت|حساب/.test(text)) return guideReplies.login;
+      if (/معلمة|لوحة|تقييم|درجات|بطاقة/.test(text)) return guideReplies.teacher;
+      if (/محرر|كتابة|مسودة|مقال/.test(text)) return guideReplies.editor;
+      if (/معسكر|درس|خطوات|أكاديمية/.test(text)) return guideReplies.camp;
+      if (/مجلة|نشر|إبداع/.test(text)) return guideReplies.magazine;
+      return "سؤال جميل. في سِمْط ركزي على ثلاث مناطق: معسكر سِمْط للتعلم، التدريب الفوري للممارسة، ومحرر الكتابة لصياغة المقال الكامل. اكتبي لي كلمة مثل: المعجم، التدريب، الدخول، أو المعلمة لأشرحها بدقة.";
+    }
+
+    function addGuideMessage(text, type) {
+      if (!guideMessages) return;
+      const item = document.createElement("div");
+      item.className = `guide-message${type === "user" ? " user" : ""}`;
+      item.textContent = text;
+      guideMessages.appendChild(item);
+      guideMessages.scrollTop = guideMessages.scrollHeight;
     }
 
     const trainingPaths = {
@@ -3678,6 +3912,38 @@
 
     if (exportDashboard) {
       exportDashboard.addEventListener("click", exportDashboardCsv);
+    }
+
+    if (guideToggle && guidePanel) {
+      guideToggle.addEventListener("click", function () {
+        guidePanel.hidden = !guidePanel.hidden;
+        if (!guidePanel.hidden && guideInput) guideInput.focus();
+      });
+    }
+
+    if (guideClose && guidePanel) {
+      guideClose.addEventListener("click", function () {
+        guidePanel.hidden = true;
+      });
+    }
+
+    guideChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        const key = chip.dataset.guide;
+        addGuideMessage(chip.textContent.trim(), "user");
+        addGuideMessage(guideReplies[key] || guideReplies.start, "bot");
+      });
+    });
+
+    if (guideForm && guideInput) {
+      guideForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const question = guideInput.value.trim();
+        if (!question) return;
+        addGuideMessage(question, "user");
+        addGuideMessage(guideAnswer(question), "bot");
+        guideInput.value = "";
+      });
     }
 
     window.addEventListener("simtDashboardStatus", function (event) {
