@@ -127,7 +127,11 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     const total = rubricTotal(scores);
     words.textContent = totalWords;
     chars.textContent = text.trim().length;
-    level.textContent = getRubricLevel(total);
+    if (window.SIMT_HAS_TEACHER_EVALUATION || isTeacherUnlocked()) {
+      level.textContent = getRubricLevel(total);
+    } else {
+      level.textContent = "بانتظار تقييم المعلمة";
+    }
   }
 
   function resetStudentWorkspace() {
@@ -184,6 +188,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         }
       }
       if (rubricSelects.length) {
+        const hasSavedRubric = Boolean(work && work.rubric);
         rubricSelects.forEach(function (field) {
           const savedValue = work && work.rubric ? work.rubric[field.dataset.rubric] : "";
           if (savedValue) {
@@ -194,8 +199,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
             localStorage.removeItem(`simtRubric:${field.dataset.rubric}`);
           }
         });
+        window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
       }
-      rubricSelects[0]?.dispatchEvent(new Event("change", { bubbles: true }));
       writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
       refreshBasicEditorStats();
     } finally {

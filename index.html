@@ -2037,12 +2037,12 @@
           <div class="rubric-output">
             <div class="rubric-score-card">
               الدرجة الكلية
-              <strong id="rubricTotal">15 / 25</strong>
-              <span id="rubricLevel">المستوى: لؤلؤة سِمْط</span>
+              <strong id="rubricTotal">لم يتم التقييم</strong>
+              <span id="rubricLevel">بانتظار تقييم المعلمة</span>
             </div>
             <div class="rubric-notes">
               <h4>ملاحظات المعلمة المقترحة</h4>
-              <ul id="rubricNotes"></ul>
+              <ul id="rubricNotes"><li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li></ul>
             </div>
           </div>
         </div>
@@ -2650,8 +2650,20 @@
       }
     }
 
+    function showRubricPending() {
+      if (rubricTotal) rubricTotal.textContent = "لم يتم التقييم";
+      if (rubricLevel) rubricLevel.textContent = "بانتظار تقييم المعلمة";
+      if (rubricNotes) rubricNotes.innerHTML = "<li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li>";
+      if (level) level.textContent = "بانتظار تقييم المعلمة";
+      if (badgeReview) badgeReview.classList.remove("unlocked");
+    }
+
     function updateRubric() {
       if (!teacherRubric || !rubricTotal || !rubricLevel || !rubricNotes) return;
+      if (!window.SIMT_TEACHER_UNLOCKED && !window.SIMT_HAS_TEACHER_EVALUATION) {
+        showRubricPending();
+        return;
+      }
       const fields = Array.from(teacherRubric.querySelectorAll("select"));
       const scores = {};
       let total = 0;
@@ -2856,8 +2868,22 @@
         field.addEventListener("change", updateRubric);
       });
       setTeacherRubricMode(sessionStorage.getItem("simtTeacherUnlocked") === "true");
-      updateRubric();
+      if (window.SIMT_TEACHER_UNLOCKED) {
+        updateRubric();
+      } else {
+        showRubricPending();
+      }
     }
+
+    window.addEventListener("simtRubricPending", function () {
+      window.SIMT_HAS_TEACHER_EVALUATION = false;
+      showRubricPending();
+    });
+
+    window.addEventListener("simtRubricLoaded", function () {
+      window.SIMT_HAS_TEACHER_EVALUATION = true;
+      updateRubric();
+    });
 
     if (unlockTeacherRubric) {
       unlockTeacherRubric.addEventListener("click", function () {
@@ -3006,6 +3032,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=3"></script>
+  <script type="module" src="simt-firebase.js?v=4"></script>
 </body>
 </html>
