@@ -142,7 +142,6 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     localStorage.removeItem("simtDraft");
     rubricSelects.forEach(function (field) {
       field.value = "3";
-      localStorage.removeItem(`simtRubric:${field.dataset.rubric}`);
     });
     rubricSelects[0]?.dispatchEvent(new Event("change", { bubbles: true }));
     writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
@@ -195,10 +194,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
           const savedValue = work && work.rubric ? work.rubric[field.dataset.rubric] : "";
           if (savedValue) {
             field.value = String(savedValue);
-            localStorage.setItem(`simtRubric:${field.dataset.rubric}`, String(savedValue));
           } else {
             field.value = "3";
-            localStorage.removeItem(`simtRubric:${field.dataset.rubric}`);
           }
         });
         window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
