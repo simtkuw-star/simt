@@ -114,6 +114,10 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }, 0);
   }
 
+  function isTeacherUnlocked() {
+    return window.SIMT_TEACHER_UNLOCKED === true;
+  }
+
   function refreshBasicEditorStats() {
     if (!writingBox || !words || !chars || !level) return;
     const text = writingBox.value || "";
@@ -133,14 +137,20 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   async function saveStudentWork() {
     if (!activeUser || isLoadingStudentWork) return;
-    const scores = collectRubricScores();
-    await update(ref(database, `students/${activeUser.uid}/work`), {
+    const payload = {
       draft: writingBox ? writingBox.value : "",
-      rubric: scores,
-      rubricTotal: rubricTotal(scores),
-      rubricLevel: getRubricLevel(rubricTotal(scores)),
       updatedAt: serverTimestamp()
-    });
+    };
+
+    if (isTeacherUnlocked()) {
+      const scores = collectRubricScores();
+      payload.rubric = scores;
+      payload.rubricTotal = rubricTotal(scores);
+      payload.rubricLevel = getRubricLevel(rubricTotal(scores));
+      payload.evaluatedAt = serverTimestamp();
+    }
+
+    await update(ref(database, `students/${activeUser.uid}/work`), payload);
   }
 
   async function loadStudentWork(user) {
@@ -270,6 +280,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   rubricSelects.forEach(function (field) {
     field.addEventListener("change", saveStudentWorkSoon);
   });
+  window.addEventListener("simtTeacherRubricUpdated", saveStudentWorkSoon);
 } else {
   showAuthMessage("Firebase غير مربوط بعد. الموقع يعمل حاليًا بوضع تجريبي محلي.");
 }

@@ -1074,6 +1074,43 @@
       margin-bottom: 18px;
     }
 
+    .teacher-gate {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.3);
+    }
+
+    .teacher-gate input {
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fff;
+      color: var(--navy);
+      outline: 0;
+      font-weight: 800;
+    }
+
+    .teacher-gate-message {
+      grid-column: 1 / -1;
+      min-height: 20px;
+      color: #6a5540;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .teacher-rubric.teacher-locked .rubric-grid {
+      display: none;
+    }
+
+    .teacher-rubric.teacher-locked .rubric-output {
+      margin-top: 0;
+    }
+
     .rubric-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1654,6 +1691,10 @@
         width: 100%;
       }
 
+      .teacher-gate {
+        grid-template-columns: 1fr;
+      }
+
       .forgot-link,
       .login-message {
         text-align: center;
@@ -1924,9 +1965,16 @@
           </div>
         </div>
 
-        <div class="teacher-rubric">
+        <div class="teacher-rubric teacher-locked" id="teacherRubricCard">
           <h3>بطاقة تقييم النص للمعلمة</h3>
-          <p>تُستخدم هذه البطاقة لتحديد مستوى الطالبة بناءً على جودة النص، لا عدد الكلمات فقط. اختاري درجة من 1 إلى 5 لكل معيار، وستظهر الملاحظات والخطوة التالية تلقائيًا.</p>
+          <p>تُستخدم هذه البطاقة لتحديد مستوى الطالبة بناءً على جودة النص، لا عدد الكلمات فقط. الطالبة ترى النتيجة والملاحظات فقط، أما إدخال الدرجات فيفتح برمز المعلمة.</p>
+
+          <div class="teacher-gate">
+            <input id="teacherCode" type="password" placeholder="رمز المعلمة" autocomplete="off">
+            <button class="mini-btn primary" id="unlockTeacherRubric">فتح التقييم</button>
+            <button class="mini-btn" id="lockTeacherRubric" hidden>قفل التقييم</button>
+            <div class="teacher-gate-message" id="teacherGateMessage">بطاقة الدرجات مقفولة. تظهر للطالبة النتيجة والملاحظات فقط.</div>
+          </div>
 
           <div class="rubric-grid" id="teacherRubric">
             <label class="rubric-field">
@@ -2241,6 +2289,11 @@
     const dashLastLogin = document.getElementById("dashLastLogin");
     const sectionStats = document.getElementById("sectionStats");
     const teacherRubric = document.getElementById("teacherRubric");
+    const teacherRubricCard = document.getElementById("teacherRubricCard");
+    const teacherCode = document.getElementById("teacherCode");
+    const unlockTeacherRubric = document.getElementById("unlockTeacherRubric");
+    const lockTeacherRubric = document.getElementById("lockTeacherRubric");
+    const teacherGateMessage = document.getElementById("teacherGateMessage");
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
     const rubricNotes = document.getElementById("rubricNotes");
@@ -2577,6 +2630,26 @@
       return "كاتبة مبتدئة";
     }
 
+    function setTeacherRubricMode(unlocked) {
+      window.SIMT_TEACHER_UNLOCKED = unlocked;
+      if (!teacherRubricCard || !teacherRubric) return;
+      teacherRubricCard.classList.toggle("teacher-locked", !unlocked);
+      teacherRubric.querySelectorAll("select").forEach(function (field) {
+        field.disabled = !unlocked;
+      });
+      if (unlockTeacherRubric) unlockTeacherRubric.hidden = unlocked;
+      if (lockTeacherRubric) lockTeacherRubric.hidden = !unlocked;
+      if (teacherCode) {
+        teacherCode.hidden = unlocked;
+        if (unlocked) teacherCode.value = "";
+      }
+      if (teacherGateMessage) {
+        teacherGateMessage.textContent = unlocked
+          ? "وضع المعلمة مفتوح الآن. أي تغيير في الدرجات سيظهر للطالبة."
+          : "بطاقة الدرجات مقفولة. تظهر للطالبة النتيجة والملاحظات فقط.";
+      }
+    }
+
     function updateRubric() {
       if (!teacherRubric || !rubricTotal || !rubricLevel || !rubricNotes) return;
       const fields = Array.from(teacherRubric.querySelectorAll("select"));
@@ -2613,6 +2686,8 @@
       if (badgeReview) {
         badgeReview.classList.toggle("unlocked", total >= 17);
       }
+
+      window.dispatchEvent(new CustomEvent("simtTeacherRubricUpdated"));
     }
 
     function appendToEditor(text) {
@@ -2780,7 +2855,27 @@
         }
         field.addEventListener("change", updateRubric);
       });
+      setTeacherRubricMode(sessionStorage.getItem("simtTeacherUnlocked") === "true");
       updateRubric();
+    }
+
+    if (unlockTeacherRubric) {
+      unlockTeacherRubric.addEventListener("click", function () {
+        const code = teacherCode ? teacherCode.value.trim() : "";
+        if (code !== "SIMT-TEACHER") {
+          if (teacherGateMessage) teacherGateMessage.textContent = "رمز المعلمة غير صحيح.";
+          return;
+        }
+        sessionStorage.setItem("simtTeacherUnlocked", "true");
+        setTeacherRubricMode(true);
+      });
+    }
+
+    if (lockTeacherRubric) {
+      lockTeacherRubric.addEventListener("click", function () {
+        sessionStorage.removeItem("simtTeacherUnlocked");
+        setTeacherRubricMode(false);
+      });
     }
 
     if (submitArticle && submissionPreview) {
