@@ -1103,6 +1103,17 @@
       font-weight: 800;
     }
 
+    .teacher-student-line {
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: rgba(15, 26, 43, 0.06);
+      color: var(--navy);
+      border: 1px solid rgba(200, 157, 92, 0.24);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
     .teacher-rubric.teacher-locked .rubric-grid {
       display: none;
     }
@@ -1150,6 +1161,20 @@
       grid-template-columns: 0.8fr 1.2fr;
       gap: 14px;
       margin-top: 16px;
+    }
+
+    .rubric-save-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .rubric-save-status {
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .rubric-score-card,
@@ -1976,6 +2001,8 @@
             <div class="teacher-gate-message" id="teacherGateMessage">بطاقة الدرجات مقفولة. تظهر للطالبة النتيجة والملاحظات فقط.</div>
           </div>
 
+          <div class="teacher-student-line" id="currentStudentLine">الحساب الحالي: لم يتم تسجيل الدخول بعد.</div>
+
           <div class="rubric-grid" id="teacherRubric">
             <label class="rubric-field">
               وضوح الفكرة
@@ -2044,6 +2071,11 @@
               <h4>ملاحظات المعلمة المقترحة</h4>
               <ul id="rubricNotes"><li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li></ul>
             </div>
+          </div>
+
+          <div class="rubric-save-row">
+            <button class="mini-btn primary" id="saveTeacherRubric" hidden>حفظ تقييم هذه الطالبة</button>
+            <span class="rubric-save-status" id="rubricSaveStatus"></span>
           </div>
         </div>
       </div>
@@ -2294,6 +2326,9 @@
     const unlockTeacherRubric = document.getElementById("unlockTeacherRubric");
     const lockTeacherRubric = document.getElementById("lockTeacherRubric");
     const teacherGateMessage = document.getElementById("teacherGateMessage");
+    const saveTeacherRubric = document.getElementById("saveTeacherRubric");
+    const rubricSaveStatus = document.getElementById("rubricSaveStatus");
+    const currentStudentLine = document.getElementById("currentStudentLine");
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
     const rubricNotes = document.getElementById("rubricNotes");
@@ -2639,6 +2674,8 @@
       });
       if (unlockTeacherRubric) unlockTeacherRubric.hidden = unlocked;
       if (lockTeacherRubric) lockTeacherRubric.hidden = !unlocked;
+      if (saveTeacherRubric) saveTeacherRubric.hidden = !unlocked;
+      if (rubricSaveStatus && !unlocked) rubricSaveStatus.textContent = "";
       if (teacherCode) {
         teacherCode.hidden = unlocked;
         if (unlocked) teacherCode.value = "";
@@ -2887,6 +2924,24 @@
       showRubricPending();
     });
 
+    window.addEventListener("simtStudentContext", function (event) {
+      if (!currentStudentLine) return;
+      const detail = event.detail || {};
+      currentStudentLine.textContent = detail.email
+        ? `الحساب الحالي: ${detail.email}`
+        : "الحساب الحالي: لم يتم تسجيل الدخول بعد.";
+    });
+
+    window.addEventListener("simtRubricSaveStatus", function (event) {
+      if (rubricSaveStatus) rubricSaveStatus.textContent = (event.detail && event.detail.message) || "";
+    });
+
+    if (saveTeacherRubric) {
+      saveTeacherRubric.addEventListener("click", function () {
+        window.dispatchEvent(new CustomEvent("simtSaveTeacherRubric"));
+      });
+    }
+
     if (unlockTeacherRubric) {
       unlockTeacherRubric.addEventListener("click", function () {
         const code = teacherCode ? teacherCode.value.trim() : "";
@@ -3034,6 +3089,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=6"></script>
+  <script type="module" src="simt-firebase.js?v=7"></script>
 </body>
 </html>

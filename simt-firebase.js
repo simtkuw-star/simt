@@ -71,7 +71,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   async function saveStudentProfile(user, displayName) {
     const name = displayName || user.displayName || "طالبة سِمْط";
-    await set(ref(database, `students/${user.uid}`), {
+    await update(ref(database, `students/${user.uid}/profile`), {
       name,
       email: user.email,
       lastLoginAt: serverTimestamp(),
@@ -170,6 +170,11 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
 
     await update(ref(database, `students/${activeUser.uid}/work`), payload);
+    if (isTeacherUnlocked()) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: `تم حفظ تقييم: ${activeUser.email}` }
+      }));
+    }
   }
 
   async function loadStudentWork(user) {
@@ -302,6 +307,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       activeUser = user;
       activeUid = user.uid;
+      window.dispatchEvent(new CustomEvent("simtStudentContext", {
+        detail: { uid: user.uid, email: user.email, name: user.displayName || "" }
+      }));
       localStorage.setItem("simtLoggedIn", "true");
       localStorage.setItem("simtLoggedInName", user.displayName || user.email || "طالبة سِمْط");
       loadStudentWork(user);
@@ -309,6 +317,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       activeUser = null;
       activeUid = "";
       hasLoadedStudentWork = false;
+      window.dispatchEvent(new CustomEvent("simtStudentContext", { detail: {} }));
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       resetStudentWorkspace();
     }
@@ -319,6 +328,21 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     field.addEventListener("change", saveStudentWorkSoon);
   });
   window.addEventListener("simtTeacherRubricUpdated", saveStudentWorkSoon);
+  window.addEventListener("simtSaveTeacherRubric", async function () {
+    if (!activeUser) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: "سجلي دخول الطالبة أولًا." }
+      }));
+      return;
+    }
+    if (!isTeacherUnlocked()) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: "افتحي التقييم برمز المعلمة أولًا." }
+      }));
+      return;
+    }
+    await saveStudentWork();
+  });
 } else {
   showAuthMessage("Firebase غير مربوط بعد. الموقع يعمل حاليًا بوضع تجريبي محلي.");
 }
