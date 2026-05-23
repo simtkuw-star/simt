@@ -64,6 +64,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   const chars = document.getElementById("chars");
   const level = document.getElementById("level");
   let activeUser = null;
+  let activeUid = "";
   let isLoadingStudentWork = false;
   let saveTimer = null;
 
@@ -129,6 +130,20 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     level.textContent = getRubricLevel(total);
   }
 
+  function resetStudentWorkspace() {
+    if (writingBox) {
+      writingBox.value = "";
+    }
+    localStorage.removeItem("simtDraft");
+    rubricSelects.forEach(function (field) {
+      field.value = "3";
+      localStorage.removeItem(`simtRubric:${field.dataset.rubric}`);
+    });
+    rubricSelects[0]?.dispatchEvent(new Event("change", { bubbles: true }));
+    writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
+    refreshBasicEditorStats();
+  }
+
   function saveStudentWorkSoon() {
     if (!activeUser || isLoadingStudentWork) return;
     window.clearTimeout(saveTimer);
@@ -156,6 +171,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   async function loadStudentWork(user) {
     isLoadingStudentWork = true;
     try {
+      resetStudentWorkspace();
       const snapshot = await get(ref(database, `students/${user.uid}/work`));
       const work = snapshot.val();
       if (writingBox) {
@@ -275,16 +291,18 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   onAuthStateChanged(auth, function (user) {
     if (user) {
+      if (activeUid && activeUid !== user.uid) {
+        resetStudentWorkspace();
+      }
       activeUser = user;
+      activeUid = user.uid;
       localStorage.setItem("simtLoggedIn", "true");
       localStorage.setItem("simtLoggedInName", user.displayName || user.email || "طالبة سِمْط");
       loadStudentWork(user);
     } else {
       activeUser = null;
-      if (writingBox) {
-        writingBox.value = "";
-      }
-      localStorage.removeItem("simtDraft");
+      activeUid = "";
+      resetStudentWorkspace();
     }
   });
 
