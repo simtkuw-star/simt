@@ -287,10 +287,11 @@
 
     h1 {
       max-width: 680px;
-      color: var(--navy);
-      font-size: clamp(48px, 7vw, 86px);
+      color: #fff7ea;
+      font-size: clamp(46px, 6.2vw, 78px);
       line-height: 1.12;
       letter-spacing: 0;
+      text-shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
     }
 
     h1 span {
@@ -298,11 +299,11 @@
     }
 
     .hero-copy {
-      max-width: 650px;
-      margin: 26px 0 34px;
-      color: #404650;
-      font-size: clamp(17px, 2vw, 21px);
-      line-height: 2.05;
+      max-width: 610px;
+      margin: 24px 0 30px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: clamp(16px, 1.6vw, 19px);
+      line-height: 2;
     }
 
     .actions {
@@ -334,18 +335,19 @@
     }
 
     .btn-secondary {
-      color: var(--navy);
-      background: rgba(255, 255, 255, 0.55);
+      color: #fff7ea;
+      background: rgba(255, 255, 255, 0.08);
       border-color: var(--gold);
     }
 
     .hero-login {
-      margin-top: 16px;
-      width: min(650px, 100%);
-      padding: 18px;
-      background: rgba(255, 255, 255, 0.62);
-      border: 1px solid rgba(200, 157, 92, 0.28);
-      box-shadow: 0 18px 42px rgba(15, 26, 43, 0.08);
+      margin-top: 20px;
+      width: min(620px, 100%);
+      padding: 16px;
+      background: rgba(255, 250, 242, 0.94);
+      border: 1px solid rgba(200, 157, 92, 0.62);
+      box-shadow: 0 22px 54px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
     }
 
     .login-row {
@@ -356,39 +358,48 @@
     }
 
     .login-row input {
-      min-height: 42px;
-      padding: 9px 11px;
-      border: 1px solid rgba(200, 157, 92, 0.42);
-      background: #fffaf2;
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.54);
+      background: #ffffff;
       color: var(--navy);
       outline: 0;
       font-size: 13px;
+      font-weight: 700;
     }
 
-    .login-row .mini-btn {
-      grid-column: 1 / -1;
-      justify-self: start;
+    .login-footer {
+      display: grid;
+      grid-template-columns: auto auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .login-footer .mini-btn {
       min-width: 150px;
-      min-height: 42px;
+      min-height: 44px;
+      white-space: nowrap;
     }
 
     .forgot-link {
-      margin-top: 8px;
       padding: 0;
       border: 0;
       background: transparent;
-      color: var(--greige);
+      color: #5f5346;
       cursor: pointer;
       font-size: 12px;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .login-message {
       min-height: 22px;
-      margin-top: 8px;
-      color: var(--gold);
+      color: var(--navy);
       font-size: 13px;
       font-weight: 800;
+      text-align: left;
     }
 
     .brand-stage {
@@ -1456,6 +1467,20 @@
           linear-gradient(180deg, rgba(242, 237, 228, 0.98) 0%, rgba(255, 255, 255, 0.92) 48%, rgba(15, 26, 43, 0.98) 48%, rgba(15, 26, 43, 0.98) 100%);
       }
 
+      h1 {
+        color: var(--navy);
+        text-shadow: none;
+      }
+
+      .hero-copy {
+        color: #404650;
+      }
+
+      .btn-secondary {
+        color: var(--navy);
+        background: rgba(255, 255, 255, 0.55);
+      }
+
       .hero,
       .concept-grid,
       .meaning-stack,
@@ -1519,6 +1544,20 @@
 
       .login-row {
         grid-template-columns: 1fr;
+      }
+
+      .login-footer {
+        grid-template-columns: 1fr;
+        justify-items: stretch;
+      }
+
+      .login-footer .mini-btn {
+        width: 100%;
+      }
+
+      .forgot-link,
+      .login-message {
+        text-align: center;
       }
 
       .brand-card {
@@ -1591,10 +1630,12 @@
             <input id="studentDisplayName" type="text" autocomplete="name" placeholder="اسم الطالبة">
             <input id="loginName" type="email" autocomplete="email" placeholder="البريد الإلكتروني">
             <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور">
-            <button class="mini-btn primary" id="loginButton">دخول</button>
           </div>
-          <button class="forgot-link" id="forgotButton">نسيت كلمة المرور؟</button>
-          <div class="login-message" id="authMessage" aria-live="polite"></div>
+          <div class="login-footer">
+            <button class="mini-btn primary" id="loginButton">دخول / تسجيل</button>
+            <button class="forgot-link" id="forgotButton">نسيت كلمة المرور؟</button>
+            <div class="login-message" id="authMessage" aria-live="polite"></div>
+          </div>
         </div>
       </div>
 
