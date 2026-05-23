@@ -25,7 +25,7 @@ function normalizeEmail(value) {
 
 function markFirebaseMode() {
   if (loginButton) {
-    loginButton.textContent = "دخول / تسجيل";
+    loginButton.textContent = "دخول  /  تسجيل";
   }
   if (forgotButton) {
     forgotButton.textContent = "نسيت كلمة المرور؟";
@@ -40,7 +40,7 @@ function setLoggedInUi(user) {
 
 function setLoggedOutUi() {
   if (logoutButton) logoutButton.hidden = true;
-  if (loginButton) loginButton.textContent = "دخول / تسجيل";
+  if (loginButton) loginButton.textContent = "دخول  /  تسجيل";
   if (accountStatus) accountStatus.textContent = "لم يتم تسجيل الدخول بعد.";
 }
 
