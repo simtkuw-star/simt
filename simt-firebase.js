@@ -66,6 +66,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let activeUser = null;
   let activeUid = "";
   let isLoadingStudentWork = false;
+  let hasLoadedStudentWork = false;
   let saveTimer = null;
 
   async function saveStudentProfile(user, displayName) {
@@ -149,13 +150,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   }
 
   function saveStudentWorkSoon() {
-    if (!activeUser || isLoadingStudentWork) return;
+    if (!activeUser || isLoadingStudentWork || !hasLoadedStudentWork) return;
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(saveStudentWork, 700);
   }
 
   async function saveStudentWork() {
-    if (!activeUser || isLoadingStudentWork) return;
+    if (!activeUser || isLoadingStudentWork || !hasLoadedStudentWork) return;
     const payload = {
       draft: writingBox ? writingBox.value : "",
       updatedAt: serverTimestamp()
@@ -174,6 +175,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   async function loadStudentWork(user) {
     isLoadingStudentWork = true;
+    hasLoadedStudentWork = false;
     try {
       resetStudentWorkspace();
       const snapshot = await get(ref(database, `students/${user.uid}/work`));
@@ -204,6 +206,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
       refreshBasicEditorStats();
     } finally {
+      hasLoadedStudentWork = true;
       isLoadingStudentWork = false;
     }
   }
@@ -299,6 +302,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       if (activeUid && activeUid !== user.uid) {
         resetStudentWorkspace();
       }
+      window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       activeUser = user;
       activeUid = user.uid;
       localStorage.setItem("simtLoggedIn", "true");
@@ -307,6 +311,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     } else {
       activeUser = null;
       activeUid = "";
+      hasLoadedStudentWork = false;
+      window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       resetStudentWorkspace();
     }
   });

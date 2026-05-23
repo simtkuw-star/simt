@@ -2885,6 +2885,12 @@
       updateRubric();
     });
 
+    window.addEventListener("simtTeacherForceLock", function () {
+      sessionStorage.removeItem("simtTeacherUnlocked");
+      setTeacherRubricMode(false);
+      showRubricPending();
+    });
+
     if (unlockTeacherRubric) {
       unlockTeacherRubric.addEventListener("click", function () {
         const code = teacherCode ? teacherCode.value.trim() : "";
@@ -3032,6 +3038,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=4"></script>
+  <script type="module" src="simt-firebase.js?v=5"></script>
 </body>
 </html>
