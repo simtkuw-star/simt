@@ -70,7 +70,11 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let saveTimer = null;
 
   async function saveStudentProfile(user, displayName) {
-    const name = displayName || user.displayName || "طالبة سِمْط";
+    const emailName = user.email ? user.email.split("@")[0] : "";
+    const name = displayName || user.displayName || emailName || "طالبة سِمْط";
+    if (displayName && user.displayName !== displayName) {
+      await updateProfile(user, { displayName });
+    }
     await update(ref(database, `students/${user.uid}/profile`), {
       name,
       email: user.email,
@@ -238,11 +242,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       const students = Object.entries(data).map(function ([uid, item]) {
         const profile = item.profile || {};
         const work = item.work || {};
+        const fallbackEmail = profile.email || item.email || "-";
+        const fallbackName = fallbackEmail && fallbackEmail !== "-" ? fallbackEmail.split("@")[0] : "طالبة بدون اسم";
         const score = typeof work.rubricTotal === "number" ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
         return {
           uid,
-          name: profile.name || "طالبة سِمْط",
-          email: profile.email || "-",
+          name: profile.name || item.name || fallbackName,
+          email: fallbackEmail,
           level: work.rubricLevel || "بانتظار تقييم المعلمة",
           score,
           updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt)
