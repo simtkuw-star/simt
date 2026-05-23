@@ -45,6 +45,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     updateProfile
   } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js");
   const {
+    get,
     getDatabase,
     increment,
     ref,
@@ -57,6 +58,14 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   const auth = getAuth(app);
   auth.languageCode = "ar";
   const database = getDatabase(app);
+  const writingBox = document.getElementById("writingBox");
+  const rubricSelects = Array.from(document.querySelectorAll("#teacherRubric select"));
+  const words = document.getElementById("words");
+  const chars = document.getElementById("chars");
+  const level = document.getElementById("level");
+  let activeUser = null;
+  let isLoadingStudentWork = false;
+  let saveTimer = null;
 
   async function saveStudentProfile(user, displayName) {
     const name = displayName || user.displayName || "طالبة سِمْط";
@@ -78,6 +87,86 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         at: serverTimestamp()
       }
     });
+  }
+
+  function countWords(text) {
+    const trimmed = text.trim();
+    return trimmed === "" ? 0 : trimmed.split(/\s+/).length;
+  }
+
+  function getRubricLevel(total) {
+    if (total >= 22) return "صانعة أثر";
+    if (total >= 17) return "لؤلؤة سِمْط";
+    if (total >= 11) return "ناسجة أفكار";
+    return "كاتبة مبتدئة";
+  }
+
+  function collectRubricScores() {
+    return rubricSelects.reduce(function (scores, field) {
+      scores[field.dataset.rubric] = Number(field.value || 0);
+      return scores;
+    }, {});
+  }
+
+  function rubricTotal(scores) {
+    return Object.values(scores).reduce(function (sum, value) {
+      return sum + Number(value || 0);
+    }, 0);
+  }
+
+  function refreshBasicEditorStats() {
+    if (!writingBox || !words || !chars || !level) return;
+    const text = writingBox.value || "";
+    const totalWords = countWords(text);
+    const scores = collectRubricScores();
+    const total = rubricTotal(scores);
+    words.textContent = totalWords;
+    chars.textContent = text.trim().length;
+    level.textContent = getRubricLevel(total);
+  }
+
+  function saveStudentWorkSoon() {
+    if (!activeUser || isLoadingStudentWork) return;
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(saveStudentWork, 700);
+  }
+
+  async function saveStudentWork() {
+    if (!activeUser || isLoadingStudentWork) return;
+    const scores = collectRubricScores();
+    await update(ref(database, `students/${activeUser.uid}/work`), {
+      draft: writingBox ? writingBox.value : "",
+      rubric: scores,
+      rubricTotal: rubricTotal(scores),
+      rubricLevel: getRubricLevel(rubricTotal(scores)),
+      updatedAt: serverTimestamp()
+    });
+  }
+
+  async function loadStudentWork(user) {
+    isLoadingStudentWork = true;
+    try {
+      const snapshot = await get(ref(database, `students/${user.uid}/work`));
+      const work = snapshot.val();
+      if (work && writingBox && typeof work.draft === "string") {
+        writingBox.value = work.draft;
+        localStorage.setItem("simtDraft", work.draft);
+      }
+      if (work && work.rubric) {
+        rubricSelects.forEach(function (field) {
+          const savedValue = work.rubric[field.dataset.rubric];
+          if (savedValue) {
+            field.value = String(savedValue);
+            localStorage.setItem(`simtRubric:${field.dataset.rubric}`, String(savedValue));
+          }
+        });
+      }
+      rubricSelects[0]?.dispatchEvent(new Event("change", { bubbles: true }));
+      writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
+      refreshBasicEditorStats();
+    } finally {
+      isLoadingStudentWork = false;
+    }
   }
 
   async function handleFirebaseLogin(event) {
@@ -168,9 +257,18 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   onAuthStateChanged(auth, function (user) {
     if (user) {
+      activeUser = user;
       localStorage.setItem("simtLoggedIn", "true");
       localStorage.setItem("simtLoggedInName", user.displayName || user.email || "طالبة سِمْط");
+      loadStudentWork(user);
+    } else {
+      activeUser = null;
     }
+  });
+
+  writingBox?.addEventListener("input", saveStudentWorkSoon);
+  rubricSelects.forEach(function (field) {
+    field.addEventListener("change", saveStudentWorkSoon);
   });
 } else {
   showAuthMessage("Firebase غير مربوط بعد. الموقع يعمل حاليًا بوضع تجريبي محلي.");
