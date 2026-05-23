@@ -158,16 +158,24 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     try {
       const snapshot = await get(ref(database, `students/${user.uid}/work`));
       const work = snapshot.val();
-      if (work && writingBox && typeof work.draft === "string") {
-        writingBox.value = work.draft;
-        localStorage.setItem("simtDraft", work.draft);
+      if (writingBox) {
+        if (work && typeof work.draft === "string") {
+          writingBox.value = work.draft;
+          localStorage.setItem("simtDraft", work.draft);
+        } else {
+          writingBox.value = "";
+          localStorage.removeItem("simtDraft");
+        }
       }
-      if (work && work.rubric) {
+      if (rubricSelects.length) {
         rubricSelects.forEach(function (field) {
-          const savedValue = work.rubric[field.dataset.rubric];
+          const savedValue = work && work.rubric ? work.rubric[field.dataset.rubric] : "";
           if (savedValue) {
             field.value = String(savedValue);
             localStorage.setItem(`simtRubric:${field.dataset.rubric}`, String(savedValue));
+          } else {
+            field.value = "3";
+            localStorage.removeItem(`simtRubric:${field.dataset.rubric}`);
           }
         });
       }
@@ -273,6 +281,10 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       loadStudentWork(user);
     } else {
       activeUser = null;
+      if (writingBox) {
+        writingBox.value = "";
+      }
+      localStorage.removeItem("simtDraft");
     }
   });
 
