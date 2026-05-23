@@ -341,8 +341,8 @@
 
     .hero-login {
       margin-top: 16px;
-      width: min(520px, 100%);
-      padding: 16px;
+      width: min(650px, 100%);
+      padding: 18px;
       background: rgba(255, 255, 255, 0.62);
       border: 1px solid rgba(200, 157, 92, 0.28);
       box-shadow: 0 18px 42px rgba(15, 26, 43, 0.08);
@@ -350,8 +350,8 @@
 
     .login-row {
       display: grid;
-      grid-template-columns: 0.9fr 1.1fr 0.9fr auto;
-      gap: 8px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
       align-items: center;
     }
 
@@ -363,6 +363,13 @@
       color: var(--navy);
       outline: 0;
       font-size: 13px;
+    }
+
+    .login-row .mini-btn {
+      grid-column: 1 / -1;
+      justify-self: start;
+      min-width: 150px;
+      min-height: 42px;
     }
 
     .forgot-link {
