@@ -1328,6 +1328,155 @@
       font-weight: 800;
     }
 
+    .training-paths {
+      background:
+        radial-gradient(circle at 15% 18%, rgba(200, 157, 92, 0.12), transparent 26%),
+        linear-gradient(180deg, #fff 0%, #f7f1e8 100%);
+    }
+
+    .training-board {
+      display: grid;
+      grid-template-columns: 0.72fr 1.28fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .training-tabs,
+    .training-workspace {
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .training-tabs {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .training-tab {
+      min-height: 58px;
+      padding: 12px 14px;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      background: #fffaf2;
+      color: var(--navy);
+      cursor: pointer;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .training-tab.active,
+    .training-tab:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
+    .training-workspace {
+      padding: 24px;
+    }
+
+    .training-workspace h3 {
+      color: var(--navy);
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .training-workspace p {
+      color: #5a5d62;
+      line-height: 1.9;
+      margin-bottom: 14px;
+    }
+
+    .training-hints {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .training-hints span {
+      padding: 10px 12px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.26);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.7;
+    }
+
+    .training-text {
+      width: 100%;
+      min-height: 180px;
+      padding: 18px;
+      border: 1px solid rgba(200, 157, 92, 0.34);
+      background: repeating-linear-gradient(0deg, #fff 0 38px, rgba(200, 157, 92, 0.12) 39px);
+      color: var(--navy);
+      outline: 0;
+      resize: vertical;
+      font-size: 17px;
+      line-height: 2;
+    }
+
+    .training-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 10px;
+      color: #5a5d62;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .training-result {
+      margin-top: 16px;
+      padding: 18px;
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.35);
+    }
+
+    .training-result strong {
+      color: var(--gold);
+      font-size: 24px;
+    }
+
+    .training-score {
+      display: grid;
+      gap: 8px;
+      margin: 12px 0 4px;
+    }
+
+    .training-score-track {
+      height: 12px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(200, 157, 92, 0.28);
+    }
+
+    .training-score-track span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: var(--gold);
+    }
+
+    .training-result ul {
+      display: grid;
+      gap: 7px;
+      margin: 12px 18px 0 0;
+      color: rgba(255, 255, 255, 0.84);
+      line-height: 1.8;
+    }
+
+    .training-result li.good {
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .training-result li.fix {
+      color: #f7d9a3;
+    }
+
     .lexicon {
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(242, 237, 228, 0.92)),
@@ -1769,7 +1918,9 @@
       .faq-grid,
       .rubric-grid,
       .rubric-output,
-      .student-row {
+      .student-row,
+      .training-board,
+      .training-hints {
         grid-template-columns: 1fr;
       }
 
@@ -1894,6 +2045,7 @@
       <div class="nav-links" aria-label="روابط الموقع">
         <a href="#about">فكرة المشروع</a>
         <a href="#academy">معسكر سِمْط</a>
+        <a href="#training">تدريب فوري</a>
         <a href="#journey">رحلة الطالبة</a>
         <a href="#editor">محرر الكتابة</a>
         <a href="#lexicon">المعجم</a>
@@ -2031,6 +2183,45 @@
               <label class="check-item"><input type="checkbox"> استخدمت مثالًا أو شاهدًا مناسبًا.</label>
               <label class="check-item"><input type="checkbox"> راجعت التكرار والأخطاء الإملائية.</label>
               <label class="check-item"><input type="checkbox"> الخاتمة تترك أثرًا واضحًا.</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="training-paths" id="training">
+      <div class="shell">
+        <div class="section-title"><h2>مسارات التدريب الفوري</h2></div>
+        <p class="section-lead">تدريب مباشر على أجزاء المقال: المقدمة، العرض، والخاتمة. تكتب الطالبة جزءًا قصيرًا، ثم تحصل على مستوى وملاحظات فورية دون أن يكتب النظام النص بدلًا عنها.</p>
+
+        <div class="training-board">
+          <div class="training-tabs" aria-label="مسارات التدريب">
+            <button class="training-tab active" data-training="intro">المقدمة</button>
+            <button class="training-tab" data-training="body">العرض</button>
+            <button class="training-tab" data-training="ending">الخاتمة</button>
+          </div>
+
+          <div class="training-workspace">
+            <h3 id="trainingTitle">تدريب المقدمة</h3>
+            <p id="trainingPrompt">اكتبي مقدمة قصيرة تبدأ بجذب القارئ، ثم توضّح الفكرة الرئيسية التي سيتناولها المقال.</p>
+            <div class="training-hints" id="trainingHints">
+              <span>ابدئي بسؤال أو مشهد أو عبارة لافتة.</span>
+              <span>وضّحي الفكرة الرئيسية بجملة واحدة.</span>
+              <span>اجعلي المقدمة تمهّد للعرض ولا تشرح كل التفاصيل.</span>
+            </div>
+            <textarea class="training-text" id="trainingText" placeholder="اكتبي تدريبك هنا..."></textarea>
+            <div class="training-meta">
+              <span id="trainingWords">عدد الكلمات: 0</span>
+              <span>التقييم يقيس بنية الجزء ولا يكتب النص بدل الطالبة</span>
+            </div>
+            <div class="mini-actions">
+              <button class="mini-btn primary" id="evaluateTraining">تقييم فوري</button>
+              <button class="mini-btn" id="sendTrainingToEditor">نقل للمحرر</button>
+              <button class="mini-btn" id="clearTraining">تفريغ التدريب</button>
+            </div>
+            <div class="training-result" id="trainingResult" aria-live="polite">
+              <strong>بانتظار النص</strong>
+              <ul><li>اكتبي جزءًا من المقال ثم اضغطي تقييم فوري.</li></ul>
             </div>
           </div>
         </div>
@@ -2498,6 +2689,17 @@
     const dashboardFilter = document.getElementById("dashboardFilter");
     const teacherStudentList = document.getElementById("teacherStudentList");
     const dashboardSummary = document.getElementById("dashboardSummary");
+    const trainingTabs = document.querySelectorAll(".training-tab");
+    const trainingTitle = document.getElementById("trainingTitle");
+    const trainingPrompt = document.getElementById("trainingPrompt");
+    const trainingHints = document.getElementById("trainingHints");
+    const trainingText = document.getElementById("trainingText");
+    const trainingWords = document.getElementById("trainingWords");
+    const trainingResult = document.getElementById("trainingResult");
+    const evaluateTraining = document.getElementById("evaluateTraining");
+    const sendTrainingToEditor = document.getElementById("sendTrainingToEditor");
+    const clearTraining = document.getElementById("clearTraining");
+    let currentTraining = "intro";
     let dashboardStudents = [];
 
     function filteredDashboardStudents() {
@@ -2555,6 +2757,128 @@
       link.download = "simt-students.csv";
       link.click();
       URL.revokeObjectURL(url);
+    }
+
+    const trainingPaths = {
+      intro: {
+        title: "تدريب المقدمة",
+        prompt: "اكتبي مقدمة قصيرة تبدأ بجذب القارئ، ثم توضّح الفكرة الرئيسية التي سيتناولها المقال.",
+        hints: ["ابدئي بسؤال أو مشهد أو عبارة لافتة.", "وضّحي الفكرة الرئيسية بجملة واحدة.", "اجعلي المقدمة تمهّد للعرض ولا تشرح كل التفاصيل."],
+        checks: [
+          { test: text => countTrainingWords(text) >= 25, good: "الطول مناسب كبداية.", fix: "زيدي المقدمة قليلًا حتى توضّح الفكرة." },
+          { test: text => /[؟?]/.test(text) || /(تخيل|تأمل|حين|عندما|هل|لماذا)/.test(text), good: "فيها مدخل جاذب.", fix: "أضيفي سؤالًا أو مشهدًا قصيرًا يجذب القارئ." },
+          { test: text => /(أرى|أعتقد|الفكرة|الموضوع|يدل|أهمية|تتجلى)/.test(text), good: "الفكرة الرئيسية ظاهرة.", fix: "اكتبي جملة توضّح الفكرة الرئيسية بوضوح." },
+          { test: text => /(لذلك|ومن هنا|إضافة إلى ذلك|كما أن|لأن|إذ)/.test(text), good: "يوجد ربط مناسب.", fix: "أضيفي أداة ربط مثل: لذلك، ومن هنا، لأن." }
+        ]
+      },
+      body: {
+        title: "تدريب العرض",
+        prompt: "اكتبي فقرة عرض واحدة: فكرة رئيسية، ثم مثال أو دليل، ثم شرح يربط المثال بالفكرة.",
+        hints: ["ابدئي بجملة فكرة رئيسية.", "أضيفي مثالًا أو دليلًا.", "اشرحي لماذا المثال يدعم رأيك."],
+        checks: [
+          { test: text => countTrainingWords(text) >= 40, good: "الفقرة فيها مساحة كافية للشرح.", fix: "وسّعي الفقرة بإضافة شرح أو مثال." },
+          { test: text => /(أولًا|من جهة|تتمثل|تكمن|الفكرة|السبب)/.test(text), good: "الفكرة الرئيسية موجودة.", fix: "ابدئي الفقرة بجملة فكرة رئيسية واضحة." },
+          { test: text => /(مثلًا|على سبيل المثال|ومن أمثلة ذلك|يدل على ذلك|نلاحظ)/.test(text), good: "يوجد مثال أو دليل.", fix: "أضيفي مثالًا بعبارة مثل: على سبيل المثال." },
+          { test: text => /(وهذا يعني|وهذا يدل|لأن|لذلك|ومن ثم|بناء على ذلك)/.test(text), good: "يوجد تحليل يربط المثال بالفكرة.", fix: "اشرحي المثال بجملة تبدأ مثل: وهذا يدل على..." }
+        ]
+      },
+      ending: {
+        title: "تدريب الخاتمة",
+        prompt: "اكتبي خاتمة قصيرة تعود للفكرة الرئيسية دون تكرارها حرفيًا، وتنتهي بجملة تترك أثرًا.",
+        hints: ["ابدئي بخلاصة لا تكرر المقدمة.", "اذكري الأثر أو الدرس.", "اختمي بجملة قوية وموجزة."],
+        checks: [
+          { test: text => countTrainingWords(text) >= 20, good: "الخاتمة ليست قصيرة جدًا.", fix: "أضيفي جملة توضّح خلاصة الفكرة." },
+          { test: text => /(خلاصة|وفي الختام|ومن هنا|يتضح|نستنتج|يبقى)/.test(text), good: "فيها إشارة ختامية.", fix: "استخدمي عبارة ختامية مثل: ومن هنا يتضح." },
+          { test: text => /(أثر|يبقى|وعي|تغيير|قيمة|مسؤولية|ثقة)/.test(text), good: "فيها معنى أو أثر.", fix: "أضيفي جملة تترك أثرًا أو قيمة لدى القارئ." },
+          { test: text => !/(كما ذكرت في المقدمة|سأتحدث في هذا المقال)/.test(text), good: "لا تكرر عبارات تمهيدية ضعيفة.", fix: "احذفي العبارات التي تعيد المقدمة، واكتبي خلاصة جديدة." }
+        ]
+      }
+    };
+
+    function countTrainingWords(text) {
+      const trimmed = text.trim();
+      return trimmed ? trimmed.split(/\s+/).length : 0;
+    }
+
+    function updateTrainingWordCount() {
+      if (!trainingText || !trainingWords) return;
+      trainingWords.textContent = `عدد الكلمات: ${countTrainingWords(trainingText.value)}`;
+    }
+
+    function getTrainingExtraNotes(text) {
+      const notes = [];
+      const longSentence = text
+        .split(/[.؟!]/)
+        .some(function (part) {
+          return countTrainingWords(part) > 28;
+        });
+      if (longSentence) {
+        notes.push({
+          type: "fix",
+          text: "فيه جملة طويلة غالبًا تحتاج تقسيم؛ خلي كل جملة تحمل فكرة واحدة واضحة."
+        });
+      }
+      if (/(شيء|أشياء|جميل|حلو|مهم|كثير|جدا)/.test(text)) {
+        notes.push({
+          type: "fix",
+          text: "بعض الكلمات عامة؛ استبدليها بكلمة أدق أو أضيفي مثال يوضح المقصود."
+        });
+      }
+      if (!/[،.؟!]/.test(text) && countTrainingWords(text) > 18) {
+        notes.push({
+          type: "fix",
+          text: "النص يحتاج علامات ترقيم حتى تظهر العلاقات بين الأفكار."
+        });
+      }
+      return notes;
+    }
+
+    function renderTrainingPath(path) {
+      const data = trainingPaths[path];
+      if (!data || !trainingTitle || !trainingPrompt || !trainingHints || !trainingResult) return;
+      currentTraining = path;
+      trainingTitle.textContent = data.title;
+      trainingPrompt.textContent = data.prompt;
+      trainingHints.innerHTML = data.hints.map(function (hint) {
+        return `<span>${hint}</span>`;
+      }).join("");
+      if (trainingText) trainingText.value = localStorage.getItem(`simtTraining:${path}`) || "";
+      updateTrainingWordCount();
+      trainingResult.innerHTML = "<strong>بانتظار النص</strong><ul><li>اكتبي جزءًا من المقال ثم اضغطي تقييم فوري.</li><li>التقييم يراجع البنية والوضوح ولا يعطي نصًا جاهزًا.</li></ul>";
+    }
+
+    function evaluateTrainingText() {
+      const data = trainingPaths[currentTraining];
+      if (!data || !trainingText || !trainingResult) return;
+      const text = trainingText.value.trim();
+      if (!text) {
+        trainingResult.innerHTML = "<strong>لم تكتبي نصًا بعد</strong><ul><li>اكتبي التدريب أولًا ثم اضغطي تقييم فوري.</li></ul>";
+        return;
+      }
+      const notes = [];
+      let score = 0;
+      data.checks.forEach(function (check) {
+        if (check.test(text)) {
+          score += 1;
+          notes.push({ type: "good", text: check.good });
+        } else {
+          notes.push({ type: "fix", text: check.fix });
+        }
+      });
+      getTrainingExtraNotes(text).forEach(function (note) {
+        notes.push(note);
+      });
+      const levelText = score >= 4 ? "مؤثرة" : score === 3 ? "قوية" : score === 2 ? "مقبولة" : "تحتاج بناء";
+      const percent = Math.round((score / data.checks.length) * 100);
+      trainingResult.innerHTML = `
+        <strong>المستوى: ${levelText} - الدرجة: ${score} / ${data.checks.length}</strong>
+        <div class="training-score">
+          <span>نسبة تحقق معايير هذا الجزء: ${percent}%</span>
+          <div class="training-score-track"><span style="width: ${percent}%"></span></div>
+        </div>
+        <ul>${notes.map(function (note) { return `<li class="${note.type}">${note.text}</li>`; }).join("")}</ul>
+      `;
+      localStorage.setItem(`simtTraining:${currentTraining}`, text);
     }
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
@@ -3062,6 +3386,51 @@
         showToast("تم تفريغ المسودة.");
       });
     }
+
+    trainingTabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        trainingTabs.forEach(function (item) {
+          item.classList.remove("active");
+        });
+        tab.classList.add("active");
+        renderTrainingPath(tab.dataset.training);
+      });
+    });
+
+    if (trainingText) {
+      trainingText.addEventListener("input", function () {
+        updateTrainingWordCount();
+        localStorage.setItem(`simtTraining:${currentTraining}`, trainingText.value);
+      });
+    }
+
+    if (evaluateTraining) {
+      evaluateTraining.addEventListener("click", evaluateTrainingText);
+    }
+
+    if (sendTrainingToEditor && trainingText) {
+      sendTrainingToEditor.addEventListener("click", function () {
+        const text = trainingText.value.trim();
+        if (!text) {
+          showToast("اكتبي التدريب أولًا.");
+          return;
+        }
+        appendToEditor(text);
+      });
+    }
+
+    if (clearTraining && trainingText) {
+      clearTraining.addEventListener("click", function () {
+        trainingText.value = "";
+        localStorage.removeItem(`simtTraining:${currentTraining}`);
+        updateTrainingWordCount();
+        if (trainingResult) {
+          trainingResult.innerHTML = "<strong>بانتظار النص</strong><ul><li>اكتبي جزءًا من المقال ثم اضغطي تقييم فوري.</li></ul>";
+        }
+      });
+    }
+
+    renderTrainingPath(currentTraining);
 
     lessonTabs.forEach(function (tab) {
       tab.addEventListener("click", function () {
