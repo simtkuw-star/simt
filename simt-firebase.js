@@ -52,6 +52,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     createUserWithEmailAndPassword,
     getAuth,
     onAuthStateChanged,
+    sendEmailVerification,
     sendPasswordResetEmail,
     signInWithEmailAndPassword,
     signOut,
@@ -142,6 +143,14 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     return window.SIMT_TEACHER_UNLOCKED === true;
   }
 
+  function isVerifiedUser(user = activeUser) {
+    return Boolean(user && user.emailVerified);
+  }
+
+  function showVerifyMessage() {
+    showAuthMessage("فعّلي بريدك الإلكتروني أولًا. أرسلنا لك رابط التفعيل، ثم ارجعي للموقع وسجلي الدخول مرة ثانية.");
+  }
+
   function refreshBasicEditorStats() {
     if (!writingBox || !words || !chars || !level) return;
     const text = writingBox.value || "";
@@ -177,13 +186,17 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   }
 
   function saveStudentWorkSoon() {
-    if (!activeUser || isLoadingStudentWork || !hasLoadedStudentWork) return;
+    if (!activeUser || !isVerifiedUser() || isLoadingStudentWork || !hasLoadedStudentWork) return;
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(saveStudentWork, 700);
   }
 
   async function saveStudentWork() {
     if (!activeUser || isLoadingStudentWork || !hasLoadedStudentWork) return;
+    if (!isVerifiedUser()) {
+      showVerifyMessage();
+      return;
+    }
     const payload = {
       draft: writingBox ? writingBox.value : "",
       updatedAt: serverTimestamp()
@@ -210,6 +223,14 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
         detail: { message: "سجلي الدخول أولًا حتى ينحفظ التدريب." }
       }));
+      return;
+    }
+
+    if (!isVerifiedUser()) {
+      window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
+        detail: { message: "فعّلي بريدك الإلكتروني أولًا حتى ينحفظ التدريب." }
+      }));
+      showVerifyMessage();
       return;
     }
 
@@ -348,6 +369,12 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
+      await credential.user.reload();
+      if (!credential.user.emailVerified) {
+        await sendEmailVerification(credential.user, { url: "https://simtkuw.com/" });
+        showVerifyMessage();
+        return;
+      }
       await saveStudentProfile(credential.user, name);
       await recordSiteLogin(credential.user);
       showAuthMessage(`مرحبًا ${credential.user.displayName || name || "طالبة سِمْط"}، تم تسجيل الدخول.`);
@@ -365,9 +392,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       try {
         const credential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(credential.user, { displayName: name });
-        await saveStudentProfile(credential.user, name);
-        await recordSiteLogin(credential.user);
-        showAuthMessage("تم إنشاء الحساب وحفظ اسم الطالبة في Firebase.");
+        await sendEmailVerification(credential.user, { url: "https://simtkuw.com/" });
+        showAuthMessage("تم إنشاء الحساب. أرسلنا رابط تفعيل إلى البريد الإلكتروني؛ فعّليه ثم سجلي الدخول مرة ثانية.");
       } catch (createError) {
         showAuthMessage(firebaseArabicError(createError.code));
       }
@@ -426,6 +452,16 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         resetStudentWorkspace();
       }
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
+      if (!user.emailVerified) {
+        activeUser = null;
+        activeUid = "";
+        hasLoadedStudentWork = false;
+        setLoggedOutUi();
+        showVerifyMessage();
+        window.dispatchEvent(new CustomEvent("simtStudentContext", { detail: {} }));
+        resetStudentWorkspace();
+        return;
+      }
       activeUser = user;
       activeUid = user.uid;
       window.dispatchEvent(new CustomEvent("simtStudentContext", {
@@ -463,6 +499,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
         detail: { message: "سجلي دخول الطالبة أولًا." }
       }));
+      return;
+    }
+    if (!isVerifiedUser()) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: "يجب تفعيل بريد الطالبة أولًا." }
+      }));
+      showVerifyMessage();
       return;
     }
     if (!isTeacherUnlocked()) {
