@@ -1259,6 +1259,23 @@
       font-weight: 800;
     }
 
+    .dashboard-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-filter {
+      min-height: 42px;
+      padding: 8px 10px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fffaf2;
+      color: var(--navy);
+      font-weight: 800;
+      outline: 0;
+    }
+
     .dashboard-list {
       display: grid;
       gap: 12px;
@@ -2180,7 +2197,18 @@
         <div class="dashboard-panel" id="dashboardPanel" hidden>
           <div class="dashboard-toolbar">
             <span id="dashboardSummary">الطالبات: 0</span>
-            <button class="mini-btn" id="refreshDashboard">تحديث القائمة</button>
+            <div class="dashboard-actions">
+              <select class="dashboard-filter" id="dashboardFilter">
+                <option value="all">كل الطالبات</option>
+                <option value="pending">لم يتم التقييم</option>
+                <option value="كاتبة مبتدئة">كاتبة مبتدئة</option>
+                <option value="ناسجة أفكار">ناسجة أفكار</option>
+                <option value="لؤلؤة سِمْط">لؤلؤة سِمْط</option>
+                <option value="صانعة أثر">صانعة أثر</option>
+              </select>
+              <button class="mini-btn" id="exportDashboard">تصدير CSV</button>
+              <button class="mini-btn" id="refreshDashboard">تحديث القائمة</button>
+            </div>
           </div>
           <div class="dashboard-list" id="teacherStudentList">
             <div class="dashboard-empty">لم تُحمّل البيانات بعد.</div>
@@ -2442,8 +2470,68 @@
     const dashboardMessage = document.getElementById("dashboardMessage");
     const dashboardPanel = document.getElementById("dashboardPanel");
     const refreshDashboard = document.getElementById("refreshDashboard");
+    const exportDashboard = document.getElementById("exportDashboard");
+    const dashboardFilter = document.getElementById("dashboardFilter");
     const teacherStudentList = document.getElementById("teacherStudentList");
     const dashboardSummary = document.getElementById("dashboardSummary");
+    let dashboardStudents = [];
+
+    function filteredDashboardStudents() {
+      const filter = dashboardFilter ? dashboardFilter.value : "all";
+      if (filter === "all") return dashboardStudents;
+      if (filter === "pending") {
+        return dashboardStudents.filter(function (student) {
+          return student.score === "لم يتم التقييم";
+        });
+      }
+      return dashboardStudents.filter(function (student) {
+        return student.level === filter;
+      });
+    }
+
+    function renderDashboardStudents() {
+      const students = filteredDashboardStudents();
+      if (dashboardSummary) dashboardSummary.textContent = `الطالبات: ${students.length}`;
+      if (!teacherStudentList) return;
+      if (!students.length) {
+        teacherStudentList.innerHTML = '<div class="dashboard-empty">لا توجد طالبات ضمن هذا الفلتر.</div>';
+        return;
+      }
+      teacherStudentList.innerHTML = students.map(function (student) {
+        return `
+          <article class="student-row">
+            <div>
+              ${student.name}
+              <small>${student.email}</small>
+            </div>
+            <div>المستوى: ${student.level}</div>
+            <div>الدرجة: ${student.score}</div>
+            <div>آخر تحديث: ${student.updated}</div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function exportDashboardCsv() {
+      const rows = filteredDashboardStudents();
+      if (!rows.length) return;
+      const header = ["name", "email", "level", "score", "updated"];
+      const csv = [
+        header.join(","),
+        ...rows.map(function (student) {
+          return header.map(function (key) {
+            return `"${String(student[key] || "").replace(/"/g, '""')}"`;
+          }).join(",");
+        })
+      ].join("\n");
+      const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "simt-students.csv";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
     const rubricNotes = document.getElementById("rubricNotes");
@@ -3076,31 +3164,21 @@
       });
     }
 
+    if (dashboardFilter) {
+      dashboardFilter.addEventListener("change", renderDashboardStudents);
+    }
+
+    if (exportDashboard) {
+      exportDashboard.addEventListener("click", exportDashboardCsv);
+    }
+
     window.addEventListener("simtDashboardStatus", function (event) {
       if (dashboardMessage) dashboardMessage.textContent = (event.detail && event.detail.message) || "";
     });
 
     window.addEventListener("simtDashboardData", function (event) {
-      const students = (event.detail && event.detail.students) || [];
-      if (dashboardSummary) dashboardSummary.textContent = `الطالبات: ${students.length}`;
-      if (!teacherStudentList) return;
-      if (!students.length) {
-        teacherStudentList.innerHTML = '<div class="dashboard-empty">لا توجد طالبات مسجلات بعد.</div>';
-        return;
-      }
-      teacherStudentList.innerHTML = students.map(function (student) {
-        return `
-          <article class="student-row">
-            <div>
-              ${student.name}
-              <small>${student.email}</small>
-            </div>
-            <div>المستوى: ${student.level}</div>
-            <div>الدرجة: ${student.score}</div>
-            <div>آخر تحديث: ${student.updated}</div>
-          </article>
-        `;
-      }).join("");
+      dashboardStudents = (event.detail && event.detail.students) || [];
+      renderDashboardStudents();
     });
 
     if (unlockTeacherRubric) {
@@ -3250,6 +3328,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=9"></script>
+  <script type="module" src="simt-firebase.js?v=10"></script>
 </body>
 </html>
