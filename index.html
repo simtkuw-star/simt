@@ -350,7 +350,7 @@
 
     .login-row {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
+      grid-template-columns: 0.9fr 1.1fr 0.9fr auto;
       gap: 8px;
       align-items: center;
     }
@@ -1581,7 +1581,8 @@
         </div>
         <div class="hero-login">
           <div class="login-row">
-            <input id="loginName" type="text" autocomplete="username" placeholder="اسم المستخدم">
+            <input id="studentDisplayName" type="text" autocomplete="name" placeholder="اسم الطالبة">
+            <input id="loginName" type="email" autocomplete="email" placeholder="البريد الإلكتروني">
             <input id="loginPassword" type="password" autocomplete="current-password" placeholder="كلمة المرور">
             <button class="mini-btn primary" id="loginButton">دخول</button>
           </div>
@@ -1966,6 +1967,7 @@
   </footer>
 
   <script src="simt-knowledge.js"></script>
+  <script src="firebase-config.js"></script>
   <script>
     const box = document.getElementById("writingBox");
     const words = document.getElementById("words");
@@ -2003,6 +2005,7 @@
     const insertSmartSentence = document.getElementById("insertSmartSentence");
     const refreshSmartSuggestion = document.getElementById("refreshSmartSuggestion");
     const authGate = document.getElementById("authGate");
+    const studentDisplayName = document.getElementById("studentDisplayName");
     const loginName = document.getElementById("loginName");
     const loginPassword = document.getElementById("loginPassword");
     const loginButton = document.getElementById("loginButton");
@@ -2626,5 +2629,6 @@
       setLoggedIn(loggedName);
     }
   </script>
+  <script type="module" src="simt-firebase.js"></script>
 </body>
 </html>

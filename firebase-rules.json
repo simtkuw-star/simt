@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "students": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid"
+      }
+    },
+    "siteStats": {
+      ".read": false,
+      "totalLogins": {
+        ".write": "auth != null && newData.isNumber()"
+      },
+      "lastLoginAt": {
+        ".write": "auth != null"
+      },
+      "lastStudents": {
+        "$uid": {
+          ".write": "auth != null && auth.uid == $uid"
+        }
+      }
+    }
+  }
+}
