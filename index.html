@@ -2733,6 +2733,7 @@
             <div>المستوى: ${student.level}</div>
             <div>الدرجة: ${student.score}</div>
             <div>آخر تحديث: ${student.updated}</div>
+            <small>${student.trainingSummary || "آخر تدريب فوري: لا يوجد"}</small>
           </article>
         `;
       }).join("");
@@ -2741,7 +2742,7 @@
     function exportDashboardCsv() {
       const rows = filteredDashboardStudents();
       if (!rows.length) return;
-      const header = ["name", "email", "level", "score", "updated"];
+      const header = ["name", "email", "level", "score", "updated", "trainingSummary"];
       const csv = [
         header.join(","),
         ...rows.map(function (student) {
@@ -2879,6 +2880,19 @@
         <ul>${notes.map(function (note) { return `<li class="${note.type}">${note.text}</li>`; }).join("")}</ul>
       `;
       localStorage.setItem(`simtTraining:${currentTraining}`, text);
+      window.dispatchEvent(new CustomEvent("simtTrainingEvaluated", {
+        detail: {
+          path: currentTraining,
+          title: data.title,
+          text,
+          wordCount: countTrainingWords(text),
+          score,
+          maxScore: data.checks.length,
+          percent,
+          level: levelText,
+          notes: notes.map(function (note) { return note.text; })
+        }
+      }));
     }
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
@@ -3430,6 +3444,24 @@
       });
     }
 
+    window.addEventListener("simtTrainingLoaded", function (event) {
+      const training = (event.detail && event.detail.training) || {};
+      Object.keys(training).forEach(function (path) {
+        if (training[path] && typeof training[path].text === "string") {
+          localStorage.setItem(`simtTraining:${path}`, training[path].text);
+        }
+      });
+      renderTrainingPath(currentTraining);
+    });
+
+    window.addEventListener("simtTrainingSaveStatus", function (event) {
+      if (!trainingResult || !event.detail || !event.detail.message) return;
+      const status = document.createElement("div");
+      status.className = "rubric-save-status";
+      status.textContent = event.detail.message;
+      trainingResult.appendChild(status);
+    });
+
     renderTrainingPath(currentTraining);
 
     lessonTabs.forEach(function (tab) {
@@ -3719,6 +3751,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=11"></script>
+  <script type="module" src="simt-firebase.js?v=12"></script>
 </body>
 </html>

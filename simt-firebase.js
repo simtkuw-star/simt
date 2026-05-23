@@ -81,6 +81,11 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let isLoadingStudentWork = false;
   let hasLoadedStudentWork = false;
   let saveTimer = null;
+  const trainingLabels = {
+    intro: "المقدمة",
+    body: "العرض",
+    ending: "الخاتمة"
+  };
 
   async function saveStudentProfile(user, displayName) {
     const emailName = user.email ? user.email.split("@")[0] : "";
@@ -157,6 +162,12 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       writingBox.value = "";
     }
     localStorage.removeItem("simtDraft");
+    Object.keys(trainingLabels).forEach(function (path) {
+      localStorage.removeItem(`simtTraining:${path}`);
+    });
+    window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
+      detail: { training: {} }
+    }));
     rubricSelects.forEach(function (field) {
       field.value = "3";
     });
@@ -194,6 +205,34 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
   }
 
+  async function saveTrainingResult(detail) {
+    if (!activeUser || !detail || !detail.path) {
+      window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
+        detail: { message: "سجلي الدخول أولًا حتى ينحفظ التدريب." }
+      }));
+      return;
+    }
+
+    const cleanPath = String(detail.path).replace(/[.#$/\[\]]/g, "");
+    await update(ref(database, `students/${activeUser.uid}/work/training/${cleanPath}`), {
+      title: detail.title || trainingLabels[cleanPath] || cleanPath,
+      text: detail.text || "",
+      wordCount: Number(detail.wordCount || 0),
+      score: Number(detail.score || 0),
+      maxScore: Number(detail.maxScore || 0),
+      percent: Number(detail.percent || 0),
+      level: detail.level || "",
+      notes: Array.isArray(detail.notes) ? detail.notes.slice(0, 8) : [],
+      evaluatedAt: serverTimestamp()
+    });
+    await update(ref(database, `students/${activeUser.uid}/work`), {
+      updatedAt: serverTimestamp()
+    });
+    window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
+      detail: { message: "تم حفظ نتيجة التدريب في حساب الطالبة." }
+    }));
+  }
+
   async function loadStudentWork(user) {
     isLoadingStudentWork = true;
     hasLoadedStudentWork = false;
@@ -222,6 +261,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         });
         window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
       }
+      window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
+        detail: { training: (work && work.training) || {} }
+      }));
       writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
       refreshBasicEditorStats();
     } finally {
@@ -255,16 +297,24 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       const students = Object.entries(data).map(function ([uid, item]) {
         const profile = item.profile || {};
         const work = item.work || {};
+        const training = work.training || {};
+        const latestTraining = Object.values(training).sort(function (a, b) {
+          return Number(b.evaluatedAt || 0) - Number(a.evaluatedAt || 0);
+        })[0];
         const fallbackEmail = profile.email || item.email || "-";
         const fallbackName = fallbackEmail && fallbackEmail !== "-" ? fallbackEmail.split("@")[0] : "طالبة بدون اسم";
         const score = typeof work.rubricTotal === "number" ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
+        const trainingSummary = latestTraining
+          ? `آخر تدريب فوري: ${latestTraining.title || "-"} - ${latestTraining.score || 0} / ${latestTraining.maxScore || 0} - ${latestTraining.level || "-"}`
+          : "آخر تدريب فوري: لا يوجد";
         return {
           uid,
           name: profile.name || item.name || fallbackName,
           email: fallbackEmail,
           level: work.rubricLevel || "بانتظار تقييم المعلمة",
           score,
-          updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt)
+          updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt),
+          trainingSummary
         };
       }).sort(function (a, b) {
         return a.email.localeCompare(b.email, "ar");
@@ -401,6 +451,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     field.addEventListener("change", saveStudentWorkSoon);
   });
   window.addEventListener("simtTeacherRubricUpdated", saveStudentWorkSoon);
+  window.addEventListener("simtTrainingEvaluated", function (event) {
+    saveTrainingResult(event.detail).catch(function () {
+      window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
+        detail: { message: "تعذر حفظ التدريب الآن." }
+      }));
+    });
+  });
   window.addEventListener("simtSaveTeacherRubric", async function () {
     if (!activeUser) {
       window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
