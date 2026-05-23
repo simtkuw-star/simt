@@ -213,6 +213,57 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
   }
 
+  function formatDateValue(value) {
+    if (!value) return "-";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "-";
+    return date.toLocaleDateString("ar-SA", {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  }
+
+  async function loadTeacherDashboard() {
+    if (!activeUser) {
+      window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+        detail: { message: "سجلي دخول حساب المعلمة أولًا." }
+      }));
+      return;
+    }
+
+    try {
+      const snapshot = await get(ref(database, "students"));
+      const data = snapshot.val() || {};
+      const students = Object.entries(data).map(function ([uid, item]) {
+        const profile = item.profile || {};
+        const work = item.work || {};
+        const score = typeof work.rubricTotal === "number" ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
+        return {
+          uid,
+          name: profile.name || "طالبة سِمْط",
+          email: profile.email || "-",
+          level: work.rubricLevel || "بانتظار تقييم المعلمة",
+          score,
+          updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt)
+        };
+      }).sort(function (a, b) {
+        return a.email.localeCompare(b.email, "ar");
+      });
+
+      window.dispatchEvent(new CustomEvent("simtDashboardData", {
+        detail: { students }
+      }));
+      window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+        detail: { message: "تم تحديث لوحة المعلمة." }
+      }));
+    } catch (error) {
+      window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+        detail: { message: "لا يمكن قراءة كل الطالبات بعد. أضيفي حساب المعلمة في Firebase Rules." }
+      }));
+    }
+  }
+
   async function handleFirebaseLogin(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -343,6 +394,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
     await saveStudentWork();
   });
+  window.addEventListener("simtLoadTeacherDashboard", loadTeacherDashboard);
 } else {
   showAuthMessage("Firebase غير مربوط بعد. الموقع يعمل حاليًا بوضع تجريبي محلي.");
 }

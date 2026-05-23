@@ -1213,6 +1213,86 @@
       line-height: 1.8;
     }
 
+    .teacher-dashboard {
+      background:
+        linear-gradient(180deg, rgba(242, 237, 228, 0.88), rgba(255, 255, 255, 0.72));
+    }
+
+    .dashboard-gate,
+    .dashboard-panel {
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .dashboard-gate {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .dashboard-gate input {
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fffaf2;
+      color: var(--navy);
+      outline: 0;
+      font-weight: 800;
+    }
+
+    .dashboard-panel[hidden] {
+      display: none;
+    }
+
+    .dashboard-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .dashboard-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .student-row {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.7fr 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .student-row small {
+      display: block;
+      margin-top: 4px;
+      color: #6b6258;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .dashboard-empty {
+      padding: 18px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: #5a5d62;
+      line-height: 1.9;
+      font-weight: 800;
+    }
+
     .lexicon {
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(242, 237, 228, 0.92)),
@@ -1653,7 +1733,8 @@
       .analytics-panel,
       .faq-grid,
       .rubric-grid,
-      .rubric-output {
+      .rubric-output,
+      .student-row {
         grid-template-columns: 1fr;
       }
 
@@ -1717,6 +1798,10 @@
       }
 
       .teacher-gate {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-gate {
         grid-template-columns: 1fr;
       }
 
@@ -2081,6 +2166,29 @@
       </div>
     </section>
 
+    <section class="teacher-dashboard" id="teacher-dashboard">
+      <div class="shell">
+        <div class="section-title"><h2>لوحة المعلمة</h2></div>
+        <p class="section-lead">مساحة خاصة للمعلمة لمتابعة الطالبات المسجلات، آخر مستوى، ونتيجة التقييم المحفوظة في Firebase.</p>
+
+        <div class="dashboard-gate">
+          <input id="dashboardCode" type="password" placeholder="رمز المعلمة" autocomplete="off">
+          <button class="mini-btn primary" id="openDashboard">فتح لوحة المعلمة</button>
+          <div class="teacher-gate-message" id="dashboardMessage">أدخلي رمز المعلمة لعرض الطالبات.</div>
+        </div>
+
+        <div class="dashboard-panel" id="dashboardPanel" hidden>
+          <div class="dashboard-toolbar">
+            <span id="dashboardSummary">الطالبات: 0</span>
+            <button class="mini-btn" id="refreshDashboard">تحديث القائمة</button>
+          </div>
+          <div class="dashboard-list" id="teacherStudentList">
+            <div class="dashboard-empty">لم تُحمّل البيانات بعد.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="lexicon" id="lexicon">
       <div class="shell">
         <div class="section-title"><h2>معجم سِمْط للكتابة</h2></div>
@@ -2329,6 +2437,13 @@
     const saveTeacherRubric = document.getElementById("saveTeacherRubric");
     const rubricSaveStatus = document.getElementById("rubricSaveStatus");
     const currentStudentLine = document.getElementById("currentStudentLine");
+    const dashboardCode = document.getElementById("dashboardCode");
+    const openDashboard = document.getElementById("openDashboard");
+    const dashboardMessage = document.getElementById("dashboardMessage");
+    const dashboardPanel = document.getElementById("dashboardPanel");
+    const refreshDashboard = document.getElementById("refreshDashboard");
+    const teacherStudentList = document.getElementById("teacherStudentList");
+    const dashboardSummary = document.getElementById("dashboardSummary");
     const rubricTotal = document.getElementById("rubricTotal");
     const rubricLevel = document.getElementById("rubricLevel");
     const rubricNotes = document.getElementById("rubricNotes");
@@ -2942,6 +3057,52 @@
       });
     }
 
+    if (openDashboard) {
+      openDashboard.addEventListener("click", function () {
+        const code = dashboardCode ? dashboardCode.value.trim() : "";
+        if (code !== "SIMT-TEACHER") {
+          if (dashboardMessage) dashboardMessage.textContent = "رمز المعلمة غير صحيح.";
+          return;
+        }
+        if (dashboardPanel) dashboardPanel.hidden = false;
+        if (dashboardMessage) dashboardMessage.textContent = "تم فتح لوحة المعلمة.";
+        window.dispatchEvent(new CustomEvent("simtLoadTeacherDashboard"));
+      });
+    }
+
+    if (refreshDashboard) {
+      refreshDashboard.addEventListener("click", function () {
+        window.dispatchEvent(new CustomEvent("simtLoadTeacherDashboard"));
+      });
+    }
+
+    window.addEventListener("simtDashboardStatus", function (event) {
+      if (dashboardMessage) dashboardMessage.textContent = (event.detail && event.detail.message) || "";
+    });
+
+    window.addEventListener("simtDashboardData", function (event) {
+      const students = (event.detail && event.detail.students) || [];
+      if (dashboardSummary) dashboardSummary.textContent = `الطالبات: ${students.length}`;
+      if (!teacherStudentList) return;
+      if (!students.length) {
+        teacherStudentList.innerHTML = '<div class="dashboard-empty">لا توجد طالبات مسجلات بعد.</div>';
+        return;
+      }
+      teacherStudentList.innerHTML = students.map(function (student) {
+        return `
+          <article class="student-row">
+            <div>
+              ${student.name}
+              <small>${student.email}</small>
+            </div>
+            <div>المستوى: ${student.level}</div>
+            <div>الدرجة: ${student.score}</div>
+            <div>آخر تحديث: ${student.updated}</div>
+          </article>
+        `;
+      }).join("");
+    });
+
     if (unlockTeacherRubric) {
       unlockTeacherRubric.addEventListener("click", function () {
         const code = teacherCode ? teacherCode.value.trim() : "";
@@ -3089,6 +3250,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=7"></script>
+  <script type="module" src="simt-firebase.js?v=8"></script>
 </body>
 </html>

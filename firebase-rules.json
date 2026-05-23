@@ -1,8 +1,15 @@
 {
   "rules": {
-    "students": {
+    "teachers": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
+        ".write": false
+      }
+    },
+    "students": {
+      ".read": "auth != null && root.child('teachers').child(auth.uid).val() == true",
+      "$uid": {
+        ".read": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)",
         ".write": "auth != null && auth.uid == $uid"
       }
     },
