@@ -63,6 +63,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     get,
     getDatabase,
     increment,
+    onValue,
     ref,
     serverTimestamp,
     set,
@@ -84,6 +85,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let hasLoadedStudentWork = false;
   let saveTimer = null;
   let teacherSelectedStudent = null;
+  let studentWorkUnsubscribe = null;
   const trainingLabels = {
     intro: "المقدمة",
     body: "العرض",
@@ -330,6 +332,52 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }));
   }
 
+  function publishStudentWork(work) {
+    work = work || {};
+    if (rubricSelects.length) {
+      const hasSavedRubric = Boolean(work.rubric);
+      rubricSelects.forEach(function (field) {
+        const savedValue = work.rubric ? work.rubric[field.dataset.rubric] : "";
+        field.value = savedValue ? String(savedValue) : "3";
+      });
+      window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
+    }
+    setTeacherComment(work.teacherComment);
+    window.dispatchEvent(new CustomEvent("simtStudentWorkLoaded", {
+      detail: { work }
+    }));
+    window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
+      detail: { training: work.training || {} }
+    }));
+  }
+
+  function stopStudentWorkListener() {
+    if (studentWorkUnsubscribe) {
+      studentWorkUnsubscribe();
+      studentWorkUnsubscribe = null;
+    }
+  }
+
+  function startStudentWorkListener(user) {
+    stopStudentWorkListener();
+    if (!user) return;
+    studentWorkUnsubscribe = onValue(ref(database, `students/${user.uid}/work`), function (snapshot) {
+      const work = snapshot.val() || {};
+      if (writingBox && document.activeElement !== writingBox) {
+        if (typeof work.draft === "string") {
+          writingBox.value = work.draft;
+          localStorage.setItem("simtDraft", work.draft);
+        } else {
+          writingBox.value = "";
+          localStorage.removeItem("simtDraft");
+        }
+      }
+      publishStudentWork(work);
+      writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
+      refreshBasicEditorStats();
+    });
+  }
+
   async function loadStudentWork(user) {
     isLoadingStudentWork = true;
     hasLoadedStudentWork = false;
@@ -346,25 +394,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
           localStorage.removeItem("simtDraft");
         }
       }
-      if (rubricSelects.length) {
-        const hasSavedRubric = Boolean(work && work.rubric);
-        rubricSelects.forEach(function (field) {
-          const savedValue = work && work.rubric ? work.rubric[field.dataset.rubric] : "";
-          if (savedValue) {
-            field.value = String(savedValue);
-          } else {
-            field.value = "3";
-          }
-        });
-        window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
-      }
-      setTeacherComment(work && work.teacherComment);
-      window.dispatchEvent(new CustomEvent("simtStudentWorkLoaded", {
-        detail: { work: work || {} }
-      }));
-      window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
-        detail: { training: (work && work.training) || {} }
-      }));
+      publishStudentWork(work || {});
       writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
       refreshBasicEditorStats();
     } finally {
@@ -594,11 +624,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   onAuthStateChanged(auth, function (user) {
     if (user) {
       if (activeUid && activeUid !== user.uid) {
+        stopStudentWorkListener();
         teacherSelectedStudent = null;
         resetStudentWorkspace();
       }
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
       if (!user.emailVerified) {
+        stopStudentWorkListener();
         activeUser = null;
         activeUid = "";
         hasLoadedStudentWork = false;
@@ -617,7 +649,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       localStorage.setItem("simtLoggedIn", "true");
       localStorage.setItem("simtLoggedInName", user.displayName || user.email || "طالبة سِمْط");
       loadStudentWork(user);
+      startStudentWorkListener(user);
     } else {
+      stopStudentWorkListener();
       activeUser = null;
       activeUid = "";
       teacherSelectedStudent = null;
