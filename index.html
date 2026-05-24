@@ -3227,6 +3227,7 @@
     const guideChips = document.querySelectorAll(".guide-chip");
     let currentTraining = "intro";
     let dashboardStudents = [];
+    let studentResultWork = {};
     window.SIMT_IS_TEACHER = false;
 
     function filteredDashboardStudents() {
@@ -3864,7 +3865,7 @@
 
     function setTeacherRubricMode(unlocked) {
       window.SIMT_TEACHER_UNLOCKED = unlocked;
-      if (studentResultCard) studentResultCard.hidden = unlocked;
+      if (studentResultCard) studentResultCard.hidden = unlocked || window.SIMT_IS_TEACHER;
       syncTeacherDashboardVisibility();
       if (!teacherRubricCard || !teacherRubric) return;
       teacherRubricCard.hidden = !unlocked;
@@ -4099,7 +4100,8 @@
         }
       });
       renderTrainingPath(currentTraining);
-      renderStudentResult({ training });
+      studentResultWork = Object.assign({}, studentResultWork, { training });
+      renderStudentResult(studentResultWork);
     });
 
     window.addEventListener("simtTrainingSaveStatus", function (event) {
@@ -4201,7 +4203,8 @@
     });
 
     window.addEventListener("simtStudentWorkLoaded", function (event) {
-      renderStudentResult((event.detail && event.detail.work) || {});
+      studentResultWork = Object.assign({}, studentResultWork, (event.detail && event.detail.work) || {});
+      renderStudentResult(studentResultWork);
     });
 
     window.addEventListener("simtTeacherForceLock", function () {
@@ -4215,6 +4218,7 @@
     window.addEventListener("simtStudentContext", function (event) {
       const detail = event.detail || {};
       window.SIMT_IS_TEACHER = Boolean(detail.isTeacher);
+      if (studentResultCard) studentResultCard.hidden = window.SIMT_IS_TEACHER || window.SIMT_TEACHER_UNLOCKED;
       syncTeacherDashboardVisibility();
       if (!currentStudentLine) return;
       currentStudentLine.textContent = detail.email
@@ -4483,6 +4487,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=27"></script>
+  <script type="module" src="simt-firebase.js?v=28"></script>
 </body>
 </html>
