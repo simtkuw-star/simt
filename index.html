@@ -2834,7 +2834,7 @@
       </div>
     </section>
 
-    <section class="teacher-dashboard" id="teacher-dashboard">
+    <section class="teacher-dashboard" id="teacher-dashboard" hidden>
       <div class="shell">
         <div class="section-title"><h2>لوحة المعلمة</h2></div>
         <p class="section-lead">مساحة خاصة للمعلمة لمتابعة الطالبات المسجلات، آخر مستوى، ونتيجة التقييم المحفوظة في Firebase.</p>
@@ -3197,6 +3197,7 @@
     const rubricSaveStatus = document.getElementById("rubricSaveStatus");
     const teacherComment = document.getElementById("teacherComment");
     const currentStudentLine = document.getElementById("currentStudentLine");
+    const teacherDashboardSection = document.getElementById("teacher-dashboard");
     const dashboardCode = document.getElementById("dashboardCode");
     const openDashboard = document.getElementById("openDashboard");
     const dashboardMessage = document.getElementById("dashboardMessage");
@@ -3853,9 +3854,17 @@
       return "كاتبة مبتدئة";
     }
 
+    function syncTeacherDashboardVisibility() {
+      if (!teacherDashboardSection) return;
+      const teacherLinkOpen = window.location.hash === "#teacher-dashboard";
+      const teacherSessionOpen = sessionStorage.getItem("simtTeacherUnlocked") === "true";
+      teacherDashboardSection.hidden = !(teacherLinkOpen || teacherSessionOpen);
+    }
+
     function setTeacherRubricMode(unlocked) {
       window.SIMT_TEACHER_UNLOCKED = unlocked;
       if (studentResultCard) studentResultCard.hidden = unlocked;
+      syncTeacherDashboardVisibility();
       if (!teacherRubricCard || !teacherRubric) return;
       teacherRubricCard.hidden = !unlocked;
       teacherRubricCard.classList.toggle("teacher-locked", !unlocked);
@@ -4170,6 +4179,7 @@
         field.value = "3";
         field.addEventListener("change", updateRubric);
       });
+      syncTeacherDashboardVisibility();
       const teacherWasUnlocked = sessionStorage.getItem("simtTeacherUnlocked") === "true";
       setTeacherRubricMode(teacherWasUnlocked);
       if (window.SIMT_TEACHER_UNLOCKED) {
@@ -4198,6 +4208,8 @@
       setTeacherRubricMode(false);
       showRubricPending();
     });
+
+    window.addEventListener("hashchange", syncTeacherDashboardVisibility);
 
     window.addEventListener("simtStudentContext", function (event) {
       const detail = event.detail || {};
@@ -4241,6 +4253,7 @@
         }
         sessionStorage.setItem("simtTeacherUnlocked", "true");
         setTeacherRubricMode(true);
+        if (teacherDashboardSection) teacherDashboardSection.hidden = false;
         if (dashboardPanel) dashboardPanel.hidden = false;
         if (dashboardMessage) dashboardMessage.textContent = "تم فتح لوحة المعلمة.";
         window.dispatchEvent(new CustomEvent("simtLoadTeacherDashboard"));
@@ -4467,6 +4480,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=25"></script>
+  <script type="module" src="simt-firebase.js?v=26"></script>
 </body>
 </html>

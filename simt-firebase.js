@@ -206,7 +206,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   function saveStudentWorkSoon() {
     if (!activeUser || !isVerifiedUser() || isLoadingStudentWork || !hasLoadedStudentWork) return;
-    if (teacherSelectedStudent && isTeacherUnlocked()) return;
+    if (isTeacherUnlocked()) return;
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(saveStudentWork, 700);
   }
@@ -215,6 +215,12 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     if (!activeUser || isLoadingStudentWork || !hasLoadedStudentWork) return;
     if (!isVerifiedUser()) {
       showVerifyMessage();
+      return;
+    }
+    if (isTeacherUnlocked() && !teacherSelectedStudent) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: "اختاري طالبة من لوحة المعلمة أولًا، ثم احفظي التقييم." }
+      }));
       return;
     }
     if (isTeacherUnlocked() && teacherSelectedStudent) {
@@ -251,7 +257,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       updatedAt: serverTimestamp()
     };
 
-    if (isTeacherUnlocked()) {
+    if (false && isTeacherUnlocked()) {
       const scores = collectRubricScores();
       payload.rubric = scores;
       payload.rubricTotal = rubricTotal(scores);
