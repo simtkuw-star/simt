@@ -12,6 +12,7 @@ const forgotButton = document.getElementById("forgotButton");
 const authMessage = document.getElementById("authMessage");
 const logoutButton = document.getElementById("logoutButton");
 const accountStatus = document.getElementById("accountStatus");
+const teacherCommentInput = document.getElementById("teacherComment");
 
 function showAuthMessage(message) {
   if (authMessage) {
@@ -134,6 +135,10 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }, {});
   }
 
+  function setTeacherComment(value) {
+    if (teacherCommentInput) teacherCommentInput.value = value || "";
+  }
+
   function rubricTotal(scores) {
     return Object.values(scores).reduce(function (sum, value) {
       return sum + Number(value || 0);
@@ -217,6 +222,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         [`students/${teacherSelectedStudent.uid}/work/rubric`]: scores,
         [`students/${teacherSelectedStudent.uid}/work/rubricTotal`]: total,
         [`students/${teacherSelectedStudent.uid}/work/rubricLevel`]: getRubricLevel(total),
+        [`students/${teacherSelectedStudent.uid}/work/teacherComment`]: teacherCommentInput ? teacherCommentInput.value.trim() : "",
         [`students/${teacherSelectedStudent.uid}/work/evaluatedAt`]: serverTimestamp(),
         [`students/${teacherSelectedStudent.uid}/work/evaluatedBy`]: activeUser.email || activeUser.uid,
         [`students/${teacherSelectedStudent.uid}/work/updatedAt`]: serverTimestamp()
@@ -237,6 +243,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       payload.rubric = scores;
       payload.rubricTotal = rubricTotal(scores);
       payload.rubricLevel = getRubricLevel(rubricTotal(scores));
+      payload.teacherComment = teacherCommentInput ? teacherCommentInput.value.trim() : "";
       payload.evaluatedAt = serverTimestamp();
     }
 
@@ -312,6 +319,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         });
         window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
       }
+      setTeacherComment(work && work.teacherComment);
       window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
         detail: { training: (work && work.training) || {} }
       }));
@@ -360,6 +368,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         const savedValue = work.rubric ? work.rubric[field.dataset.rubric] : "";
         field.value = savedValue ? String(savedValue) : "3";
       });
+      setTeacherComment(work.teacherComment);
 
       window.dispatchEvent(new CustomEvent(work.rubric ? "simtRubricLoaded" : "simtRubricPending"));
       window.dispatchEvent(new CustomEvent("simtTeacherSelectedStudent", {

@@ -1245,6 +1245,38 @@
       line-height: 1.8;
     }
 
+    .teacher-comment-box {
+      margin-top: 14px;
+    }
+
+    .teacher-comment-box label {
+      display: block;
+      margin-bottom: 8px;
+      color: #f1d8ae;
+      font-weight: 900;
+    }
+
+    .teacher-comment-box textarea {
+      width: 100%;
+      min-height: 92px;
+      padding: 12px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      outline: 0;
+      resize: vertical;
+      line-height: 1.8;
+    }
+
+    .teacher-comment-box textarea::placeholder {
+      color: rgba(255, 255, 255, 0.58);
+    }
+
+    .teacher-rubric.teacher-locked .teacher-comment-box textarea {
+      pointer-events: none;
+      opacity: 0.78;
+    }
+
     .teacher-dashboard {
       background:
         linear-gradient(180deg, rgba(242, 237, 228, 0.88), rgba(255, 255, 255, 0.72));
@@ -2676,6 +2708,10 @@
             <div class="rubric-notes">
               <h4>ملاحظات المعلمة المقترحة</h4>
               <ul id="rubricNotes"><li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li></ul>
+              <div class="teacher-comment-box">
+                <label for="teacherComment">ملاحظة المعلمة للطالبة</label>
+                <textarea id="teacherComment" placeholder="اكتبي ملاحظة قصيرة تظهر للطالبة مع التقييم..."></textarea>
+              </div>
             </div>
           </div>
 
@@ -3039,6 +3075,7 @@
     const teacherGateMessage = document.getElementById("teacherGateMessage");
     const saveTeacherRubric = document.getElementById("saveTeacherRubric");
     const rubricSaveStatus = document.getElementById("rubricSaveStatus");
+    const teacherComment = document.getElementById("teacherComment");
     const currentStudentLine = document.getElementById("currentStudentLine");
     const dashboardCode = document.getElementById("dashboardCode");
     const openDashboard = document.getElementById("openDashboard");
@@ -3651,6 +3688,7 @@
       if (unlockTeacherRubric) unlockTeacherRubric.hidden = unlocked;
       if (lockTeacherRubric) lockTeacherRubric.hidden = !unlocked;
       if (saveTeacherRubric) saveTeacherRubric.hidden = !unlocked;
+      if (teacherComment) teacherComment.readOnly = !unlocked;
       if (rubricSaveStatus && !unlocked) rubricSaveStatus.textContent = "";
       if (teacherCode) {
         teacherCode.hidden = unlocked;
@@ -3667,6 +3705,7 @@
       if (rubricTotal) rubricTotal.textContent = "لم يتم التقييم";
       if (rubricLevel) rubricLevel.textContent = "بانتظار تقييم المعلمة";
       if (rubricNotes) rubricNotes.innerHTML = "<li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li>";
+      if (teacherComment) teacherComment.value = "";
       if (level) level.textContent = "بانتظار تقييم المعلمة";
       if (badgeReview) badgeReview.classList.remove("unlocked");
     }
@@ -4219,6 +4258,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=16"></script>
+  <script type="module" src="simt-firebase.js?v=17"></script>
 </body>
 </html>

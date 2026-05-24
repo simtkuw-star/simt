@@ -21,6 +21,9 @@
           "rubricLevel": {
             ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
           },
+          "teacherComment": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
           "evaluatedAt": {
             ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
           },
