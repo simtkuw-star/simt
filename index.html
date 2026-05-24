@@ -2710,6 +2710,7 @@
           <div>
             <h3>بطاقة نتيجتي</h3>
             <p>ملخص تقييمك الحالي يظهر هنا بعد مراجعة المعلمة لنصك.</p>
+            <button class="mini-btn" id="refreshStudentResult" type="button">تحديث النتيجة</button>
           </div>
           <div class="student-result-details">
             <div class="student-result-score">
@@ -3181,6 +3182,7 @@
     const teacherRubric = document.getElementById("teacherRubric");
     const teacherRubricCard = document.getElementById("teacherRubricCard");
     const studentResultCard = document.getElementById("studentResultCard");
+    const refreshStudentResult = document.getElementById("refreshStudentResult");
     const studentResultScore = document.getElementById("studentResultScore");
     const studentResultLevel = document.getElementById("studentResultLevel");
     const studentResultComment = document.getElementById("studentResultComment");
@@ -3306,9 +3308,16 @@
 
     function renderStudentResult(work) {
       work = work || {};
-      const hasScore = typeof work.rubricTotal === "number";
+      let total = Number(work.rubricTotal);
+      if (!Number.isFinite(total) && work.rubric) {
+        total = Object.values(work.rubric).reduce(function (sum, value) {
+          const number = Number(value);
+          return sum + (Number.isFinite(number) ? number : 0);
+        }, 0);
+      }
+      const hasScore = Number.isFinite(total) && total > 0;
       if (studentResultScore) {
-        studentResultScore.textContent = hasScore ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
+        studentResultScore.textContent = hasScore ? `${total} / 25` : "لم يتم التقييم";
       }
       if (studentResultLevel) {
         studentResultLevel.textContent = hasScore ? `المستوى: ${work.rubricLevel || "غير محدد"}` : "بانتظار تقييم المعلمة";
@@ -3335,7 +3344,7 @@
       }
       if (studentResultNext) {
         studentResultNext.textContent = hasScore
-          ? (work.rubricTotal >= 17 ? "راجعي ملاحظة المعلمة، ثم طوري النص ليكون جاهزًا للنشر." : "ابدئي بتحسين الفكرة والتنظيم، ثم أعيدي إرسال النص للمعلمة.")
+          ? (total >= 17 ? "راجعي ملاحظة المعلمة، ثم طوري النص ليكون جاهزًا للنشر." : "ابدئي بتحسين الفكرة والتنظيم، ثم أعيدي إرسال النص للمعلمة.")
           : "اكتبي نصك في المحرر، ثم انتظري تقييم المعلمة.";
       }
     }
@@ -4213,6 +4222,16 @@
       });
     }
 
+    if (refreshStudentResult) {
+      refreshStudentResult.addEventListener("click", function () {
+        refreshStudentResult.textContent = "جاري التحديث...";
+        window.dispatchEvent(new CustomEvent("simtRefreshStudentWork"));
+        window.setTimeout(function () {
+          refreshStudentResult.textContent = "تحديث النتيجة";
+        }, 1400);
+      });
+    }
+
     if (openDashboard) {
       openDashboard.addEventListener("click", function () {
         const code = dashboardCode ? dashboardCode.value.trim() : "";
@@ -4448,6 +4467,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=24"></script>
+  <script type="module" src="simt-firebase.js?v=25"></script>
 </body>
 </html>

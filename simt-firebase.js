@@ -682,6 +682,12 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       }));
     });
   });
+  window.addEventListener("simtRefreshStudentWork", function () {
+    if (activeUser) {
+      loadStudentWork(activeUser);
+    }
+  });
+
   window.addEventListener("simtSaveTeacherRubric", async function () {
     if (!activeUser) {
       window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
