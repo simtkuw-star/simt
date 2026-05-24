@@ -151,6 +151,17 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     showAuthMessage("فعّلي بريدك الإلكتروني أولًا. أرسلنا لك رابط التفعيل، ثم ارجعي للموقع وسجلي الدخول مرة ثانية.");
   }
 
+  async function sendVerificationEmail(user) {
+    try {
+      await sendEmailVerification(user, { url: "https://simtkuw.com/" });
+    } catch (error) {
+      if (error.code !== "auth/unauthorized-continue-uri") {
+        throw error;
+      }
+      await sendEmailVerification(user);
+    }
+  }
+
   function refreshBasicEditorStats() {
     if (!writingBox || !words || !chars || !level) return;
     const text = writingBox.value || "";
@@ -371,7 +382,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       await credential.user.reload();
       if (!credential.user.emailVerified) {
-        await sendEmailVerification(credential.user, { url: "https://simtkuw.com/" });
+        await sendVerificationEmail(credential.user);
         showVerifyMessage();
         return;
       }
@@ -392,7 +403,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       try {
         const credential = await createUserWithEmailAndPassword(auth, email, password);
         await updateProfile(credential.user, { displayName: name });
-        await sendEmailVerification(credential.user, { url: "https://simtkuw.com/" });
+        await sendVerificationEmail(credential.user);
         showAuthMessage("تم إنشاء الحساب. أرسلنا رابط تفعيل إلى البريد الإلكتروني؛ فعّليه ثم سجلي الدخول مرة ثانية.");
       } catch (createError) {
         showAuthMessage(firebaseArabicError(createError.code));
@@ -427,6 +438,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       "auth/invalid-credential": "البريد أو كلمة المرور غير صحيحة.",
       "auth/missing-password": "اكتبي كلمة المرور.",
       "auth/too-many-requests": "محاولات كثيرة. انتظري قليلًا ثم جربي مرة ثانية.",
+      "auth/unauthorized-continue-uri": "دومين الموقع غير مضاف في Firebase Authorized domains.",
       "auth/weak-password": "كلمة المرور لازم تكون 6 أحرف أو أكثر.",
       "auth/user-not-found": "لا يوجد حساب بهذا البريد."
     };
