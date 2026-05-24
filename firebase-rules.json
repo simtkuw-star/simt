@@ -24,6 +24,9 @@
           "teacherComment": {
             ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
           },
+          "submittedAt": {
+            ".write": "auth != null && auth.uid == $uid"
+          },
           "evaluatedAt": {
             ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
           },

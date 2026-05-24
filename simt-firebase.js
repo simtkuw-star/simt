@@ -266,6 +266,34 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
   }
 
+  async function submitStudentDraft() {
+    if (!activeUser) {
+      window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+        detail: { message: "سجلي الدخول أولًا قبل إرسال النص." }
+      }));
+      return;
+    }
+    if (!isVerifiedUser()) {
+      showVerifyMessage();
+      return;
+    }
+    const draft = writingBox ? writingBox.value.trim() : "";
+    if (!draft) {
+      window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+        detail: { message: "اكتبي النص أولًا قبل الإرسال." }
+      }));
+      return;
+    }
+    await update(ref(database, `students/${activeUser.uid}/work`), {
+      draft,
+      submittedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+    window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+      detail: { message: "تم إرسال النص للمعلمة للمراجعة." }
+    }));
+  }
+
   async function saveTrainingResult(detail) {
     if (!activeUser || !detail || !detail.path) {
       window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
@@ -436,8 +464,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         const score = typeof work.rubricTotal === "number" ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
         const hasDraft = Boolean(work.draft && String(work.draft).trim());
         const hasRubric = typeof work.rubricTotal === "number";
-        const status = hasRubric ? "تم تقييمها" : hasDraft ? "كتبت ولم تُقيّم" : "لم تكتب نصًا";
-        const statusClass = hasRubric ? "done" : hasDraft ? "waiting" : "empty";
+        const isSubmitted = Boolean(work.submittedAt);
+        const status = hasRubric ? "تم تقييمها" : isSubmitted ? "مرسل للمراجعة" : hasDraft ? "مسودة محفوظة" : "لم تكتب نصًا";
+        const statusClass = hasRubric ? "done" : isSubmitted ? "waiting" : hasDraft ? "draft" : "empty";
         const trainingSummary = latestTraining
           ? `آخر تدريب فوري: ${latestTraining.title || "-"} - ${latestTraining.score || 0} / ${latestTraining.maxScore || 0} - ${latestTraining.level || "-"}`
           : "آخر تدريب فوري: لا يوجد";
@@ -609,6 +638,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     saveTrainingResult(event.detail).catch(function () {
       window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
         detail: { message: "تعذر حفظ التدريب الآن." }
+      }));
+    });
+  });
+  window.addEventListener("simtSubmitDraft", function () {
+    submitStudentDraft().catch(function () {
+      window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+        detail: { message: "تعذر إرسال النص. تأكدي من تحديث Firebase Rules." }
       }));
     });
   });

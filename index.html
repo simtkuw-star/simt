@@ -1461,6 +1461,11 @@
       background: #f6e6c9;
     }
 
+    .status-pill.draft {
+      color: #5d5248;
+      background: #fff;
+    }
+
     .status-pill.empty {
       color: #6b6258;
       background: #f7f1e8;
@@ -2671,6 +2676,7 @@
               <span>مسودة المقال</span>
               <div class="editor-tools">
                 <button class="mini-btn" id="saveDraft">حفظ</button>
+                <button class="mini-btn primary" id="submitDraft">إرسال النص للمعلمة</button>
                 <button class="mini-btn" id="clearDraft">تفريغ</button>
                 <div class="editor-mark" aria-hidden="true"><span></span><span></span><span></span></div>
               </div>
@@ -3106,6 +3112,7 @@
     const level = document.getElementById("level");
     const editorToast = document.getElementById("editorToast");
     const saveDraft = document.getElementById("saveDraft");
+    const submitDraft = document.getElementById("submitDraft");
     const clearDraft = document.getElementById("clearDraft");
     const newPrompt = document.getElementById("newPrompt");
     const sendPrompt = document.getElementById("sendPrompt");
@@ -3958,6 +3965,16 @@
       });
     }
 
+    if (submitDraft && box) {
+      submitDraft.addEventListener("click", function () {
+        if (!box.value.trim()) {
+          showToast("اكتبي النص أولًا قبل الإرسال.");
+          return;
+        }
+        window.dispatchEvent(new CustomEvent("simtSubmitDraft"));
+      });
+    }
+
     if (clearDraft && box) {
       clearDraft.addEventListener("click", function () {
         box.value = "";
@@ -4027,6 +4044,10 @@
       status.className = "rubric-save-status";
       status.textContent = event.detail.message;
       trainingResult.appendChild(status);
+    });
+
+    window.addEventListener("simtSubmitStatus", function (event) {
+      if (event.detail && event.detail.message) showToast(event.detail.message);
     });
 
     renderTrainingPath(currentTraining);
@@ -4379,6 +4400,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=19"></script>
+  <script type="module" src="simt-firebase.js?v=20"></script>
 </body>
 </html>
