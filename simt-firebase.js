@@ -235,10 +235,12 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
           work: {
             rubricTotal: total,
             rubricLevel: getRubricLevel(total),
-            teacherComment: teacherCommentInput ? teacherCommentInput.value.trim() : ""
+            teacherComment: teacherCommentInput ? teacherCommentInput.value.trim() : "",
+            training: {}
           }
         }
       }));
+      await loadTeacherStudent(teacherSelectedStudent.uid);
       return;
     }
 
@@ -385,6 +387,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent(work.rubric ? "simtRubricLoaded" : "simtRubricPending"));
       window.dispatchEvent(new CustomEvent("simtTeacherSelectedStudent", {
         detail: teacherSelectedStudent
+      }));
+      window.dispatchEvent(new CustomEvent("simtStudentWorkLoaded", {
+        detail: { work: work || {} }
       }));
       writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
       refreshBasicEditorStats();
@@ -627,7 +632,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       }));
       return;
     }
-    await saveStudentWork();
+    try {
+      await saveStudentWork();
+    } catch (error) {
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: "تعذر حفظ التقييم. تأكدي من تحديث Firebase Rules." }
+      }));
+    }
   });
   window.addEventListener("simtLoadTeacherDashboard", loadTeacherDashboard);
   window.addEventListener("simtSelectTeacherStudent", function (event) {
