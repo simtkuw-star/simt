@@ -1142,6 +1142,21 @@
       font-weight: 900;
     }
 
+    .student-result-list {
+      margin: 6px 0 0;
+      padding: 0 18px 0 0;
+      color: rgba(255, 255, 255, 0.86);
+      line-height: 1.9;
+    }
+
+    .student-result-list li {
+      margin-bottom: 4px;
+    }
+
+    .teacher-rubric[hidden] {
+      display: none;
+    }
+
     .teacher-rubric {
       margin-top: 22px;
       padding: 24px;
@@ -2707,6 +2722,12 @@
               <p id="studentResultComment">لم تضف المعلمة ملاحظة بعد.</p>
             </div>
             <div class="result-note">
+              <span>نقاط التحسين</span>
+              <ul class="student-result-list" id="studentResultRubricNotes">
+                <li>ستظهر نقاط التحسين بعد تقييم المعلمة.</li>
+              </ul>
+            </div>
+            <div class="result-note">
               <span>آخر تدريب فوري</span>
               <p id="studentResultTraining">لا يوجد تدريب محفوظ بعد.</p>
             </div>
@@ -2717,7 +2738,7 @@
           </div>
         </div>
 
-        <div class="teacher-rubric teacher-locked" id="teacherRubricCard">
+        <div class="teacher-rubric teacher-locked" id="teacherRubricCard" hidden>
           <h3>بطاقة تقييم النص للمعلمة</h3>
           <p>تُستخدم هذه البطاقة لتحديد مستوى الطالبة بناءً على جودة النص، لا عدد الكلمات فقط. الطالبة ترى النتيجة والملاحظات فقط، أما إدخال الدرجات فيفتح برمز المعلمة.</p>
 
@@ -3162,6 +3183,7 @@
     const studentResultScore = document.getElementById("studentResultScore");
     const studentResultLevel = document.getElementById("studentResultLevel");
     const studentResultComment = document.getElementById("studentResultComment");
+    const studentResultRubricNotes = document.getElementById("studentResultRubricNotes");
     const studentResultTraining = document.getElementById("studentResultTraining");
     const studentResultNext = document.getElementById("studentResultNext");
     const teacherCode = document.getElementById("teacherCode");
@@ -3269,6 +3291,18 @@
       URL.revokeObjectURL(url);
     }
 
+    function getStudentRubricNotes(scores) {
+      const notes = [];
+      scores = scores || {};
+      if (Number(scores.idea || 0) <= 2) notes.push("وضحي الفكرة الرئيسة في جملة مباشرة قبل التوسع في التفاصيل.");
+      if (Number(scores.structure || 0) <= 2) notes.push("رتبي النص إلى مقدمة، عرض، وخاتمة حتى يظهر تسلسل الفكرة.");
+      if (Number(scores.cohesion || 0) <= 2) notes.push("أضيفي روابط بين الجمل مثل: لذلك، من جهة أخرى، كما أن.");
+      if (Number(scores.language || 0) <= 2) notes.push("راجعي الأخطاء اللغوية واستبدلي الكلمات العامة بمفردات أدق.");
+      if (Number(scores.impact || 0) <= 2) notes.push("اختمي النص بجملة تترك أثرًا أو معنى واضحًا لدى القارئ.");
+      if (!notes.length) notes.push("عمل جميل، طوري النص بإضافة أمثلة أعمق ولمسة أسلوبية أوضح.");
+      return notes;
+    }
+
     function renderStudentResult(work) {
       work = work || {};
       const hasScore = typeof work.rubricTotal === "number";
@@ -3280,6 +3314,14 @@
       }
       if (studentResultComment) {
         studentResultComment.textContent = work.teacherComment || "لم تضف المعلمة ملاحظة بعد.";
+      }
+      if (studentResultRubricNotes) {
+        const notes = hasScore
+          ? getStudentRubricNotes(work.rubric)
+          : ["ستظهر نقاط التحسين بعد تقييم المعلمة."];
+        studentResultRubricNotes.innerHTML = notes.map(function (note) {
+          return `<li>${note}</li>`;
+        }).join("");
       }
       const training = work.training || {};
       const latestTraining = Object.values(training).sort(function (a, b) {
@@ -3804,6 +3846,7 @@
     function setTeacherRubricMode(unlocked) {
       window.SIMT_TEACHER_UNLOCKED = unlocked;
       if (!teacherRubricCard || !teacherRubric) return;
+      teacherRubricCard.hidden = !unlocked;
       teacherRubricCard.classList.toggle("teacher-locked", !unlocked);
       teacherRubric.querySelectorAll("select").forEach(function (field) {
         field.disabled = !unlocked;
@@ -4116,7 +4159,8 @@
         field.value = "3";
         field.addEventListener("change", updateRubric);
       });
-      setTeacherRubricMode(sessionStorage.getItem("simtTeacherUnlocked") === "true");
+      const teacherWasUnlocked = sessionStorage.getItem("simtTeacherUnlocked") === "true";
+      setTeacherRubricMode(teacherWasUnlocked);
       if (window.SIMT_TEACHER_UNLOCKED) {
         updateRubric();
       } else {
@@ -4174,6 +4218,8 @@
           if (dashboardMessage) dashboardMessage.textContent = "رمز المعلمة غير صحيح.";
           return;
         }
+        sessionStorage.setItem("simtTeacherUnlocked", "true");
+        setTeacherRubricMode(true);
         if (dashboardPanel) dashboardPanel.hidden = false;
         if (dashboardMessage) dashboardMessage.textContent = "تم فتح لوحة المعلمة.";
         window.dispatchEvent(new CustomEvent("simtLoadTeacherDashboard"));
@@ -4400,6 +4446,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=20"></script>
+  <script type="module" src="simt-firebase.js?v=21"></script>
 </body>
 </html>
