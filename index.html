@@ -1086,6 +1086,62 @@
       font-weight: 800;
     }
 
+    .student-result-card {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 14px;
+      margin-top: 22px;
+      padding: 24px;
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.38);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .student-result-card h3 {
+      color: #f1d8ae;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .student-result-card p {
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.9;
+    }
+
+    .student-result-score {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(200, 157, 92, 0.3);
+    }
+
+    .student-result-score strong {
+      color: var(--gold);
+      font-size: 34px;
+    }
+
+    .student-result-details {
+      display: grid;
+      gap: 12px;
+    }
+
+    .result-note {
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(200, 157, 92, 0.26);
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .result-note span {
+      display: block;
+      margin-bottom: 4px;
+      color: #f1d8ae;
+      font-weight: 900;
+    }
+
     .teacher-rubric {
       margin-top: 22px;
       padding: 24px;
@@ -2221,6 +2277,7 @@
       .faq-grid,
       .rubric-grid,
       .rubric-output,
+      .student-result-card,
       .student-row,
       .training-board,
       .training-hints {
@@ -2625,6 +2682,32 @@
               <div class="stat">المستوى: <span id="level">كاتبة مبتدئة</span></div>
             </div>
             <div class="toast" id="editorToast" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="student-result-card" id="studentResultCard">
+          <div>
+            <h3>بطاقة نتيجتي</h3>
+            <p>ملخص تقييمك الحالي يظهر هنا بعد مراجعة المعلمة لنصك.</p>
+          </div>
+          <div class="student-result-details">
+            <div class="student-result-score">
+              <span>الدرجة والمستوى</span>
+              <strong id="studentResultScore">لم يتم التقييم</strong>
+              <p id="studentResultLevel">بانتظار تقييم المعلمة</p>
+            </div>
+            <div class="result-note">
+              <span>ملاحظة المعلمة</span>
+              <p id="studentResultComment">لم تضف المعلمة ملاحظة بعد.</p>
+            </div>
+            <div class="result-note">
+              <span>آخر تدريب فوري</span>
+              <p id="studentResultTraining">لا يوجد تدريب محفوظ بعد.</p>
+            </div>
+            <div class="result-note">
+              <span>خطوتك القادمة</span>
+              <p id="studentResultNext">اكتبي نصك في المحرر، ثم انتظري تقييم المعلمة.</p>
+            </div>
           </div>
         </div>
 
@@ -3069,6 +3152,11 @@
     const sectionStats = document.getElementById("sectionStats");
     const teacherRubric = document.getElementById("teacherRubric");
     const teacherRubricCard = document.getElementById("teacherRubricCard");
+    const studentResultScore = document.getElementById("studentResultScore");
+    const studentResultLevel = document.getElementById("studentResultLevel");
+    const studentResultComment = document.getElementById("studentResultComment");
+    const studentResultTraining = document.getElementById("studentResultTraining");
+    const studentResultNext = document.getElementById("studentResultNext");
     const teacherCode = document.getElementById("teacherCode");
     const unlockTeacherRubric = document.getElementById("unlockTeacherRubric");
     const lockTeacherRubric = document.getElementById("lockTeacherRubric");
@@ -3172,6 +3260,34 @@
       link.download = "simt-students.csv";
       link.click();
       URL.revokeObjectURL(url);
+    }
+
+    function renderStudentResult(work) {
+      work = work || {};
+      const hasScore = typeof work.rubricTotal === "number";
+      if (studentResultScore) {
+        studentResultScore.textContent = hasScore ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
+      }
+      if (studentResultLevel) {
+        studentResultLevel.textContent = hasScore ? `المستوى: ${work.rubricLevel || "غير محدد"}` : "بانتظار تقييم المعلمة";
+      }
+      if (studentResultComment) {
+        studentResultComment.textContent = work.teacherComment || "لم تضف المعلمة ملاحظة بعد.";
+      }
+      const training = work.training || {};
+      const latestTraining = Object.values(training).sort(function (a, b) {
+        return Number(b.evaluatedAt || 0) - Number(a.evaluatedAt || 0);
+      })[0];
+      if (studentResultTraining) {
+        studentResultTraining.textContent = latestTraining
+          ? `${latestTraining.title || "تدريب"} - ${latestTraining.score || 0} / ${latestTraining.maxScore || 0} - ${latestTraining.level || ""}`
+          : "لا يوجد تدريب محفوظ بعد.";
+      }
+      if (studentResultNext) {
+        studentResultNext.textContent = hasScore
+          ? (work.rubricTotal >= 17 ? "راجعي ملاحظة المعلمة، ثم طوري النص ليكون جاهزًا للنشر." : "ابدئي بتحسين الفكرة والتنظيم، ثم أعيدي إرسال النص للمعلمة.")
+          : "اكتبي نصك في المحرر، ثم انتظري تقييم المعلمة.";
+      }
     }
 
     const guideReplies = {
@@ -3902,6 +4018,7 @@
         }
       });
       renderTrainingPath(currentTraining);
+      renderStudentResult({ training });
     });
 
     window.addEventListener("simtTrainingSaveStatus", function (event) {
@@ -3994,6 +4111,10 @@
     window.addEventListener("simtRubricLoaded", function () {
       window.SIMT_HAS_TEACHER_EVALUATION = true;
       updateRubric();
+    });
+
+    window.addEventListener("simtStudentWorkLoaded", function (event) {
+      renderStudentResult((event.detail && event.detail.work) || {});
     });
 
     window.addEventListener("simtTeacherForceLock", function () {
@@ -4258,6 +4379,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=17"></script>
+  <script type="module" src="simt-firebase.js?v=18"></script>
 </body>
 </html>

@@ -230,6 +230,15 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
         detail: { message: `تم حفظ تقييم: ${teacherSelectedStudent.email}` }
       }));
+      window.dispatchEvent(new CustomEvent("simtStudentWorkLoaded", {
+        detail: {
+          work: {
+            rubricTotal: total,
+            rubricLevel: getRubricLevel(total),
+            teacherComment: teacherCommentInput ? teacherCommentInput.value.trim() : ""
+          }
+        }
+      }));
       return;
     }
 
@@ -320,6 +329,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         window.dispatchEvent(new CustomEvent(hasSavedRubric ? "simtRubricLoaded" : "simtRubricPending"));
       }
       setTeacherComment(work && work.teacherComment);
+      window.dispatchEvent(new CustomEvent("simtStudentWorkLoaded", {
+        detail: { work: work || {} }
+      }));
       window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
         detail: { training: (work && work.training) || {} }
       }));
