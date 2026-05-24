@@ -408,6 +408,10 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         const fallbackEmail = profile.email || item.email || "-";
         const fallbackName = fallbackEmail && fallbackEmail !== "-" ? fallbackEmail.split("@")[0] : "طالبة بدون اسم";
         const score = typeof work.rubricTotal === "number" ? `${work.rubricTotal} / 25` : "لم يتم التقييم";
+        const hasDraft = Boolean(work.draft && String(work.draft).trim());
+        const hasRubric = typeof work.rubricTotal === "number";
+        const status = hasRubric ? "تم تقييمها" : hasDraft ? "كتبت ولم تُقيّم" : "لم تكتب نصًا";
+        const statusClass = hasRubric ? "done" : hasDraft ? "waiting" : "empty";
         const trainingSummary = latestTraining
           ? `آخر تدريب فوري: ${latestTraining.title || "-"} - ${latestTraining.score || 0} / ${latestTraining.maxScore || 0} - ${latestTraining.level || "-"}`
           : "آخر تدريب فوري: لا يوجد";
@@ -417,6 +421,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
           email: fallbackEmail,
           level: work.rubricLevel || "بانتظار تقييم المعلمة",
           score,
+          status,
+          statusClass,
           updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt),
           trainingSummary
         };

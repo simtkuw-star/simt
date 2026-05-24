@@ -1308,6 +1308,17 @@
       outline: 0;
     }
 
+    .dashboard-search {
+      min-height: 42px;
+      min-width: min(270px, 100%);
+      padding: 8px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fff;
+      color: var(--navy);
+      font-weight: 800;
+      outline: 0;
+    }
+
     .dashboard-list {
       display: grid;
       gap: 12px;
@@ -1336,6 +1347,35 @@
     .student-row .mini-btn {
       margin-top: 0;
       white-space: nowrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      padding: 5px 10px;
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      color: var(--navy);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .status-pill.done {
+      color: #fff;
+      background: var(--navy);
+      border-color: var(--navy);
+    }
+
+    .status-pill.waiting {
+      color: var(--navy);
+      background: #f6e6c9;
+    }
+
+    .status-pill.empty {
+      color: #6b6258;
+      background: #f7f1e8;
     }
 
     .dashboard-empty {
@@ -2662,6 +2702,7 @@
           <div class="dashboard-toolbar">
             <span id="dashboardSummary">الطالبات: 0</span>
             <div class="dashboard-actions">
+              <input class="dashboard-search" id="dashboardSearch" type="search" placeholder="بحث بالاسم أو الإيميل">
               <select class="dashboard-filter" id="dashboardFilter">
                 <option value="all">كل الطالبات</option>
                 <option value="pending">لم يتم التقييم</option>
@@ -3006,6 +3047,7 @@
     const refreshDashboard = document.getElementById("refreshDashboard");
     const exportDashboard = document.getElementById("exportDashboard");
     const dashboardFilter = document.getElementById("dashboardFilter");
+    const dashboardSearch = document.getElementById("dashboardSearch");
     const teacherStudentList = document.getElementById("teacherStudentList");
     const dashboardSummary = document.getElementById("dashboardSummary");
     const trainingTabs = document.querySelectorAll(".training-tab");
@@ -3030,13 +3072,20 @@
 
     function filteredDashboardStudents() {
       const filter = dashboardFilter ? dashboardFilter.value : "all";
-      if (filter === "all") return dashboardStudents;
+      const query = dashboardSearch ? dashboardSearch.value.trim().toLowerCase() : "";
+      let students = dashboardStudents;
+      if (query) {
+        students = students.filter(function (student) {
+          return `${student.name || ""} ${student.email || ""}`.toLowerCase().includes(query);
+        });
+      }
+      if (filter === "all") return students;
       if (filter === "pending") {
-        return dashboardStudents.filter(function (student) {
+        return students.filter(function (student) {
           return student.score === "لم يتم التقييم";
         });
       }
-      return dashboardStudents.filter(function (student) {
+      return students.filter(function (student) {
         return student.level === filter;
       });
     }
@@ -3058,6 +3107,7 @@
             </div>
             <div>المستوى: ${student.level}</div>
             <div>الدرجة: ${student.score}</div>
+            <div><span class="status-pill ${student.statusClass || ""}">${student.status || "غير محدد"}</span></div>
             <div>آخر تحديث: ${student.updated}</div>
             <small>${student.trainingSummary || "آخر تدريب فوري: لا يوجد"}</small>
             <button class="mini-btn primary dashboard-evaluate" type="button" data-uid="${student.uid}">تقييم</button>
@@ -3069,7 +3119,7 @@
     function exportDashboardCsv() {
       const rows = filteredDashboardStudents();
       if (!rows.length) return;
-      const header = ["name", "email", "level", "score", "updated", "trainingSummary"];
+      const header = ["name", "email", "level", "score", "status", "updated", "trainingSummary"];
       const csv = [
         header.join(","),
         ...rows.map(function (student) {
@@ -3959,6 +4009,10 @@
       dashboardFilter.addEventListener("change", renderDashboardStudents);
     }
 
+    if (dashboardSearch) {
+      dashboardSearch.addEventListener("input", renderDashboardStudents);
+    }
+
     if (teacherStudentList) {
       teacherStudentList.addEventListener("click", function (event) {
         const button = event.target.closest(".dashboard-evaluate");
@@ -4165,6 +4219,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=15"></script>
+  <script type="module" src="simt-firebase.js?v=16"></script>
 </body>
 </html>
