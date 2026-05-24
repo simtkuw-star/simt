@@ -3180,6 +3180,7 @@
     const sectionStats = document.getElementById("sectionStats");
     const teacherRubric = document.getElementById("teacherRubric");
     const teacherRubricCard = document.getElementById("teacherRubricCard");
+    const studentResultCard = document.getElementById("studentResultCard");
     const studentResultScore = document.getElementById("studentResultScore");
     const studentResultLevel = document.getElementById("studentResultLevel");
     const studentResultComment = document.getElementById("studentResultComment");
@@ -3845,6 +3846,7 @@
 
     function setTeacherRubricMode(unlocked) {
       window.SIMT_TEACHER_UNLOCKED = unlocked;
+      if (studentResultCard) studentResultCard.hidden = unlocked;
       if (!teacherRubricCard || !teacherRubric) return;
       teacherRubricCard.hidden = !unlocked;
       teacherRubricCard.classList.toggle("teacher-locked", !unlocked);
@@ -4446,6 +4448,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=22"></script>
+  <script type="module" src="simt-firebase.js?v=23"></script>
 </body>
 </html>
