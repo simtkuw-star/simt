@@ -82,6 +82,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let isLoadingStudentWork = false;
   let hasLoadedStudentWork = false;
   let saveTimer = null;
+  let teacherSelectedStudent = null;
   const trainingLabels = {
     intro: "المقدمة",
     body: "العرض",
@@ -198,6 +199,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   function saveStudentWorkSoon() {
     if (!activeUser || !isVerifiedUser() || isLoadingStudentWork || !hasLoadedStudentWork) return;
+    if (teacherSelectedStudent && isTeacherUnlocked()) return;
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(saveStudentWork, 700);
   }
@@ -208,6 +210,23 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       showVerifyMessage();
       return;
     }
+    if (isTeacherUnlocked() && teacherSelectedStudent) {
+      const scores = collectRubricScores();
+      const total = rubricTotal(scores);
+      await update(ref(database), {
+        [`students/${teacherSelectedStudent.uid}/work/rubric`]: scores,
+        [`students/${teacherSelectedStudent.uid}/work/rubricTotal`]: total,
+        [`students/${teacherSelectedStudent.uid}/work/rubricLevel`]: getRubricLevel(total),
+        [`students/${teacherSelectedStudent.uid}/work/evaluatedAt`]: serverTimestamp(),
+        [`students/${teacherSelectedStudent.uid}/work/evaluatedBy`]: activeUser.email || activeUser.uid,
+        [`students/${teacherSelectedStudent.uid}/work/updatedAt`]: serverTimestamp()
+      });
+      window.dispatchEvent(new CustomEvent("simtRubricSaveStatus", {
+        detail: { message: `تم حفظ تقييم: ${teacherSelectedStudent.email}` }
+      }));
+      return;
+    }
+
     const payload = {
       draft: writingBox ? writingBox.value : "",
       updatedAt: serverTimestamp()
@@ -300,6 +319,59 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       refreshBasicEditorStats();
     } finally {
       hasLoadedStudentWork = true;
+      isLoadingStudentWork = false;
+    }
+  }
+
+  async function loadTeacherStudent(uid) {
+    if (!activeUser) {
+      window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+        detail: { message: "سجلي دخول حساب المعلمة أولًا." }
+      }));
+      return;
+    }
+    if (!uid) return;
+
+    isLoadingStudentWork = true;
+    try {
+      const snapshot = await get(ref(database, `students/${uid}`));
+      const student = snapshot.val();
+      if (!student) {
+        window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+          detail: { message: "لم أجد بيانات هذه الطالبة." }
+        }));
+        return;
+      }
+
+      const profile = student.profile || {};
+      const work = student.work || {};
+      const fallbackEmail = profile.email || student.email || "-";
+      teacherSelectedStudent = {
+        uid,
+        name: profile.name || student.name || fallbackEmail.split("@")[0] || "طالبة",
+        email: fallbackEmail
+      };
+
+      if (writingBox) {
+        writingBox.value = typeof work.draft === "string" ? work.draft : "";
+      }
+
+      rubricSelects.forEach(function (field) {
+        const savedValue = work.rubric ? work.rubric[field.dataset.rubric] : "";
+        field.value = savedValue ? String(savedValue) : "3";
+      });
+
+      window.dispatchEvent(new CustomEvent(work.rubric ? "simtRubricLoaded" : "simtRubricPending"));
+      window.dispatchEvent(new CustomEvent("simtTeacherSelectedStudent", {
+        detail: teacherSelectedStudent
+      }));
+      writingBox?.dispatchEvent(new Event("input", { bubbles: true }));
+      refreshBasicEditorStats();
+    } catch (error) {
+      window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
+        detail: { message: "تعذر تحميل نص الطالبة. تأكدي من صلاحية حساب المعلمة." }
+      }));
+    } finally {
       isLoadingStudentWork = false;
     }
   }
@@ -461,6 +533,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   onAuthStateChanged(auth, function (user) {
     if (user) {
       if (activeUid && activeUid !== user.uid) {
+        teacherSelectedStudent = null;
         resetStudentWorkspace();
       }
       window.dispatchEvent(new CustomEvent("simtTeacherForceLock"));
@@ -486,6 +559,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     } else {
       activeUser = null;
       activeUid = "";
+      teacherSelectedStudent = null;
       hasLoadedStudentWork = false;
       setLoggedOutUi();
       window.dispatchEvent(new CustomEvent("simtStudentContext", { detail: {} }));
@@ -529,6 +603,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     await saveStudentWork();
   });
   window.addEventListener("simtLoadTeacherDashboard", loadTeacherDashboard);
+  window.addEventListener("simtSelectTeacherStudent", function (event) {
+    loadTeacherStudent(event.detail && event.detail.uid);
+  });
 } else {
   showAuthMessage("Firebase غير مربوط بعد. الموقع يعمل حاليًا بوضع تجريبي محلي.");
 }

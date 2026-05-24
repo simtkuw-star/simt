@@ -1315,7 +1315,7 @@
 
     .student-row {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr 0.7fr 1fr;
+      grid-template-columns: 1.15fr 0.8fr 0.65fr 0.85fr 1fr auto;
       gap: 12px;
       align-items: center;
       padding: 16px;
@@ -1331,6 +1331,11 @@
       color: #6b6258;
       font-weight: 700;
       overflow-wrap: anywhere;
+    }
+
+    .student-row .mini-btn {
+      margin-top: 0;
+      white-space: nowrap;
     }
 
     .dashboard-empty {
@@ -3055,6 +3060,7 @@
             <div>الدرجة: ${student.score}</div>
             <div>آخر تحديث: ${student.updated}</div>
             <small>${student.trainingSummary || "آخر تدريب فوري: لا يوجد"}</small>
+            <button class="mini-btn primary dashboard-evaluate" type="button" data-uid="${student.uid}">تقييم</button>
           </article>
         `;
       }).join("");
@@ -3953,6 +3959,16 @@
       dashboardFilter.addEventListener("change", renderDashboardStudents);
     }
 
+    if (teacherStudentList) {
+      teacherStudentList.addEventListener("click", function (event) {
+        const button = event.target.closest(".dashboard-evaluate");
+        if (!button) return;
+        window.dispatchEvent(new CustomEvent("simtSelectTeacherStudent", {
+          detail: { uid: button.dataset.uid }
+        }));
+      });
+    }
+
     if (exportDashboard) {
       exportDashboard.addEventListener("click", exportDashboardCsv);
     }
@@ -3996,6 +4012,17 @@
     window.addEventListener("simtDashboardData", function (event) {
       dashboardStudents = (event.detail && event.detail.students) || [];
       renderDashboardStudents();
+    });
+
+    window.addEventListener("simtTeacherSelectedStudent", function (event) {
+      const detail = event.detail || {};
+      if (currentStudentLine && detail.email) {
+        currentStudentLine.textContent = `الطالبة المحددة للتقييم: ${detail.name || "طالبة"} - ${detail.email}`;
+      }
+      if (rubricSaveStatus) {
+        rubricSaveStatus.textContent = detail.email ? "تم تحميل نص الطالبة. عدلي الدرجات ثم اضغطي حفظ تقييم هذه الطالبة." : "";
+      }
+      document.getElementById("editor")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     if (unlockTeacherRubric) {
@@ -4138,6 +4165,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=14"></script>
+  <script type="module" src="simt-firebase.js?v=15"></script>
 </body>
 </html>

@@ -10,7 +10,27 @@
       ".read": "auth != null && root.child('teachers').child(auth.uid).val() == true",
       "$uid": {
         ".read": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)",
-        ".write": "auth != null && auth.uid == $uid"
+        ".write": "auth != null && auth.uid == $uid",
+        "work": {
+          "rubric": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
+          "rubricTotal": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
+          "rubricLevel": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
+          "evaluatedAt": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
+          "evaluatedBy": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
+          "updatedAt": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          }
+        }
       }
     },
     "siteStats": {
