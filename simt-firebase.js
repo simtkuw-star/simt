@@ -627,7 +627,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     showAuthMessage("تم تسجيل الخروج.");
   }, true);
 
-  onAuthStateChanged(auth, function (user) {
+  onAuthStateChanged(auth, async function (user) {
     if (user) {
       if (activeUid && activeUid !== user.uid) {
         stopStudentWorkListener();
@@ -648,8 +648,15 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       }
       activeUser = user;
       activeUid = user.uid;
+      let isTeacherAccount = false;
+      try {
+        const teacherSnapshot = await get(ref(database, `teachers/${user.uid}`));
+        isTeacherAccount = teacherSnapshot.val() === true;
+      } catch (error) {
+        isTeacherAccount = false;
+      }
       window.dispatchEvent(new CustomEvent("simtStudentContext", {
-        detail: { uid: user.uid, email: user.email, name: user.displayName || "" }
+        detail: { uid: user.uid, email: user.email, name: user.displayName || "", isTeacher: isTeacherAccount }
       }));
       setLoggedInUi(user);
       localStorage.setItem("simtLoggedIn", "true");

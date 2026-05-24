@@ -3227,6 +3227,7 @@
     const guideChips = document.querySelectorAll(".guide-chip");
     let currentTraining = "intro";
     let dashboardStudents = [];
+    window.SIMT_IS_TEACHER = false;
 
     function filteredDashboardStudents() {
       const filter = dashboardFilter ? dashboardFilter.value : "all";
@@ -3858,7 +3859,7 @@
       if (!teacherDashboardSection) return;
       const teacherLinkOpen = window.location.hash === "#teacher-dashboard";
       const teacherSessionOpen = sessionStorage.getItem("simtTeacherUnlocked") === "true";
-      teacherDashboardSection.hidden = !(teacherLinkOpen || teacherSessionOpen);
+      teacherDashboardSection.hidden = !(window.SIMT_IS_TEACHER && (teacherLinkOpen || teacherSessionOpen));
     }
 
     function setTeacherRubricMode(unlocked) {
@@ -4213,6 +4214,8 @@
 
     window.addEventListener("simtStudentContext", function (event) {
       const detail = event.detail || {};
+      window.SIMT_IS_TEACHER = Boolean(detail.isTeacher);
+      syncTeacherDashboardVisibility();
       if (!currentStudentLine) return;
       currentStudentLine.textContent = detail.email
         ? `الحساب الحالي: ${detail.email}`
@@ -4480,6 +4483,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=26"></script>
+  <script type="module" src="simt-firebase.js?v=27"></script>
 </body>
 </html>
