@@ -1732,10 +1732,32 @@
       box-shadow: var(--soft-shadow);
     }
 
+    .lexicon-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
     .lexicon-card h3 {
       color: var(--navy);
       font-size: 28px;
-      margin-bottom: 10px;
+      margin-bottom: 0;
+    }
+
+    .lexicon-total-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 8px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fffaf2;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
     }
 
     .lexicon-card p {
@@ -2953,7 +2975,10 @@
 
         <div class="lexicon-grid">
           <article class="lexicon-card">
-            <h3>معجم الكلمات</h3>
+            <div class="lexicon-heading">
+              <h3>معجم الكلمات</h3>
+              <span class="lexicon-total-badge" id="lexiconWordTotal">عدد كلمات المعجم: 0</span>
+            </div>
             <p>اكتبي كلمة أو اختاري من الكلمات المقترحة لعرض المعنى والمترادفات والتضاد.</p>
             <div class="search-row">
               <input id="wordSearch" type="text" placeholder="مثال: علم، إبداع، تقدير">
@@ -3228,6 +3253,7 @@
     const lookupWord = document.getElementById("lookupWord");
     const wordResult = document.getElementById("wordResult");
     const lexiconStats = document.getElementById("lexiconStats");
+    const lexiconWordTotal = document.getElementById("lexiconWordTotal");
     const insertWordExample = document.getElementById("insertWordExample");
     const wordChips = document.querySelectorAll(".word-chip");
     const topicSearch = document.getElementById("topicSearch");
@@ -4067,6 +4093,9 @@
       const roots = new Set(keys.map(function (key) {
         return dictionaryRootKey(dictionary[key]);
       }).filter(Boolean));
+      if (lexiconWordTotal) {
+        lexiconWordTotal.textContent = `عدد كلمات المعجم: ${keys.length}`;
+      }
       const parts = [
         `<span class="lexicon-stat">الكلمات: ${keys.length}</span>`,
         `<span class="lexicon-stat">الجذور: ${roots.size}</span>`
