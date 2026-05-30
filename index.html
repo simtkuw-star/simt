@@ -1657,6 +1657,49 @@
       align-items: stretch;
     }
 
+    .topic-picker {
+      margin-bottom: 22px;
+      padding: 22px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .topic-picker h3 {
+      color: var(--navy);
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .topic-picker p {
+      color: #5a5d62;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .topic-picker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .topic-pick {
+      min-height: 54px;
+      padding: 10px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      background: #fffaf2;
+      color: var(--navy);
+      cursor: pointer;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .topic-pick:hover {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+
     .smart-writing {
       margin-bottom: 22px;
       padding: 24px;
@@ -2381,7 +2424,8 @@
       .badge-row,
       .form-grid,
       .need-grid,
-      .stat-grid {
+      .stat-grid,
+      .topic-picker-grid {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -2414,7 +2458,8 @@
       .stats,
       .badge-row,
       .form-grid,
-      .need-grid {
+      .need-grid,
+      .topic-picker-grid {
         grid-template-columns: 1fr;
       }
 
@@ -2973,6 +3018,21 @@
           </div>
         </div>
 
+        <div class="topic-picker" aria-label="محاور المعجم">
+          <h3>كلمات حسب الموضوع</h3>
+          <p>اختاري محورًا جاهزًا، وسيعرض لك سِمْط كلمات مفردة وعبارات قوية وأفعال مناسبة لبناء المقال.</p>
+          <div class="topic-picker-grid">
+            <button class="topic-pick topic-chip" data-topic="تقدير العلم والعلماء">العلم والعلماء</button>
+            <button class="topic-pick topic-chip" data-topic="محاربة الغش">محاربة الغش</button>
+            <button class="topic-pick topic-chip" data-topic="بر الوالدين وصلة الرحم">بر الوالدين</button>
+            <button class="topic-pick topic-chip" data-topic="الولاء للوطن">الولاء للوطن</button>
+            <button class="topic-pick topic-chip" data-topic="الحوار واحترام الرأي الآخر">الحوار والتعايش</button>
+            <button class="topic-pick topic-chip" data-topic="النجاح والطموح">النجاح والطموح</button>
+            <button class="topic-pick topic-chip" data-topic="سمت طالب العلم">سمت طالب العلم</button>
+            <button class="topic-pick topic-chip" data-topic="إدارة الوقت">إدارة الوقت</button>
+          </div>
+        </div>
+
         <div class="lexicon-grid">
           <article class="lexicon-card">
             <div class="lexicon-heading">
@@ -3017,6 +3077,9 @@
               <button class="word-chip topic-chip" data-topic="بر الوالدين">بر الوالدين</button>
               <button class="word-chip topic-chip" data-topic="إدارة الوقت">إدارة الوقت</button>
               <button class="word-chip topic-chip" data-topic="الولاء للوطن">الوطن</button>
+              <button class="word-chip topic-chip" data-topic="النجاح والطموح">النجاح والطموح</button>
+              <button class="word-chip topic-chip" data-topic="الحوار والتعايش">الحوار</button>
+              <button class="word-chip topic-chip" data-topic="سمت طالب العلم">سمت طالب العلم</button>
             </div>
             <div class="result-box" id="topicResult">
               <h4>اكتبي موضوعك</h4>
@@ -4163,7 +4226,7 @@
 
     const topicBanks = [
       {
-        keywords: ["علم", "تعلم", "معرفة", "علماء", "تقدير", "طالب العلم", "أخلاق", "سمت"],
+        keywords: ["علم", "تعلم", "معرفة", "علماء", "تقدير", "طالب", "طالب العلم", "أخلاق", "سمت"],
         phrases: ["طالب العلم", "حسن الخلق", "جميل الخلق", "الأدب الرفيع", "السلوك القويم", "الأخلاق الفاضلة", "الصفات الحميدة", "القيم النبيلة", "الوقار الظاهر", "التواضع الجم", "الهيبة المحببة", "الرزانة الفكرية", "الشخصية المتزنة", "القدوة الحسنة", "العلم النافع", "الفهم العميق", "الفكر المستنير", "العقل الراجح", "السمت الحسن", "المظهر اللائق", "الخلق الكريم", "السيرة العطرة", "السلوك الراقي", "الأمانة العلمية", "المعرفة الواسعة", "الثقافة الراقية", "سمت العلماء", "زينة العلم", "تاج الأخلاق", "نور المعرفة", "وقار العلماء", "بهاء السلوك", "عنوان الأدب", "مرآة الأخلاق", "سمو النفس", "رقي الفكر", "جمال الروح", "شرف العلم", "طريق الفضيلة", "نبراس الهداية", "مشكاة العلم", "زاد المتعلم", "كنز الفضائل"],
         concepts: ["العلم", "المعرفة", "الثقافة", "الفهم", "الإدراك", "الحكمة", "الفطنة", "البصيرة", "الرشاد", "النباهة", "النبوغ", "الاجتهاد", "التحصيل", "التعلم", "التفقه", "التبحر", "التمكن", "الوقار", "الرزانة", "الاتزان", "التواضع", "الأدب", "الاحترام", "التقدير", "الإخلاص", "الأمانة", "الصدق", "الاستقامة", "النزاهة", "العفة", "الحياء", "المروءة", "الشهامة", "الفضيلة", "المكارم", "الأخلاق", "السلوك", "التهذيب", "التزكية", "السمو", "الرقي", "التألق", "القدوة", "المكانة", "المنزلة", "الهيبة", "الجدارة", "الكفاءة", "الوعي", "الاستنارة", "التأصيل", "التميز", "الريادة", "الفلاح", "النجاح", "الإتقان", "المواظبة", "المثابرة", "العطاء", "السمت", "النبل"],
         verbs: ["يتعلم", "يبحث", "يجتهد", "يكتشف", "يرتقي", "ينفع", "يبني", "يوجه", "يتأدب", "يتواضع", "يتقن", "يتحلى", "يصون", "يهذب"],
@@ -4285,11 +4348,13 @@
 
       const bank = findTopicBank(query) || {
         concepts: dictionaryWordsForTopic(query),
+        phrases: [],
         verbs: ["يناقش", "يوضح", "يعالج", "يبين", "يؤثر", "يسهم"],
         openings: [`يمثل موضوع ${query} قضية مهمة تستحق التأمل والكتابة بوعي.`]
       };
       const dictionaryMatches = dictionaryWordsForTopic(query);
-      const concepts = uniqueItems([...(bank.phrases || []), ...(bank.concepts || []), ...dictionaryMatches]).slice(0, 18);
+      const phrases = uniqueItems(bank.phrases || []).slice(0, 12);
+      const concepts = uniqueItems([...(bank.concepts || []), ...dictionaryMatches]).slice(0, 16);
       const verbs = uniqueItems(bank.verbs || []).slice(0, 8);
       const links = ["لذلك", "كما أن", "من جهة أخرى", "وبناءً على ذلك", "ومن هنا", "خلاصة القول"];
       currentTopicOpening = bank.openings[0] || `يمثل موضوع ${query} قضية مهمة تستحق التأمل والكتابة بوعي.`;
@@ -4298,7 +4363,11 @@
         <h4>كلمات مساعدة لموضوع: ${query}</h4>
         <div class="topic-result-grid">
           <div class="topic-result-group">
-            <h5>مفاهيم وكلمات</h5>
+            <h5>عبارات قوية</h5>
+            <ul>${(phrases.length ? phrases : concepts.slice(0, 8)).map(function (item) { return `<li>${item}</li>`; }).join("")}</ul>
+          </div>
+          <div class="topic-result-group">
+            <h5>كلمات مفردة</h5>
             <ul>${concepts.map(function (item) { return `<li>${item}</li>`; }).join("")}</ul>
           </div>
           <div class="topic-result-group">
