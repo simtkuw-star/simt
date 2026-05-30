@@ -10,28 +10,36 @@
       ".read": "auth != null && root.child('teachers').child(auth.uid).val() == true",
       "$uid": {
         ".read": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)",
-        ".write": "auth != null && auth.uid == $uid",
+        "profile": {
+          ".write": "auth != null && auth.uid == $uid"
+        },
         "work": {
-          "rubric": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
-          },
-          "rubricTotal": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
-          },
-          "rubricLevel": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
-          },
-          "teacherComment": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          "draft": {
+            ".write": "auth != null && auth.uid == $uid"
           },
           "submittedAt": {
             ".write": "auth != null && auth.uid == $uid"
           },
+          "training": {
+            ".write": "auth != null && auth.uid == $uid"
+          },
+          "rubric": {
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
+          },
+          "rubricTotal": {
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true && newData.isNumber()"
+          },
+          "rubricLevel": {
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
+          },
+          "teacherComment": {
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
+          },
           "evaluatedAt": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
           },
           "evaluatedBy": {
-            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+            ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
           },
           "updatedAt": {
             ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
@@ -42,7 +50,7 @@
     "siteStats": {
       ".read": false,
       "totalLogins": {
-        ".write": "auth != null && newData.isNumber()"
+        ".write": "auth != null && ((data.exists() && newData.val() == data.val() + 1) || (!data.exists() && newData.val() == 1))"
       },
       "lastLoginAt": {
         ".write": "auth != null"

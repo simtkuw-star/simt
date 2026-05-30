@@ -86,6 +86,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   let saveTimer = null;
   let teacherSelectedStudent = null;
   let studentWorkUnsubscribe = null;
+  let currentUserIsTeacher = false;
   const trainingLabels = {
     intro: "المقدمة",
     body: "العرض",
@@ -148,7 +149,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   }
 
   function isTeacherUnlocked() {
-    return window.SIMT_TEACHER_UNLOCKED === true;
+    return window.SIMT_TEACHER_UNLOCKED === true && currentUserIsTeacher === true;
   }
 
   function isVerifiedUser(user = activeUser) {
@@ -410,9 +411,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   }
 
   async function loadTeacherStudent(uid) {
-    if (!activeUser) {
+    if (!activeUser || !currentUserIsTeacher) {
       window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
-        detail: { message: "سجلي دخول حساب المعلمة أولًا." }
+        detail: { message: "سجلي دخول حساب المعلمة المضاف في Firebase أولًا." }
       }));
       return;
     }
@@ -478,9 +479,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   }
 
   async function loadTeacherDashboard() {
-    if (!activeUser) {
+    if (!activeUser || !currentUserIsTeacher) {
       window.dispatchEvent(new CustomEvent("simtDashboardStatus", {
-        detail: { message: "سجلي دخول حساب المعلمة أولًا." }
+        detail: { message: "هذه اللوحة لا تفتح إلا لحساب المعلمة المضاف في Firebase." }
       }));
       return;
     }
@@ -639,6 +640,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         stopStudentWorkListener();
         activeUser = null;
         activeUid = "";
+        currentUserIsTeacher = false;
         hasLoadedStudentWork = false;
         setLoggedOutUi();
         showVerifyMessage();
@@ -655,6 +657,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       } catch (error) {
         isTeacherAccount = false;
       }
+      currentUserIsTeacher = isTeacherAccount;
       window.dispatchEvent(new CustomEvent("simtStudentContext", {
         detail: { uid: user.uid, email: user.email, name: user.displayName || "", isTeacher: isTeacherAccount }
       }));
@@ -667,6 +670,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
       stopStudentWorkListener();
       activeUser = null;
       activeUid = "";
+      currentUserIsTeacher = false;
       teacherSelectedStudent = null;
       hasLoadedStudentWork = false;
       setLoggedOutUi();

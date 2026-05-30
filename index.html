@@ -4058,27 +4058,40 @@
       teacherDashboardSection.hidden = !(window.SIMT_IS_TEACHER && (teacherLinkOpen || teacherSessionOpen));
     }
 
+    function canOpenTeacherTools(messageTarget) {
+      if (window.SIMT_IS_TEACHER !== true) {
+        if (messageTarget) {
+          messageTarget.textContent = "هذه المساحة مخصصة لحساب المعلمة فقط. سجلي الدخول بحساب المعلمة المضاف في Firebase.";
+        }
+        sessionStorage.removeItem("simtTeacherUnlocked");
+        setTeacherRubricMode(false);
+        syncTeacherDashboardVisibility();
+        return false;
+      }
+      return true;
+    }
+
     function setTeacherRubricMode(unlocked) {
-      window.SIMT_TEACHER_UNLOCKED = unlocked;
+      window.SIMT_TEACHER_UNLOCKED = unlocked && window.SIMT_IS_TEACHER === true;
       if (studentResultCard) studentResultCard.hidden = unlocked || window.SIMT_IS_TEACHER;
       syncTeacherDashboardVisibility();
       if (!teacherRubricCard || !teacherRubric) return;
-      teacherRubricCard.hidden = !unlocked;
-      teacherRubricCard.classList.toggle("teacher-locked", !unlocked);
+      teacherRubricCard.hidden = !window.SIMT_TEACHER_UNLOCKED;
+      teacherRubricCard.classList.toggle("teacher-locked", !window.SIMT_TEACHER_UNLOCKED);
       teacherRubric.querySelectorAll("select").forEach(function (field) {
-        field.disabled = !unlocked;
+        field.disabled = !window.SIMT_TEACHER_UNLOCKED;
       });
-      if (unlockTeacherRubric) unlockTeacherRubric.hidden = unlocked;
-      if (lockTeacherRubric) lockTeacherRubric.hidden = !unlocked;
-      if (saveTeacherRubric) saveTeacherRubric.hidden = !unlocked;
-      if (teacherComment) teacherComment.readOnly = !unlocked;
-      if (rubricSaveStatus && !unlocked) rubricSaveStatus.textContent = "";
+      if (unlockTeacherRubric) unlockTeacherRubric.hidden = window.SIMT_TEACHER_UNLOCKED;
+      if (lockTeacherRubric) lockTeacherRubric.hidden = !window.SIMT_TEACHER_UNLOCKED;
+      if (saveTeacherRubric) saveTeacherRubric.hidden = !window.SIMT_TEACHER_UNLOCKED;
+      if (teacherComment) teacherComment.readOnly = !window.SIMT_TEACHER_UNLOCKED;
+      if (rubricSaveStatus && !window.SIMT_TEACHER_UNLOCKED) rubricSaveStatus.textContent = "";
       if (teacherCode) {
-        teacherCode.hidden = unlocked;
-        if (unlocked) teacherCode.value = "";
+        teacherCode.hidden = window.SIMT_TEACHER_UNLOCKED;
+        if (window.SIMT_TEACHER_UNLOCKED) teacherCode.value = "";
       }
       if (teacherGateMessage) {
-        teacherGateMessage.textContent = unlocked
+        teacherGateMessage.textContent = window.SIMT_TEACHER_UNLOCKED
           ? "وضع المعلمة مفتوح الآن. أي تغيير في الدرجات سيظهر للطالبة."
           : "بطاقة الدرجات مقفولة. تظهر للطالبة النتيجة والملاحظات فقط.";
       }
@@ -4681,6 +4694,7 @@
 
     if (openDashboard) {
       openDashboard.addEventListener("click", function () {
+        if (!canOpenTeacherTools(dashboardMessage)) return;
         const code = dashboardCode ? dashboardCode.value.trim() : "";
         if (code !== "SIMT-TEACHER") {
           if (dashboardMessage) dashboardMessage.textContent = "رمز المعلمة غير صحيح.";
@@ -4777,6 +4791,7 @@
 
     if (unlockTeacherRubric) {
       unlockTeacherRubric.addEventListener("click", function () {
+        if (!canOpenTeacherTools(teacherGateMessage)) return;
         const code = teacherCode ? teacherCode.value.trim() : "";
         if (code !== "SIMT-TEACHER") {
           if (teacherGateMessage) teacherGateMessage.textContent = "رمز المعلمة غير صحيح.";
