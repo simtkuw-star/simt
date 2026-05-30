@@ -1777,6 +1777,22 @@
       font-weight: 800;
     }
 
+    .lexicon-stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .lexicon-stat {
+      padding: 9px 12px;
+      background: rgba(15, 26, 43, 0.06);
+      border: 1px solid rgba(200, 157, 92, 0.28);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
     .result-box {
       min-height: 220px;
       padding: 18px;
@@ -2950,6 +2966,10 @@
               <button class="word-chip" data-word="بحث">بحث</button>
               <button class="word-chip" data-word="إنجاز">إنجاز</button>
             </div>
+            <div class="lexicon-stats" id="lexiconStats" aria-label="إحصاء المعجم">
+              <span class="lexicon-stat">الكلمات: 0</span>
+              <span class="lexicon-stat">الجذور: 0</span>
+            </div>
             <div class="result-box" id="wordResult">
               <h4>اختاري كلمة</h4>
               <p>ستظهر هنا المعاني والمترادفات والأضداد، مع مثال يمكن استخدامه في الكتابة.</p>
@@ -3207,6 +3227,7 @@
     const wordSearch = document.getElementById("wordSearch");
     const lookupWord = document.getElementById("lookupWord");
     const wordResult = document.getElementById("wordResult");
+    const lexiconStats = document.getElementById("lexiconStats");
     const insertWordExample = document.getElementById("insertWordExample");
     const wordChips = document.querySelectorAll(".word-chip");
     const topicSearch = document.getElementById("topicSearch");
@@ -4036,6 +4057,26 @@
       });
     }
 
+    function dictionaryRootKey(data) {
+      return normalizeArabicSearch((data && data.root) || "").replace(/\s+/g, "");
+    }
+
+    function updateLexiconStats(matchCount, query) {
+      if (!lexiconStats) return;
+      const keys = Object.keys(dictionary);
+      const roots = new Set(keys.map(function (key) {
+        return dictionaryRootKey(dictionary[key]);
+      }).filter(Boolean));
+      const parts = [
+        `<span class="lexicon-stat">الكلمات: ${keys.length}</span>`,
+        `<span class="lexicon-stat">الجذور: ${roots.size}</span>`
+      ];
+      if (typeof matchCount === "number" && query) {
+        parts.push(`<span class="lexicon-stat">نتائج "${query}": ${matchCount}</span>`);
+      }
+      lexiconStats.innerHTML = parts.join("");
+    }
+
     function renderWordCard(key, data) {
       currentWordExample = data.example || "";
       return `
@@ -4064,6 +4105,7 @@
 
       if (!matches.length) {
         currentWordExample = "";
+        updateLexiconStats(0, query);
         wordResult.innerHTML = `
           <h4>لم أجد كلمة مرتبطة</h4>
           <p>جربي كتابة الجذر مثل: علم، قدر، رشد، أو اختاري من الكلمات المقترحة.</p>
@@ -4072,13 +4114,15 @@
       }
 
       if (matches.length === 1) {
+        updateLexiconStats(1, query);
         wordResult.innerHTML = renderWordCard(matches[0], dictionary[matches[0]]);
         return;
       }
 
       currentWordExample = "";
+      updateLexiconStats(matches.length, query);
       wordResult.innerHTML = `
-        <h4>كلمات مرتبطة بـ "${query}"</h4>
+        <h4>كلمات مرتبطة بـ "${query}" (${matches.length})</h4>
         <p>اختاري كلمة لعرض معناها الكامل:</p>
         <div class="word-chips">
           ${matches.slice(0, 12).map(function (item) {
@@ -4642,6 +4686,8 @@
       });
     }
 
+    updateLexiconStats();
+
     if (lookupTopic && topicSearch) {
       lookupTopic.addEventListener("click", function () {
         renderTopicHelp(topicSearch.value);
@@ -4754,6 +4800,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=30"></script>
+  <script type="module" src="simt-firebase.js?v=31"></script>
 </body>
 </html>
