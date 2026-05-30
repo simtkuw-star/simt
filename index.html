@@ -1352,42 +1352,76 @@
     }
 
     .dashboard-toolbar {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
       align-items: center;
-      flex-wrap: wrap;
       margin-bottom: 16px;
       color: var(--navy);
       font-weight: 800;
     }
 
-    .dashboard-actions {
-      display: flex;
-      gap: 8px;
+    .dashboard-summary-pill {
+      display: inline-flex;
       align-items: center;
-      flex-wrap: wrap;
+      justify-content: center;
+      min-height: 48px;
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--navy);
+      border: 1px solid var(--navy);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .dashboard-actions {
+      display: grid;
+      grid-template-columns: minmax(230px, 1fr) minmax(180px, auto);
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: #fffaf2;
+      border: 1px solid rgba(200, 157, 92, 0.28);
+    }
+
+    .dashboard-control {
+      display: grid;
+      gap: 6px;
+    }
+
+    .dashboard-control label {
+      color: #6b6258;
+      font-size: 12px;
+      font-weight: 900;
     }
 
     .dashboard-filter {
-      min-height: 42px;
-      padding: 8px 10px;
-      border: 1px solid rgba(200, 157, 92, 0.44);
-      background: #fffaf2;
-      color: var(--navy);
-      font-weight: 800;
-      outline: 0;
-    }
-
-    .dashboard-search {
-      min-height: 42px;
-      min-width: min(270px, 100%);
+      min-height: 44px;
+      width: 100%;
       padding: 8px 12px;
       border: 1px solid rgba(200, 157, 92, 0.44);
       background: #fff;
       color: var(--navy);
       font-weight: 800;
       outline: 0;
+    }
+
+    .dashboard-search {
+      min-height: 44px;
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.44);
+      background: #fff;
+      color: var(--navy);
+      font-weight: 800;
+      outline: 0;
+    }
+
+    .dashboard-buttons {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
     }
 
     .dashboard-list {
@@ -2392,10 +2426,20 @@
       .rubric-output,
       .student-result-card,
       .student-row,
+      .dashboard-toolbar,
+      .dashboard-actions,
       .training-board,
       .training-hints,
       .training-rubric-mini {
         grid-template-columns: 1fr;
+      }
+
+      .dashboard-buttons {
+        justify-content: stretch;
+      }
+
+      .dashboard-buttons .mini-btn {
+        flex: 1;
       }
 
       .brand-stage {
@@ -2938,17 +2982,25 @@
 
         <div class="dashboard-panel" id="dashboardPanel" hidden>
           <div class="dashboard-toolbar">
-            <span id="dashboardSummary">الطالبات: 0</span>
+            <span class="dashboard-summary-pill" id="dashboardSummary">الطالبات: 0</span>
             <div class="dashboard-actions">
-              <input class="dashboard-search" id="dashboardSearch" type="search" placeholder="بحث بالاسم أو الإيميل">
-              <select class="dashboard-filter" id="dashboardFilter">
-                <option value="all">كل الطالبات</option>
-                <option value="pending">لم يتم التقييم</option>
-                <option value="كاتبة مبتدئة">كاتبة مبتدئة</option>
-                <option value="ناسجة أفكار">ناسجة أفكار</option>
-                <option value="لؤلؤة سِمْط">لؤلؤة سِمْط</option>
-                <option value="صانعة أثر">صانعة أثر</option>
-              </select>
+              <div class="dashboard-control">
+                <label for="dashboardSearch">بحث</label>
+                <input class="dashboard-search" id="dashboardSearch" type="search" placeholder="اسم الطالبة أو البريد الإلكتروني">
+              </div>
+              <div class="dashboard-control">
+                <label for="dashboardFilter">عرض</label>
+                <select class="dashboard-filter" id="dashboardFilter">
+                  <option value="all">كل الطالبات</option>
+                  <option value="pending">لم يتم التقييم</option>
+                  <option value="كاتبة مبتدئة">كاتبة مبتدئة</option>
+                  <option value="ناسجة أفكار">ناسجة أفكار</option>
+                  <option value="لؤلؤة سِمْط">لؤلؤة سِمْط</option>
+                  <option value="صانعة أثر">صانعة أثر</option>
+                </select>
+              </div>
+            </div>
+            <div class="dashboard-buttons">
               <button class="mini-btn" id="exportDashboard">تصدير CSV</button>
               <button class="mini-btn" id="refreshDashboard">تحديث القائمة</button>
             </div>
