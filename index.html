@@ -2910,15 +2910,15 @@
             <h3>معجم الكلمات</h3>
             <p>اكتبي كلمة أو اختاري من الكلمات المقترحة لعرض المعنى والمترادفات والتضاد.</p>
             <div class="search-row">
-              <input id="wordSearch" type="text" placeholder="مثال: أثر، إلهام، وعي">
+              <input id="wordSearch" type="text" placeholder="مثال: علم، إبداع، تقدير">
               <button class="mini-btn primary" id="lookupWord">ابحثي</button>
             </div>
             <div class="word-chips" aria-label="كلمات مقترحة">
-              <button class="word-chip" data-word="أثر">أثر</button>
-              <button class="word-chip" data-word="إلهام">إلهام</button>
-              <button class="word-chip" data-word="وعي">وعي</button>
-              <button class="word-chip" data-word="فكرة">فكرة</button>
-              <button class="word-chip" data-word="بلاغة">بلاغة</button>
+              <button class="word-chip" data-word="علم">علم</button>
+              <button class="word-chip" data-word="إبداع">إبداع</button>
+              <button class="word-chip" data-word="تقدير">تقدير</button>
+              <button class="word-chip" data-word="بحث">بحث</button>
+              <button class="word-chip" data-word="إنجاز">إنجاز</button>
             </div>
             <div class="result-box" id="wordResult">
               <h4>اختاري كلمة</h4>
@@ -3950,29 +3950,82 @@
       showToast("تمت الإضافة إلى المحرر.");
     }
 
+    function normalizeArabicSearch(value) {
+      return String(value || "")
+        .trim()
+        .replace(/[ًٌٍَُِّْـ]/g, "")
+        .replace(/[إأآا]/g, "ا")
+        .replace(/ى/g, "ي")
+        .replace(/ة/g, "ه")
+        .replace(/^ال/, "")
+        .toLowerCase();
+    }
+
+    function wordMatchesQuery(key, data, query) {
+      const cleanQuery = normalizeArabicSearch(query);
+      if (!cleanQuery) return false;
+      const haystack = [
+        key,
+        data.root || "",
+        data.meaning || "",
+        ...(data.synonyms || []),
+        ...(data.antonyms || [])
+      ].map(normalizeArabicSearch);
+      return haystack.some(function (item) {
+        const compact = item.replace(/\s+/g, "");
+        return item.includes(cleanQuery) || compact.includes(cleanQuery);
+      });
+    }
+
+    function renderWordCard(key, data) {
+      currentWordExample = data.example || "";
+      return `
+        <h4>${key}</h4>
+        ${data.root ? `<p><strong>الجذر:</strong> ${data.root}</p>` : ""}
+        <p><strong>المعنى:</strong> ${data.meaning}</p>
+        <p><strong>المترادفات:</strong> ${(data.synonyms || []).join("، ")}</p>
+        <p><strong>التضاد:</strong> ${(data.antonyms || []).join("، ")}</p>
+        <p><strong>مثال:</strong> ${data.example}</p>
+        ${data.source ? `<p><strong>المصدر:</strong> ${data.source}</p>` : ""}
+      `;
+    }
+
     function renderWord(word) {
       if (!wordResult) return;
-      const key = Object.keys(dictionary).find(function (item) {
-        return item === word.trim();
+      const query = word.trim();
+      const keys = Object.keys(dictionary);
+      const exactKey = keys.find(function (item) {
+        return normalizeArabicSearch(item) === normalizeArabicSearch(query);
       });
-      const data = dictionary[key];
+      const matches = exactKey
+        ? [exactKey]
+        : keys.filter(function (item) {
+          return wordMatchesQuery(item, dictionary[item], query);
+        });
 
-      if (!data) {
+      if (!matches.length) {
         currentWordExample = "";
         wordResult.innerHTML = `
-          <h4>لم أجد الكلمة</h4>
-          <p>جربي إحدى الكلمات المقترحة، أو أضيفي هذه الكلمة لاحقًا إلى معجم المشروع.</p>
+          <h4>لم أجد كلمة مرتبطة</h4>
+          <p>جربي كتابة الجذر مثل: علم، قدر، رشد، أو اختاري من الكلمات المقترحة.</p>
         `;
         return;
       }
 
-      currentWordExample = data.example;
+      if (matches.length === 1) {
+        wordResult.innerHTML = renderWordCard(matches[0], dictionary[matches[0]]);
+        return;
+      }
+
+      currentWordExample = "";
       wordResult.innerHTML = `
-        <h4>${key}</h4>
-        <p><strong>المعنى:</strong> ${data.meaning}</p>
-        <p><strong>المترادفات:</strong> ${data.synonyms.join("، ")}</p>
-        <p><strong>التضاد:</strong> ${data.antonyms.join("، ")}</p>
-        <p><strong>مثال:</strong> ${data.example}</p>
+        <h4>كلمات مرتبطة بـ "${query}"</h4>
+        <p>اختاري كلمة لعرض معناها الكامل:</p>
+        <div class="word-chips">
+          ${matches.slice(0, 12).map(function (item) {
+            return `<button class="word-chip related-word" type="button" data-word="${item}">${item}</button>`;
+          }).join("")}
+        </div>
       `;
     }
 
@@ -4406,6 +4459,17 @@
       });
     });
 
+    if (wordResult) {
+      wordResult.addEventListener("click", function (event) {
+        const chip = event.target.closest(".related-word");
+        if (!chip) return;
+        if (wordSearch) {
+          wordSearch.value = chip.dataset.word;
+        }
+        renderWord(chip.dataset.word);
+      });
+    }
+
     if (insertWordExample) {
       insertWordExample.addEventListener("click", function () {
         if (!currentWordExample) {
@@ -4487,6 +4551,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=28"></script>
+  <script type="module" src="simt-firebase.js?v=29"></script>
 </body>
 </html>
