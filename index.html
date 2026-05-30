@@ -1796,6 +1796,36 @@
       color: var(--gold);
     }
 
+    .topic-result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .topic-result-group {
+      padding: 14px;
+      background: rgba(255, 250, 242, 0.9);
+      border: 1px solid rgba(200, 157, 92, 0.24);
+    }
+
+    .topic-result-group h5 {
+      color: var(--navy);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .topic-result-group ul {
+      margin-right: 18px;
+    }
+
+    .topic-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .magazine-grid {
       display: grid;
       grid-template-columns: 1.16fr 0.84fr;
@@ -2929,6 +2959,29 @@
             </div>
           </article>
 
+          <article class="lexicon-card">
+            <h3>كلمات تساعدني في الموضوع</h3>
+            <p>اكتبي موضوع المقال، وستظهر لك كلمات وعبارات تساعدك على بناء الفكرة دون أن تكتب بدلًا عنك.</p>
+            <div class="search-row">
+              <input id="topicSearch" type="text" placeholder="مثال: تقدير العلم، الغش، بر الوالدين">
+              <button class="mini-btn primary" id="lookupTopic">اقترحي كلمات</button>
+            </div>
+            <div class="word-chips" aria-label="موضوعات مقترحة">
+              <button class="word-chip topic-chip" data-topic="تقدير العلم والعلماء">تقدير العلم</button>
+              <button class="word-chip topic-chip" data-topic="محاربة الغش">محاربة الغش</button>
+              <button class="word-chip topic-chip" data-topic="بر الوالدين">بر الوالدين</button>
+              <button class="word-chip topic-chip" data-topic="إدارة الوقت">إدارة الوقت</button>
+              <button class="word-chip topic-chip" data-topic="الولاء للوطن">الوطن</button>
+            </div>
+            <div class="result-box" id="topicResult">
+              <h4>اكتبي موضوعك</h4>
+              <p>ستظهر هنا كلمات مساعدة، أفعال مناسبة، عبارات افتتاحية، وروابط تصلح للمقال.</p>
+            </div>
+            <div class="mini-actions">
+              <button class="mini-btn" id="insertTopicOpening">انقلي جملة افتتاحية للمحرر</button>
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
@@ -3156,6 +3209,11 @@
     const wordResult = document.getElementById("wordResult");
     const insertWordExample = document.getElementById("insertWordExample");
     const wordChips = document.querySelectorAll(".word-chip");
+    const topicSearch = document.getElementById("topicSearch");
+    const lookupTopic = document.getElementById("lookupTopic");
+    const topicResult = document.getElementById("topicResult");
+    const topicChips = document.querySelectorAll(".topic-chip");
+    const insertTopicOpening = document.getElementById("insertTopicOpening");
     const rhetoricTabs = document.querySelectorAll(".rhetoric-tab");
     const rhetoricResult = document.getElementById("rhetoricResult");
     const insertRhetoricExample = document.getElementById("insertRhetoricExample");
@@ -3655,6 +3713,7 @@
     let currentRhetoricExample = rhetoric.simile.example;
     let currentNeed = "intro";
     let currentSmartSentence = writingNeeds.intro.sentences[0];
+    let currentTopicOpening = "";
     const sectionLabels = {
       about: "فكرة المشروع",
       academy: "معسكر سِمْط",
@@ -4025,6 +4084,119 @@
           ${matches.slice(0, 12).map(function (item) {
             return `<button class="word-chip related-word" type="button" data-word="${item}">${item}</button>`;
           }).join("")}
+        </div>
+      `;
+    }
+
+    const topicBanks = [
+      {
+        keywords: ["علم", "تعلم", "معرفة", "علماء", "تقدير"],
+        concepts: ["العلم", "المعرفة", "التعلم", "الاجتهاد", "التفوق", "الحكمة", "التقدير", "التبجيل"],
+        verbs: ["يتعلم", "يبحث", "يجتهد", "يكتشف", "يرتقي", "ينفع", "يبني", "يوجه"],
+        openings: [
+          "يعد تقدير العلم والعلماء من القيم التي تبني وعي الطالبة وتفتح أمامها أبواب المستقبل.",
+          "لا تنهض الأمم إلا حين تجعل العلم طريقًا للوعي والعمل والإنجاز."
+        ]
+      },
+      {
+        keywords: ["غش", "امانة", "أمانة", "اختبار", "صدق"],
+        concepts: ["الأمانة", "الصدق", "المسؤولية", "الثقة", "النزاهة", "الضمير", "العدل", "الالتزام"],
+        verbs: ["يرفض", "يحافظ", "يلتزم", "يصون", "يتحمل", "يواجه", "يختار", "يثبت"],
+        openings: [
+          "محاربة الغش ليست موقفًا دراسيًا فقط، بل قيمة تحفظ ثقة الطالبة بنفسها وبمجتمعها.",
+          "حين ترفض الطالبة الغش فإنها تختار الصدق طريقًا للتفوق الحقيقي."
+        ]
+      },
+      {
+        keywords: ["وطن", "الوطن", "ولاء", "انتماء"],
+        concepts: ["الوطن", "الولاء", "الانتماء", "المسؤولية", "العطاء", "الخدمة", "الاعتزاز", "المواطنة"],
+        verbs: ["ينتمي", "يخدم", "يحافظ", "يفخر", "يسهم", "يبادر", "يصون", "يبني"],
+        openings: [
+          "الولاء للوطن شعور صادق يظهر في العمل والمسؤولية لا في الكلمات وحدها.",
+          "يبدأ حب الوطن من وعي الطالبة بدورها في المحافظة عليه وخدمته."
+        ]
+      },
+      {
+        keywords: ["والدين", "الوالدين", "رحم", "بر"],
+        concepts: ["البر", "الإحسان", "الوفاء", "الرحمة", "صلة الرحم", "الاحترام", "العرفان", "المودة"],
+        verbs: ["يبر", "يحسن", "يرحم", "يصل", "يشكر", "يحترم", "يصغي", "يعين"],
+        openings: [
+          "بر الوالدين وصلة الرحم من القيم التي تمنح الإنسان اتزانًا ووفاءً في علاقاته.",
+          "لا يكتمل جمال الخلق إلا حين يظهر في بر الوالدين والإحسان إلى الأقارب."
+        ]
+      },
+      {
+        keywords: ["وقت", "الوقت", "ادارة", "إدارة", "تنظيم"],
+        concepts: ["الوقت", "التنظيم", "التخطيط", "الإنجاز", "الأولوية", "الالتزام", "الهدف", "الاستثمار"],
+        verbs: ["ينظم", "يخطط", "يستثمر", "ينجز", "يرتب", "يلتزم", "يوازن", "يبدأ"],
+        openings: [
+          "إدارة الوقت مهارة تساعد الطالبة على النجاح دون أن تفقد توازنها وراحتها.",
+          "حين تنظم الطالبة وقتها تصبح أهدافها أقرب وخطواتها أوضح."
+        ]
+      }
+    ];
+
+    function uniqueItems(items) {
+      return Array.from(new Set(items.filter(Boolean)));
+    }
+
+    function findTopicBank(topic) {
+      const cleanTopic = normalizeArabicSearch(topic);
+      return topicBanks.find(function (bank) {
+        return bank.keywords.some(function (keyword) {
+          return cleanTopic.includes(normalizeArabicSearch(keyword));
+        });
+      });
+    }
+
+    function dictionaryWordsForTopic(topic) {
+      return Object.keys(dictionary).filter(function (key) {
+        return wordMatchesQuery(key, dictionary[key], topic);
+      }).slice(0, 8);
+    }
+
+    function renderTopicHelp(topic) {
+      if (!topicResult) return;
+      const query = topic.trim();
+      if (!query) {
+        currentTopicOpening = "";
+        topicResult.innerHTML = `
+          <h4>اكتبي موضوعك</h4>
+          <p>مثال: تقدير العلم، محاربة الغش، إدارة الوقت.</p>
+        `;
+        return;
+      }
+
+      const bank = findTopicBank(query) || {
+        concepts: dictionaryWordsForTopic(query),
+        verbs: ["يناقش", "يوضح", "يعالج", "يبين", "يؤثر", "يسهم"],
+        openings: [`يمثل موضوع ${query} قضية مهمة تستحق التأمل والكتابة بوعي.`]
+      };
+      const dictionaryMatches = dictionaryWordsForTopic(query);
+      const concepts = uniqueItems([...(bank.concepts || []), ...dictionaryMatches]).slice(0, 12);
+      const verbs = uniqueItems(bank.verbs || []).slice(0, 8);
+      const links = ["لذلك", "كما أن", "من جهة أخرى", "وبناءً على ذلك", "ومن هنا", "خلاصة القول"];
+      currentTopicOpening = bank.openings[0] || `يمثل موضوع ${query} قضية مهمة تستحق التأمل والكتابة بوعي.`;
+
+      topicResult.innerHTML = `
+        <h4>كلمات مساعدة لموضوع: ${query}</h4>
+        <div class="topic-result-grid">
+          <div class="topic-result-group">
+            <h5>مفاهيم وكلمات</h5>
+            <ul>${concepts.map(function (item) { return `<li>${item}</li>`; }).join("")}</ul>
+          </div>
+          <div class="topic-result-group">
+            <h5>أفعال مناسبة</h5>
+            <ul>${verbs.map(function (item) { return `<li>${item}</li>`; }).join("")}</ul>
+          </div>
+          <div class="topic-result-group">
+            <h5>روابط</h5>
+            <ul>${links.map(function (item) { return `<li>${item}</li>`; }).join("")}</ul>
+          </div>
+          <div class="topic-result-group">
+            <h5>افتتاحية مقترحة</h5>
+            <p>${currentTopicOpening}</p>
+          </div>
         </div>
       `;
     }
@@ -4470,6 +4642,37 @@
       });
     }
 
+    if (lookupTopic && topicSearch) {
+      lookupTopic.addEventListener("click", function () {
+        renderTopicHelp(topicSearch.value);
+      });
+
+      topicSearch.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          renderTopicHelp(topicSearch.value);
+        }
+      });
+    }
+
+    topicChips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        if (topicSearch) {
+          topicSearch.value = chip.dataset.topic;
+        }
+        renderTopicHelp(chip.dataset.topic);
+      });
+    });
+
+    if (insertTopicOpening) {
+      insertTopicOpening.addEventListener("click", function () {
+        if (!currentTopicOpening) {
+          showToast("اكتبي موضوع المقال أولًا.");
+          return;
+        }
+        appendToEditor(currentTopicOpening);
+      });
+    }
+
     if (insertWordExample) {
       insertWordExample.addEventListener("click", function () {
         if (!currentWordExample) {
@@ -4551,6 +4754,6 @@
       setLoggedIn(loggedName);
     }
   </script>
-  <script type="module" src="simt-firebase.js?v=29"></script>
+  <script type="module" src="simt-firebase.js?v=30"></script>
 </body>
 </html>
