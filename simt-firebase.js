@@ -339,6 +339,42 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }));
   }
 
+  async function saveMagazineSubmission(detail) {
+    if (!activeUser || !detail) {
+      window.dispatchEvent(new CustomEvent("simtMagazineStatus", {
+        detail: { message: "سجلي الدخول أولًا حتى ينحفظ ترشيح المجلة." }
+      }));
+      return;
+    }
+
+    if (!isVerifiedUser()) {
+      window.dispatchEvent(new CustomEvent("simtMagazineStatus", {
+        detail: { message: "فعّلي بريدك الإلكتروني أولًا حتى ينحفظ ترشيح المجلة." }
+      }));
+      showVerifyMessage();
+      return;
+    }
+
+    const submission = {
+      title: String(detail.title || "نص بلا عنوان").slice(0, 90),
+      type: String(detail.type || "مقال").slice(0, 40),
+      name: String(detail.name || activeUser.displayName || "طالبة سِمْط").slice(0, 70),
+      wordCount: Number(detail.wordCount || 0),
+      excerpt: String(detail.excerpt || "").slice(0, 180),
+      status: "بانتظار اعتماد المعلمة",
+      submittedAt: serverTimestamp()
+    };
+
+    await update(ref(database, `students/${activeUser.uid}/work`), {
+      magazineSubmission: submission,
+      updatedAt: serverTimestamp()
+    });
+
+    window.dispatchEvent(new CustomEvent("simtMagazineStatus", {
+      detail: { message: "تم حفظ ترشيح المجلة. سيظهر للمعلمة ضمن حساب الطالبة للمراجعة." }
+    }));
+  }
+
   function publishStudentWork(work) {
     work = work || {};
     if (rubricSelects.length) {
@@ -355,6 +391,9 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }));
     window.dispatchEvent(new CustomEvent("simtTrainingLoaded", {
       detail: { training: work.training || {} }
+    }));
+    window.dispatchEvent(new CustomEvent("simtMagazineLoaded", {
+      detail: { submission: work.magazineSubmission || null }
     }));
   }
 
@@ -502,6 +541,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
         const hasDraft = Boolean(work.draft && String(work.draft).trim());
         const hasRubric = typeof work.rubricTotal === "number";
         const isSubmitted = Boolean(work.submittedAt);
+        const magazineSubmission = work.magazineSubmission || null;
         const status = hasRubric ? "تم تقييمها" : isSubmitted ? "مرسل للمراجعة" : hasDraft ? "مسودة محفوظة" : "لم تكتب نصًا";
         const statusClass = hasRubric ? "done" : isSubmitted ? "waiting" : hasDraft ? "draft" : "empty";
         const trainingSummary = latestTraining
@@ -516,7 +556,10 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
           status,
           statusClass,
           updated: formatDateValue(work.evaluatedAt || work.updatedAt || profile.updatedAt),
-          trainingSummary
+          trainingSummary,
+          magazineSummary: magazineSubmission
+            ? `المجلة: ${magazineSubmission.title || "نص بلا عنوان"} - ${magazineSubmission.status || "بانتظار اعتماد المعلمة"}`
+            : "المجلة: لا يوجد ترشيح"
         };
       }).sort(function (a, b) {
         return a.email.localeCompare(b.email, "ar");
@@ -689,6 +732,13 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     saveTrainingResult(event.detail).catch(function () {
       window.dispatchEvent(new CustomEvent("simtTrainingSaveStatus", {
         detail: { message: "تعذر حفظ التدريب الآن." }
+      }));
+    });
+  });
+  window.addEventListener("simtMagazineSubmit", function (event) {
+    saveMagazineSubmission(event.detail).catch(function () {
+      window.dispatchEvent(new CustomEvent("simtMagazineStatus", {
+        detail: { message: "تعذر حفظ ترشيح المجلة. تأكدي من تحديث Firebase Rules." }
       }));
     });
   });

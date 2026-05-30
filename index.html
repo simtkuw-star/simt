@@ -2064,6 +2064,31 @@
       line-height: 1.9;
     }
 
+    .submission-preview strong {
+      display: block;
+      color: var(--navy);
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .submission-status {
+      margin-top: 12px;
+      color: var(--navy);
+      font-weight: 800;
+      line-height: 1.8;
+    }
+
+    .submission-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.45);
+      background: rgba(200, 157, 92, 0.12);
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 900;
+    }
+
     .analytics-panel {
       display: grid;
       grid-template-columns: 0.9fr 1.1fr;
@@ -3163,9 +3188,10 @@
             </label>
           </div>
           <div class="mini-actions">
-            <button class="mini-btn primary" id="submitArticle">تجهيز بطاقة النشر</button>
+            <button class="mini-btn primary" id="submitArticle">ترشيح النص للمجلة</button>
           </div>
-          <div class="submission-preview" id="submissionPreview">ستظهر هنا بطاقة النشر بعد تعبئة البيانات وتجهيز المشاركة.</div>
+          <div class="submission-preview" id="submissionPreview">ستظهر هنا بطاقة الترشيح بعد تعبئة البيانات. لا يُنشر أي نص إلا بعد مراجعة المعلمة واعتماده.</div>
+          <div class="submission-status" id="magazineStatus">لم يتم إرسال ترشيح للمجلة بعد.</div>
         </div>
       </div>
     </section>
@@ -3324,6 +3350,7 @@
     const articleTitle = document.getElementById("articleTitle");
     const articleType = document.getElementById("articleType");
     const studentName = document.getElementById("studentName");
+    const magazineStatus = document.getElementById("magazineStatus");
     const wordSearch = document.getElementById("wordSearch");
     const lookupWord = document.getElementById("lookupWord");
     const wordResult = document.getElementById("wordResult");
@@ -3450,6 +3477,7 @@
             <div><span class="status-pill ${student.statusClass || ""}">${student.status || "غير محدد"}</span></div>
             <div>آخر تحديث: ${student.updated}</div>
             <small>${student.trainingSummary || "آخر تدريب فوري: لا يوجد"}</small>
+            <small>${student.magazineSummary || "المجلة: لا يوجد ترشيح"}</small>
             <button class="mini-btn primary dashboard-evaluate" type="button" data-uid="${student.uid}">تقييم</button>
           </article>
         `;
@@ -4815,15 +4843,38 @@
         const type = articleType.value;
         const name = studentName.value.trim() || "طالبة سِمْط";
         const wordTotal = words ? words.textContent : "0";
+        const excerpt = box ? box.value.trim().slice(0, 170) : "";
         submissionPreview.innerHTML = `
           <strong>${title}</strong><br>
           نوع المشاركة: ${type}<br>
           الاسم: ${name}<br>
           عدد كلمات المسودة الحالية: ${wordTotal}<br>
-          الحالة: جاهزة للمراجعة التحريرية.
+          الحالة: بانتظار اعتماد المعلمة.
+          <span class="submission-badge">ترشيح للمجلة</span>
         `;
+        window.dispatchEvent(new CustomEvent("simtMagazineSubmit", {
+          detail: { title, type, name, wordCount: Number(wordTotal || 0), excerpt }
+        }));
       });
     }
+
+    window.addEventListener("simtMagazineStatus", function (event) {
+      if (magazineStatus) magazineStatus.textContent = (event.detail && event.detail.message) || "";
+    });
+
+    window.addEventListener("simtMagazineLoaded", function (event) {
+      const data = (event.detail && event.detail.submission) || null;
+      if (!data || !submissionPreview) return;
+      submissionPreview.innerHTML = `
+        <strong>${data.title || "نص بلا عنوان"}</strong><br>
+        نوع المشاركة: ${data.type || "-"}<br>
+        الاسم: ${data.name || "طالبة سِمْط"}<br>
+        عدد الكلمات وقت الترشيح: ${data.wordCount || 0}<br>
+        الحالة: ${data.status || "بانتظار اعتماد المعلمة"}.
+        <span class="submission-badge">محفوظ في حسابك</span>
+      `;
+      if (magazineStatus) magazineStatus.textContent = "آخر ترشيح للمجلة محفوظ في حساب الطالبة.";
+    });
 
     if (lookupWord && wordSearch) {
       lookupWord.addEventListener("click", function () {

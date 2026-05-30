@@ -23,6 +23,9 @@
           "training": {
             ".write": "auth != null && auth.uid == $uid"
           },
+          "magazineSubmission": {
+            ".write": "auth != null && (auth.uid == $uid || root.child('teachers').child(auth.uid).val() == true)"
+          },
           "rubric": {
             ".write": "auth != null && root.child('teachers').child(auth.uid).val() == true"
           },
