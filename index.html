@@ -928,147 +928,6 @@
       font-weight: 900;
     }
 
-    .journey-panel {
-      display: grid;
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: 34px;
-      align-items: center;
-      padding: 42px;
-      background: var(--navy);
-      color: #fff;
-      box-shadow: var(--hard-shadow);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .journey-panel::before {
-      content: "";
-      position: absolute;
-      inset: auto -10% -38% auto;
-      width: 420px;
-      height: 420px;
-      border: 1px solid rgba(200, 157, 92, 0.42);
-      border-radius: 50%;
-    }
-
-    .journey-panel h2 {
-      color: #fff;
-      font-size: clamp(32px, 4vw, 48px);
-      margin-bottom: 16px;
-    }
-
-    .journey-panel p {
-      color: rgba(255, 255, 255, 0.76);
-      line-height: 2;
-      font-size: 18px;
-    }
-
-    .level-list {
-      display: grid;
-      gap: 16px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .level-row {
-      display: grid;
-      grid-template-columns: 128px 1fr 48px;
-      align-items: center;
-      gap: 14px;
-      color: #fff;
-    }
-
-    .bar {
-      height: 10px;
-      background: rgba(255, 255, 255, 0.14);
-      overflow: hidden;
-    }
-
-    .bar span {
-      display: block;
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), #f2d6a0);
-    }
-
-    .badge-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 22px;
-    }
-
-    .badge {
-      padding: 14px;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.62);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.06);
-      font-weight: 800;
-    }
-
-    .badge.unlocked {
-      color: var(--navy);
-      background: linear-gradient(135deg, #fff8e8, var(--gold));
-      border-color: var(--gold);
-    }
-
-    .journey-steps {
-      display: grid;
-      gap: 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .journey-step-card {
-      display: grid;
-      grid-template-columns: 54px 1fr auto;
-      gap: 14px;
-      align-items: center;
-      padding: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.07);
-    }
-
-    .journey-step-card span {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 42px;
-      height: 42px;
-      color: var(--navy);
-      background: linear-gradient(135deg, #fff8e8, var(--gold));
-      font-weight: 900;
-    }
-
-    .journey-step-card h3 {
-      color: #fff;
-      font-size: 19px;
-      margin-bottom: 4px;
-    }
-
-    .journey-step-card p {
-      font-size: 15px;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .journey-step-card a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 38px;
-      padding: 8px 12px;
-      color: #fff;
-      text-decoration: none;
-      border: 1px solid rgba(200, 157, 92, 0.72);
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .journey-step-card a:hover {
-      background: var(--gold);
-      color: var(--navy);
-    }
-
     .writer-studio {
       display: grid;
       grid-template-columns: 0.72fr 1.28fr;
@@ -2521,7 +2380,6 @@
       .concept-grid,
       .meaning-stack,
       .student-guide-grid,
-      .journey-panel,
       .writer-studio,
       .magazine-grid,
       .academy-board,
@@ -2536,8 +2394,7 @@
       .student-row,
       .training-board,
       .training-hints,
-      .training-rubric-mini,
-      .journey-step-card {
+      .training-rubric-mini {
         grid-template-columns: 1fr;
       }
 
@@ -2547,7 +2404,6 @@
 
       .pathway,
       .stats,
-      .badge-row,
       .form-grid,
       .need-grid,
       .stat-grid {
@@ -2581,7 +2437,6 @@
       .actions,
       .pathway,
       .stats,
-      .badge-row,
       .form-grid,
       .need-grid {
         grid-template-columns: 1fr;
@@ -2651,14 +2506,6 @@
         display: grid;
       }
 
-      .journey-panel {
-        padding: 28px;
-      }
-
-      .level-row {
-        grid-template-columns: 1fr;
-      }
-
       .search-row {
         grid-template-columns: 1fr;
       }
@@ -2683,7 +2530,6 @@
         <a href="#student-guide">دليل الطالبة</a>
         <a href="#academy">معسكر سِمْط</a>
         <a href="#training">تدريب فوري</a>
-        <a href="#journey">رحلة الطالبة</a>
         <a href="#editor">محرر الكتابة</a>
         <a href="#lexicon">المعجم</a>
         <a href="#magazine">المجلة</a>
@@ -2906,59 +2752,6 @@
               <strong>بانتظار النص</strong>
               <ul><li>اكتبي جزءًا من المقال ثم اضغطي تقييم فوري.</li></ul>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="journey">
-      <div class="shell">
-        <div class="journey-panel">
-          <div>
-            <h2>رحلة الطالبة في سِمْط</h2>
-            <p>اتبعي هذا المسار في كل مقال: تدريب قصير، اختيار كلمات أدق، كتابة المسودة، إرسالها للمعلمة، ثم قراءة النتيجة وتطوير النص.</p>
-          </div>
-          <div class="journey-steps">
-            <article class="journey-step-card">
-              <span>01</span>
-              <div>
-                <h3>ابدئي بتدريب قصير</h3>
-                <p>اختاري المقدمة أو العرض أو الخاتمة وخذي تقييمًا فوريًا قبل كتابة المقال كاملًا.</p>
-              </div>
-              <a href="#training">التدريب</a>
-            </article>
-            <article class="journey-step-card">
-              <span>02</span>
-              <div>
-                <h3>قوّي مفرداتك</h3>
-                <p>استخدمي المعجم لاختيار كلمات وعبارات أدق تناسب موضوع المقال.</p>
-              </div>
-              <a href="#lexicon">المعجم</a>
-            </article>
-            <article class="journey-step-card">
-              <span>03</span>
-              <div>
-                <h3>اكتبي المسودة</h3>
-                <p>انتقلي إلى محرر الكتابة، واكتبي نصك مع متابعة عدد الكلمات والحروف.</p>
-              </div>
-              <a href="#editor">المحرر</a>
-            </article>
-            <article class="journey-step-card">
-              <span>04</span>
-              <div>
-                <h3>أرسلي النص للمعلمة</h3>
-                <p>بعد المراجعة، اضغطي إرسال النص للمعلمة حتى يظهر في لوحة التقييم.</p>
-              </div>
-              <a href="#editor">الإرسال</a>
-            </article>
-            <article class="journey-step-card">
-              <span>05</span>
-              <div>
-                <h3>راجعي نتيجتك</h3>
-                <p>بعد تقييم المعلمة، تظهر الدرجة والملاحظة وخطوتك القادمة في بطاقة نتيجتك.</p>
-              </div>
-              <a href="#editor">النتيجة</a>
-            </article>
           </div>
         </div>
       </div>
@@ -3474,9 +3267,6 @@
     const reviewScore = document.getElementById("reviewScore");
     const lessonView = document.getElementById("lessonView");
     const lessonTabs = document.querySelectorAll(".lesson-tab");
-    const badgeWords = document.getElementById("badgeWords");
-    const badgeReview = document.getElementById("badgeReview");
-    const badgeSubmit = document.getElementById("badgeSubmit");
     const submitArticle = document.getElementById("submitArticle");
     const submissionPreview = document.getElementById("submissionPreview");
     const articleTitle = document.getElementById("articleTitle");
@@ -4015,7 +3805,6 @@
     const sectionLabels = {
       about: "فكرة المشروع",
       academy: "معسكر سِمْط",
-      journey: "رحلة الطالبة",
       editor: "محرر الكتابة",
       lexicon: "المعجم",
       magazine: "المجلة",
@@ -4200,9 +3989,6 @@
         level.textContent = "كاتبة مبتدئة";
       }
 
-      if (badgeWords) {
-        badgeWords.classList.toggle("unlocked", wordCount >= 50);
-      }
       updateAnalytics();
     }
 
@@ -4252,7 +4038,6 @@
       if (rubricNotes) rubricNotes.innerHTML = "<li>لم تضف المعلمة تقييمًا لهذا النص بعد.</li>";
       if (teacherComment) teacherComment.value = "";
       if (level) level.textContent = "بانتظار تقييم المعلمة";
-      if (badgeReview) badgeReview.classList.remove("unlocked");
     }
 
     function updateRubric() {
@@ -4290,10 +4075,6 @@
       rubricNotes.innerHTML = notes.map(function (note) {
         return `<li>${note}</li>`;
       }).join("");
-
-      if (badgeReview) {
-        badgeReview.classList.toggle("unlocked", total >= 17);
-      }
 
       window.dispatchEvent(new CustomEvent("simtTeacherRubricUpdated"));
     }
@@ -4761,9 +4542,6 @@
         const done = Array.from(checks).filter(function (item) { return item.checked; }).length;
         const score = Math.round((done / checks.length) * 100);
         reviewScore.textContent = `${score}%`;
-        if (badgeReview) {
-          badgeReview.classList.toggle("unlocked", score === 100);
-        }
       };
       checks.forEach(function (item, index) {
         item.checked = localStorage.getItem(`simtReview${index}`) === "true";
@@ -4977,9 +4755,6 @@
           عدد كلمات المسودة الحالية: ${wordTotal}<br>
           الحالة: جاهزة للمراجعة التحريرية.
         `;
-        if (badgeSubmit) {
-          badgeSubmit.classList.add("unlocked");
-        }
       });
     }
 
