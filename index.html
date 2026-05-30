@@ -1657,49 +1657,6 @@
       align-items: stretch;
     }
 
-    .topic-picker {
-      margin-bottom: 22px;
-      padding: 22px;
-      background: #fff;
-      border: 1px solid var(--line);
-      box-shadow: var(--soft-shadow);
-    }
-
-    .topic-picker h3 {
-      color: var(--navy);
-      font-size: 26px;
-      margin-bottom: 8px;
-    }
-
-    .topic-picker p {
-      color: #5a5d62;
-      line-height: 1.8;
-      margin-bottom: 16px;
-    }
-
-    .topic-picker-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .topic-pick {
-      min-height: 54px;
-      padding: 10px 12px;
-      border: 1px solid rgba(200, 157, 92, 0.42);
-      background: #fffaf2;
-      color: var(--navy);
-      cursor: pointer;
-      font-weight: 900;
-      text-align: center;
-    }
-
-    .topic-pick:hover {
-      background: var(--navy);
-      color: #fff;
-      border-color: var(--navy);
-    }
-
     .smart-writing {
       margin-bottom: 22px;
       padding: 24px;
@@ -2424,8 +2381,7 @@
       .badge-row,
       .form-grid,
       .need-grid,
-      .stat-grid,
-      .topic-picker-grid {
+      .stat-grid {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -2458,8 +2414,7 @@
       .stats,
       .badge-row,
       .form-grid,
-      .need-grid,
-      .topic-picker-grid {
+      .need-grid {
         grid-template-columns: 1fr;
       }
 
@@ -3015,21 +2970,6 @@
           <div class="mini-actions">
             <button class="mini-btn primary" id="insertSmartSentence">انقلي الجملة للمحرر</button>
             <button class="mini-btn" id="refreshSmartSuggestion">اقتراح آخر</button>
-          </div>
-        </div>
-
-        <div class="topic-picker" aria-label="محاور المعجم">
-          <h3>كلمات حسب الموضوع</h3>
-          <p>اختاري محورًا جاهزًا، وسيعرض لك سِمْط كلمات مفردة وعبارات قوية وأفعال مناسبة لبناء المقال.</p>
-          <div class="topic-picker-grid">
-            <button class="topic-pick topic-chip" data-topic="تقدير العلم والعلماء">العلم والعلماء</button>
-            <button class="topic-pick topic-chip" data-topic="محاربة الغش">محاربة الغش</button>
-            <button class="topic-pick topic-chip" data-topic="بر الوالدين وصلة الرحم">بر الوالدين</button>
-            <button class="topic-pick topic-chip" data-topic="الولاء للوطن">الولاء للوطن</button>
-            <button class="topic-pick topic-chip" data-topic="الحوار واحترام الرأي الآخر">الحوار والتعايش</button>
-            <button class="topic-pick topic-chip" data-topic="النجاح والطموح">النجاح والطموح</button>
-            <button class="topic-pick topic-chip" data-topic="سمت طالب العلم">سمت طالب العلم</button>
-            <button class="topic-pick topic-chip" data-topic="إدارة الوقت">إدارة الوقت</button>
           </div>
         </div>
 
