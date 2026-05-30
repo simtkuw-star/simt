@@ -2023,6 +2023,168 @@
       line-height: 1.85;
     }
 
+    .flip-magazine {
+      margin-top: 28px;
+      padding: 26px;
+      background:
+        linear-gradient(135deg, rgba(15, 26, 43, 0.96), rgba(31, 45, 64, 0.96)),
+        var(--navy);
+      border: 1px solid rgba(200, 157, 92, 0.42);
+      box-shadow: var(--hard-shadow);
+      color: #fff;
+    }
+
+    .flip-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .flip-head h3 {
+      font-size: clamp(28px, 3.8vw, 44px);
+      color: var(--ivory);
+    }
+
+    .flip-head p {
+      max-width: 620px;
+      color: rgba(255, 255, 255, 0.76);
+      line-height: 1.9;
+    }
+
+    .flip-book {
+      position: relative;
+      min-height: 430px;
+      perspective: 1600px;
+    }
+
+    .flip-page {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 0.86fr 1.14fr;
+      gap: 24px;
+      padding: 34px;
+      background:
+        linear-gradient(90deg, rgba(242, 237, 228, 0.96), rgba(255, 250, 242, 0.98)),
+        var(--ivory);
+      border: 1px solid rgba(200, 157, 92, 0.45);
+      color: var(--navy);
+      transform: rotateY(-12deg) translateX(-18px);
+      transform-origin: right center;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.55s ease, opacity 0.35s ease;
+      overflow: hidden;
+    }
+
+    .flip-page::before {
+      content: "";
+      position: absolute;
+      inset: 0 50% 0 auto;
+      width: 1px;
+      background: rgba(200, 157, 92, 0.28);
+      box-shadow: -18px 0 32px rgba(15, 26, 43, 0.12);
+    }
+
+    .flip-page.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: rotateY(0) translateX(0);
+      z-index: 2;
+    }
+
+    .flip-page.turning {
+      transform: rotateY(10deg) translateX(18px);
+    }
+
+    .flip-number {
+      color: var(--gold);
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .flip-page h4 {
+      margin: 12px 0 14px;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.25;
+    }
+
+    .flip-page p,
+    .flip-page li {
+      color: #42464d;
+      line-height: 2;
+      font-size: 17px;
+    }
+
+    .flip-page ul {
+      margin-right: 20px;
+    }
+
+    .flip-visual {
+      min-height: 260px;
+      border: 1px solid rgba(200, 157, 92, 0.34);
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.9), transparent 34%),
+        linear-gradient(145deg, rgba(15, 26, 43, 0.96), rgba(31, 45, 64, 0.94));
+      display: grid;
+      place-items: center;
+      color: var(--ivory);
+      text-align: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flip-visual::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(200, 157, 92, 0.5);
+      border-radius: 50%;
+    }
+
+    .flip-visual strong {
+      position: relative;
+      z-index: 1;
+      font-size: 52px;
+      color: var(--gold);
+    }
+
+    .flip-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .flip-dots {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .flip-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(200, 157, 92, 0.7);
+      background: transparent;
+    }
+
+    .flip-dot.active {
+      background: var(--gold);
+    }
+
+    .flip-counter {
+      color: rgba(255, 255, 255, 0.76);
+      font-weight: 800;
+    }
+
     .submission-panel {
       margin-top: 22px;
     }
@@ -2465,6 +2627,24 @@
 
       .dashboard-buttons .mini-btn {
         flex: 1;
+      }
+
+      .flip-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .flip-book {
+        min-height: 640px;
+      }
+
+      .flip-page {
+        grid-template-columns: 1fr;
+        padding: 22px;
+      }
+
+      .flip-page::before {
+        display: none;
       }
 
       .brand-stage {
@@ -3164,6 +3344,77 @@
           </div>
         </div>
 
+        <div class="flip-magazine" aria-label="مجلة سمط التفاعلية">
+          <div class="flip-head">
+            <div>
+              <h3>تصفحي العدد</h3>
+              <p>قسم مستقل يحاكي قلب صفحات المجلة، يعرض النصوص المعتمدة بروح تحريرية هادئة.</p>
+            </div>
+            <span class="flip-counter" id="flipCounter">1 / 5</span>
+          </div>
+
+          <div class="flip-book" id="flipBook">
+            <article class="flip-page active">
+              <div>
+                <span class="flip-number">الغلاف</span>
+                <h4>مجلة سِمْط</h4>
+                <p>نكتب لا لنملأ السطور، بل لنترك أثرًا واضحًا في الفكرة واللغة والوجدان.</p>
+              </div>
+              <div class="flip-visual"><strong>سِمْط</strong></div>
+            </article>
+            <article class="flip-page">
+              <div>
+                <span class="flip-number">مقال الشهر</span>
+                <h4>حين يصبح الحرف أثرًا</h4>
+                <p>مساحة للنص الأكثر نضجًا في الفكرة، والأوضح في البناء، والأقرب إلى روح المجلة.</p>
+              </div>
+              <div>
+                <ul>
+                  <li>فكرة واضحة ومتماسكة.</li>
+                  <li>لغة سليمة ومفردات منتقاة.</li>
+                  <li>خاتمة تترك معنى لدى القارئ.</li>
+                </ul>
+              </div>
+            </article>
+            <article class="flip-page">
+              <div>
+                <span class="flip-number">خاطرة أدبية</span>
+                <h4>نصوص وجدانية</h4>
+                <p>صفحة للنصوص القصيرة التي تكشف حس الطالبة وقدرتها على التصوير والتعبير.</p>
+              </div>
+              <div class="flip-visual"><strong>أثر</strong></div>
+            </article>
+            <article class="flip-page">
+              <div>
+                <span class="flip-number">مفردة العدد</span>
+                <h4>ثروة لغوية</h4>
+                <p>كل عدد يختار مفردة أصيلة، ومعناها، وموضعها المناسب في المقال.</p>
+              </div>
+              <div>
+                <ul>
+                  <li>المعنى الدقيق.</li>
+                  <li>مرادفات مناسبة.</li>
+                  <li>جملة سياقية قابلة للتطوير.</li>
+                </ul>
+              </div>
+            </article>
+            <article class="flip-page">
+              <div>
+                <span class="flip-number">دفتر المحررة</span>
+                <h4>ملاحظة تطوير</h4>
+                <p>تعليق قصير يساعد الطالبة على صقل نصها القادم بثقة، دون أن يفقد النص صوتها الخاص.</p>
+              </div>
+              <div class="flip-visual"><strong>نمو</strong></div>
+            </article>
+          </div>
+
+          <div class="flip-controls">
+            <button class="mini-btn" id="prevMagazinePage" type="button">الصفحة السابقة</button>
+            <div class="flip-dots" id="flipDots" aria-label="صفحات المجلة"></div>
+            <button class="mini-btn primary" id="nextMagazinePage" type="button">الصفحة التالية</button>
+          </div>
+        </div>
+
         <div class="submission-panel">
           <div class="panel-title">
             <h3>إرسال للمجلة</h3>
@@ -3351,6 +3602,11 @@
     const articleType = document.getElementById("articleType");
     const studentName = document.getElementById("studentName");
     const magazineStatus = document.getElementById("magazineStatus");
+    const flipPages = Array.from(document.querySelectorAll(".flip-page"));
+    const prevMagazinePage = document.getElementById("prevMagazinePage");
+    const nextMagazinePage = document.getElementById("nextMagazinePage");
+    const flipCounter = document.getElementById("flipCounter");
+    const flipDots = document.getElementById("flipDots");
     const wordSearch = document.getElementById("wordSearch");
     const lookupWord = document.getElementById("lookupWord");
     const wordResult = document.getElementById("wordResult");
@@ -3435,7 +3691,25 @@
     let currentTraining = "intro";
     let dashboardStudents = [];
     let studentResultWork = {};
+    let currentFlipPage = 0;
     window.SIMT_IS_TEACHER = false;
+
+    function renderFlipMagazine(nextIndex) {
+      if (!flipPages.length) return;
+      currentFlipPage = (nextIndex + flipPages.length) % flipPages.length;
+      flipPages.forEach(function (page, index) {
+        page.classList.toggle("active", index === currentFlipPage);
+        page.classList.toggle("turning", index < currentFlipPage);
+      });
+      if (flipCounter) {
+        flipCounter.textContent = `${currentFlipPage + 1} / ${flipPages.length}`;
+      }
+      if (flipDots) {
+        flipDots.innerHTML = flipPages.map(function (_, index) {
+          return `<button class="flip-dot ${index === currentFlipPage ? "active" : ""}" type="button" data-page="${index}" aria-label="صفحة ${index + 1}"></button>`;
+        }).join("");
+      }
+    }
 
     function filteredDashboardStudents() {
       const filter = dashboardFilter ? dashboardFilter.value : "all";
@@ -4875,6 +5149,28 @@
       `;
       if (magazineStatus) magazineStatus.textContent = "آخر ترشيح للمجلة محفوظ في حساب الطالبة.";
     });
+
+    renderFlipMagazine(0);
+
+    if (prevMagazinePage) {
+      prevMagazinePage.addEventListener("click", function () {
+        renderFlipMagazine(currentFlipPage - 1);
+      });
+    }
+
+    if (nextMagazinePage) {
+      nextMagazinePage.addEventListener("click", function () {
+        renderFlipMagazine(currentFlipPage + 1);
+      });
+    }
+
+    if (flipDots) {
+      flipDots.addEventListener("click", function (event) {
+        const dot = event.target.closest(".flip-dot");
+        if (!dot) return;
+        renderFlipMagazine(Number(dot.dataset.page || 0));
+      });
+    }
 
     if (lookupWord && wordSearch) {
       lookupWord.addEventListener("click", function () {
