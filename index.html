@@ -960,6 +960,63 @@
       border-color: var(--gold);
     }
 
+    .journey-steps {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .journey-step-card {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .journey-step-card span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      color: var(--navy);
+      background: linear-gradient(135deg, #fff8e8, var(--gold));
+      font-weight: 900;
+    }
+
+    .journey-step-card h3 {
+      color: #fff;
+      font-size: 19px;
+      margin-bottom: 4px;
+    }
+
+    .journey-step-card p {
+      font-size: 15px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .journey-step-card a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 8px 12px;
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(200, 157, 92, 0.72);
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .journey-step-card a:hover {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
     .writer-studio {
       display: grid;
       grid-template-columns: 0.72fr 1.28fr;
@@ -2368,7 +2425,8 @@
       .student-result-card,
       .student-row,
       .training-board,
-      .training-hints {
+      .training-hints,
+      .journey-step-card {
         grid-template-columns: 1fr;
       }
 
@@ -2700,35 +2758,49 @@
         <div class="journey-panel">
           <div>
             <h2>رحلة الطالبة في سِمْط</h2>
-            <p>من كاتبة مبتدئة إلى صانعة أثر، تظهر رحلة التطور عبر مستويات واضحة ومؤشرات تقدم تشجع الطالبة على الاستمرار.</p>
+            <p>اتبعي هذا المسار في كل مقال: تدريب قصير، اختيار كلمات أدق، كتابة المسودة، إرسالها للمعلمة، ثم قراءة النتيجة وتطوير النص.</p>
           </div>
-          <div class="level-list">
-            <div class="level-row">
-              <strong>كاتبة مبتدئة</strong>
-              <div class="bar"><span style="width: 92%"></span></div>
-              <span>92%</span>
-            </div>
-            <div class="level-row">
-              <strong>ناسجة أفكار</strong>
-              <div class="bar"><span style="width: 76%"></span></div>
-              <span>76%</span>
-            </div>
-            <div class="level-row">
-              <strong>لؤلؤة سِمْط</strong>
-              <div class="bar"><span style="width: 65%"></span></div>
-              <span>65%</span>
-            </div>
-            <div class="level-row">
-              <strong>صانعة أثر</strong>
-              <div class="bar"><span style="width: 38%"></span></div>
-              <span>38%</span>
-            </div>
-            <div class="badge-row">
-              <div class="badge unlocked" id="badgeStart">بداية</div>
-              <div class="badge" id="badgeWords">50 كلمة</div>
-              <div class="badge" id="badgeReview">مراجعة</div>
-              <div class="badge" id="badgeSubmit">نشر</div>
-            </div>
+          <div class="journey-steps">
+            <article class="journey-step-card">
+              <span>01</span>
+              <div>
+                <h3>ابدئي بتدريب قصير</h3>
+                <p>اختاري المقدمة أو العرض أو الخاتمة وخذي تقييمًا فوريًا قبل كتابة المقال كاملًا.</p>
+              </div>
+              <a href="#training">التدريب</a>
+            </article>
+            <article class="journey-step-card">
+              <span>02</span>
+              <div>
+                <h3>قوّي مفرداتك</h3>
+                <p>استخدمي المعجم لاختيار كلمات وعبارات أدق تناسب موضوع المقال.</p>
+              </div>
+              <a href="#lexicon">المعجم</a>
+            </article>
+            <article class="journey-step-card">
+              <span>03</span>
+              <div>
+                <h3>اكتبي المسودة</h3>
+                <p>انتقلي إلى محرر الكتابة، واكتبي نصك مع متابعة عدد الكلمات والحروف.</p>
+              </div>
+              <a href="#editor">المحرر</a>
+            </article>
+            <article class="journey-step-card">
+              <span>04</span>
+              <div>
+                <h3>أرسلي النص للمعلمة</h3>
+                <p>بعد المراجعة، اضغطي إرسال النص للمعلمة حتى يظهر في لوحة التقييم.</p>
+              </div>
+              <a href="#editor">الإرسال</a>
+            </article>
+            <article class="journey-step-card">
+              <span>05</span>
+              <div>
+                <h3>راجعي نتيجتك</h3>
+                <p>بعد تقييم المعلمة، تظهر الدرجة والملاحظة وخطوتك القادمة في بطاقة نتيجتك.</p>
+              </div>
+              <a href="#editor">النتيجة</a>
+            </article>
           </div>
         </div>
       </div>
