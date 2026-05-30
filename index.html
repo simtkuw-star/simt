@@ -1753,6 +1753,63 @@
       color: #f7d9a3;
     }
 
+    .training-rubric-mini {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .training-rubric-item {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .training-rubric-item b {
+      display: block;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .training-rubric-item span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 3px 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      border: 1px solid rgba(200, 157, 92, 0.45);
+    }
+
+    .training-rubric-item.good span {
+      color: var(--navy);
+      background: var(--gold);
+    }
+
+    .training-rubric-item.fix span {
+      color: #f7d9a3;
+      background: rgba(15, 26, 43, 0.28);
+    }
+
+    .training-rubric-item p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .training-next {
+      margin-top: 14px;
+      padding: 12px 14px;
+      color: var(--navy);
+      background: #fff8e8;
+      border: 1px solid rgba(200, 157, 92, 0.55);
+      font-weight: 900;
+      line-height: 1.8;
+    }
+
     .lexicon {
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.48), rgba(242, 237, 228, 0.92)),
@@ -2479,6 +2536,7 @@
       .student-row,
       .training-board,
       .training-hints,
+      .training-rubric-mini,
       .journey-step-card {
         grid-template-columns: 1fr;
       }
@@ -3672,33 +3730,36 @@
         prompt: "اكتبي مقدمة قصيرة تبدأ بجذب القارئ، ثم توضّح الفكرة الرئيسية التي سيتناولها المقال.",
         hints: ["ابدئي بسؤال أو مشهد أو عبارة لافتة.", "وضّحي الفكرة الرئيسية بجملة واحدة.", "اجعلي المقدمة تمهّد للعرض ولا تشرح كل التفاصيل."],
         checks: [
-          { test: text => countTrainingWords(text) >= 25, good: "الطول مناسب كبداية.", fix: "زيدي المقدمة قليلًا حتى توضّح الفكرة." },
-          { test: text => /[؟?]/.test(text) || /(تخيل|تأمل|حين|عندما|هل|لماذا)/.test(text), good: "فيها مدخل جاذب.", fix: "أضيفي سؤالًا أو مشهدًا قصيرًا يجذب القارئ." },
-          { test: text => /(أرى|أعتقد|الفكرة|الموضوع|يدل|أهمية|تتجلى)/.test(text), good: "الفكرة الرئيسية ظاهرة.", fix: "اكتبي جملة توضّح الفكرة الرئيسية بوضوح." },
-          { test: text => /(لذلك|ومن هنا|إضافة إلى ذلك|كما أن|لأن|إذ)/.test(text), good: "يوجد ربط مناسب.", fix: "أضيفي أداة ربط مثل: لذلك، ومن هنا، لأن." }
-        ]
+          { label: "الطول", test: text => countTrainingWords(text) >= 25, good: "الطول مناسب كبداية.", fix: "زيدي المقدمة قليلًا حتى توضّح الفكرة." },
+          { label: "الجذب", test: text => /[؟?]/.test(text) || /(تخيل|تأمل|حين|عندما|هل|لماذا)/.test(text), good: "فيها مدخل جاذب.", fix: "أضيفي سؤالًا أو مشهدًا قصيرًا يجذب القارئ." },
+          { label: "الفكرة", test: text => /(أرى|أعتقد|الفكرة|الموضوع|يدل|أهمية|تتجلى)/.test(text), good: "الفكرة الرئيسية ظاهرة.", fix: "اكتبي جملة توضّح الفكرة الرئيسية بوضوح." },
+          { label: "الربط", test: text => /(لذلك|ومن هنا|إضافة إلى ذلك|كما أن|لأن|إذ)/.test(text), good: "يوجد ربط مناسب.", fix: "أضيفي أداة ربط مثل: لذلك، ومن هنا، لأن." }
+        ],
+        next: "راجعي المدخل الجاذب والفكرة، ثم انقلي المقدمة إلى المحرر إذا أصبحت واضحة."
       },
       body: {
         title: "تدريب العرض",
         prompt: "اكتبي فقرة عرض واحدة: فكرة رئيسية، ثم مثال أو دليل، ثم شرح يربط المثال بالفكرة.",
         hints: ["ابدئي بجملة فكرة رئيسية.", "أضيفي مثالًا أو دليلًا.", "اشرحي لماذا المثال يدعم رأيك."],
         checks: [
-          { test: text => countTrainingWords(text) >= 40, good: "الفقرة فيها مساحة كافية للشرح.", fix: "وسّعي الفقرة بإضافة شرح أو مثال." },
-          { test: text => /(أولًا|من جهة|تتمثل|تكمن|الفكرة|السبب)/.test(text), good: "الفكرة الرئيسية موجودة.", fix: "ابدئي الفقرة بجملة فكرة رئيسية واضحة." },
-          { test: text => /(مثلًا|على سبيل المثال|ومن أمثلة ذلك|يدل على ذلك|نلاحظ)/.test(text), good: "يوجد مثال أو دليل.", fix: "أضيفي مثالًا بعبارة مثل: على سبيل المثال." },
-          { test: text => /(وهذا يعني|وهذا يدل|لأن|لذلك|ومن ثم|بناء على ذلك)/.test(text), good: "يوجد تحليل يربط المثال بالفكرة.", fix: "اشرحي المثال بجملة تبدأ مثل: وهذا يدل على..." }
-        ]
+          { label: "الشرح", test: text => countTrainingWords(text) >= 40, good: "الفقرة فيها مساحة كافية للشرح.", fix: "وسّعي الفقرة بإضافة شرح أو مثال." },
+          { label: "الفكرة", test: text => /(أولًا|من جهة|تتمثل|تكمن|الفكرة|السبب)/.test(text), good: "الفكرة الرئيسية موجودة.", fix: "ابدئي الفقرة بجملة فكرة رئيسية واضحة." },
+          { label: "الدليل", test: text => /(مثلًا|على سبيل المثال|ومن أمثلة ذلك|يدل على ذلك|نلاحظ)/.test(text), good: "يوجد مثال أو دليل.", fix: "أضيفي مثالًا بعبارة مثل: على سبيل المثال." },
+          { label: "التحليل", test: text => /(وهذا يعني|وهذا يدل|لأن|لذلك|ومن ثم|بناء على ذلك)/.test(text), good: "يوجد تحليل يربط المثال بالفكرة.", fix: "اشرحي المثال بجملة تبدأ مثل: وهذا يدل على..." }
+        ],
+        next: "قوّي الفقرة بإضافة مثال واضح، ثم اربطيه بجملة تحليل تشرح أثره."
       },
       ending: {
         title: "تدريب الخاتمة",
         prompt: "اكتبي خاتمة قصيرة تعود للفكرة الرئيسية دون تكرارها حرفيًا، وتنتهي بجملة تترك أثرًا.",
         hints: ["ابدئي بخلاصة لا تكرر المقدمة.", "اذكري الأثر أو الدرس.", "اختمي بجملة قوية وموجزة."],
         checks: [
-          { test: text => countTrainingWords(text) >= 20, good: "الخاتمة ليست قصيرة جدًا.", fix: "أضيفي جملة توضّح خلاصة الفكرة." },
-          { test: text => /(خلاصة|وفي الختام|ومن هنا|يتضح|نستنتج|يبقى)/.test(text), good: "فيها إشارة ختامية.", fix: "استخدمي عبارة ختامية مثل: ومن هنا يتضح." },
-          { test: text => /(أثر|يبقى|وعي|تغيير|قيمة|مسؤولية|ثقة)/.test(text), good: "فيها معنى أو أثر.", fix: "أضيفي جملة تترك أثرًا أو قيمة لدى القارئ." },
-          { test: text => !/(كما ذكرت في المقدمة|سأتحدث في هذا المقال)/.test(text), good: "لا تكرر عبارات تمهيدية ضعيفة.", fix: "احذفي العبارات التي تعيد المقدمة، واكتبي خلاصة جديدة." }
-        ]
+          { label: "الطول", test: text => countTrainingWords(text) >= 20, good: "الخاتمة ليست قصيرة جدًا.", fix: "أضيفي جملة توضّح خلاصة الفكرة." },
+          { label: "الخلاصة", test: text => /(خلاصة|وفي الختام|ومن هنا|يتضح|نستنتج|يبقى)/.test(text), good: "فيها إشارة ختامية.", fix: "استخدمي عبارة ختامية مثل: ومن هنا يتضح." },
+          { label: "الأثر", test: text => /(أثر|يبقى|وعي|تغيير|قيمة|مسؤولية|ثقة)/.test(text), good: "فيها معنى أو أثر.", fix: "أضيفي جملة تترك أثرًا أو قيمة لدى القارئ." },
+          { label: "عدم التكرار", test: text => !/(كما ذكرت في المقدمة|سأتحدث في هذا المقال)/.test(text), good: "لا تكرر عبارات تمهيدية ضعيفة.", fix: "احذفي العبارات التي تعيد المقدمة، واكتبي خلاصة جديدة." }
+        ],
+        next: "اجعلي الخاتمة خلاصة جديدة لا تكرر المقدمة، وانهيها بجملة أثر قصيرة."
       }
     };
 
@@ -3762,28 +3823,43 @@
         trainingResult.innerHTML = "<strong>لم تكتبي نصًا بعد</strong><ul><li>اكتبي التدريب أولًا ثم اضغطي تقييم فوري.</li></ul>";
         return;
       }
-      const notes = [];
+      const rubricItems = [];
       let score = 0;
       data.checks.forEach(function (check) {
-        if (check.test(text)) {
+        const passed = check.test(text);
+        if (passed) {
           score += 1;
-          notes.push({ type: "good", text: check.good });
-        } else {
-          notes.push({ type: "fix", text: check.fix });
         }
+        rubricItems.push({
+          label: check.label,
+          type: passed ? "good" : "fix",
+          status: passed ? "متقن" : "يحتاج تحسين",
+          text: passed ? check.good : check.fix
+        });
       });
-      getTrainingExtraNotes(text).forEach(function (note) {
-        notes.push(note);
-      });
+      const extraNotes = getTrainingExtraNotes(text);
       const levelText = score >= 4 ? "مؤثرة" : score === 3 ? "قوية" : score === 2 ? "مقبولة" : "تحتاج بناء";
       const percent = Math.round((score / data.checks.length) * 100);
+      const nextStep = extraNotes[0]?.text || data.next || "راجعي الملاحظات، ثم أعيدي صياغة الجزء بجملة أوضح.";
       trainingResult.innerHTML = `
         <strong>المستوى: ${levelText} - الدرجة: ${score} / ${data.checks.length}</strong>
         <div class="training-score">
           <span>نسبة تحقق معايير هذا الجزء: ${percent}%</span>
           <div class="training-score-track"><span style="width: ${percent}%"></span></div>
         </div>
-        <ul>${notes.map(function (note) { return `<li class="${note.type}">${note.text}</li>`; }).join("")}</ul>
+        <div class="training-rubric-mini">
+          ${rubricItems.map(function (item) {
+            return `
+              <div class="training-rubric-item ${item.type}">
+                <b>${item.label}</b>
+                <span>${item.status}</span>
+                <p>${item.text}</p>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        ${extraNotes.length ? `<ul>${extraNotes.map(function (note) { return `<li class="${note.type}">${note.text}</li>`; }).join("")}</ul>` : ""}
+        <div class="training-next">خطوتك الآن: ${nextStep}</div>
       `;
       localStorage.setItem(`simtTraining:${currentTraining}`, text);
       window.dispatchEvent(new CustomEvent("simtTrainingEvaluated", {
@@ -3796,7 +3872,7 @@
           maxScore: data.checks.length,
           percent,
           level: levelText,
-          notes: notes.map(function (note) { return note.text; })
+          notes: rubricItems.concat(extraNotes).map(function (note) { return note.text; })
         }
       }));
     }
