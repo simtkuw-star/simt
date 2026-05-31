@@ -2024,10 +2024,10 @@
     }
 
     .flip-magazine {
-      margin-top: 28px;
-      padding: 26px;
+      margin-top: 30px;
+      padding: clamp(18px, 3vw, 32px);
       background:
-        linear-gradient(135deg, rgba(15, 26, 43, 0.96), rgba(31, 45, 64, 0.96)),
+        linear-gradient(135deg, rgba(15, 26, 43, 0.98), rgba(31, 45, 64, 0.95)),
         var(--navy);
       border: 1px solid rgba(200, 157, 92, 0.42);
       box-shadow: var(--hard-shadow);
@@ -2035,57 +2035,75 @@
     }
 
     .flip-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: grid;
+      grid-template-columns: 1fr auto;
       gap: 18px;
+      align-items: end;
       margin-bottom: 22px;
     }
 
+    .flip-kicker,
+    .mag-page-label,
+    .issue-meta span {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
     .flip-head h3 {
-      font-size: clamp(28px, 3.8vw, 44px);
+      margin-top: 6px;
+      font-size: clamp(30px, 4vw, 50px);
       color: var(--ivory);
     }
 
     .flip-head p {
-      max-width: 620px;
+      max-width: 680px;
       color: rgba(255, 255, 255, 0.76);
       line-height: 1.9;
     }
 
     .flip-book {
       position: relative;
-      min-height: 430px;
-      perspective: 1600px;
+      min-height: 560px;
+      perspective: 1800px;
     }
 
     .flip-page {
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: 0.86fr 1.14fr;
-      gap: 24px;
-      padding: 34px;
+      grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.22fr);
+      gap: clamp(18px, 3vw, 34px);
+      padding: clamp(24px, 4vw, 46px);
       background:
-        linear-gradient(90deg, rgba(242, 237, 228, 0.96), rgba(255, 250, 242, 0.98)),
-        var(--ivory);
-      border: 1px solid rgba(200, 157, 92, 0.45);
+        linear-gradient(90deg, rgba(232, 224, 211, 0.64), transparent 10%, transparent 90%, rgba(15, 26, 43, 0.08)),
+        linear-gradient(115deg, #fffaf2 0%, #f7f1e8 54%, #fff 100%);
+      border: 1px solid rgba(200, 157, 92, 0.48);
       color: var(--navy);
-      transform: rotateY(-12deg) translateX(-18px);
+      transform: rotateY(-14deg) translateX(-22px);
       transform-origin: right center;
       opacity: 0;
       pointer-events: none;
-      transition: transform 0.55s ease, opacity 0.35s ease;
+      transition: transform 0.6s ease, opacity 0.35s ease;
       overflow: hidden;
     }
 
     .flip-page::before {
       content: "";
       position: absolute;
-      inset: 0 50% 0 auto;
+      top: 0;
+      bottom: 0;
+      right: 50%;
       width: 1px;
       background: rgba(200, 157, 92, 0.28);
-      box-shadow: -18px 0 32px rgba(15, 26, 43, 0.12);
+      box-shadow: -22px 0 36px rgba(15, 26, 43, 0.12), 22px 0 36px rgba(255, 255, 255, 0.65);
+    }
+
+    .flip-page::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(200, 157, 92, 0.24);
+      pointer-events: none;
     }
 
     .flip-page.active {
@@ -2096,19 +2114,63 @@
     }
 
     .flip-page.turning {
-      transform: rotateY(10deg) translateX(18px);
+      transform: rotateY(12deg) translateX(20px);
     }
 
-    .flip-number {
-      color: var(--gold);
+    .mag-cover {
+      color: var(--ivory);
+      background:
+        linear-gradient(90deg, rgba(255, 250, 242, 0.98) 0 48%, rgba(15, 26, 43, 0.96) 48% 100%),
+        var(--navy);
+    }
+
+    .mag-cover::after {
+      border-color: rgba(200, 157, 92, 0.36);
+    }
+
+    .mag-cover .mag-page-body,
+    .mag-cover .mag-page-label {
+      color: var(--ivory);
+    }
+
+    .mag-logo-mark {
+      display: grid;
+      place-items: center;
+      width: min(280px, 70%);
+      aspect-ratio: 1;
+      margin: auto;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      color: var(--navy);
+      background: #fffaf2;
+      box-shadow: 0 24px 70px rgba(15, 26, 43, 0.24);
+      font-size: clamp(52px, 8vw, 92px);
       font-weight: 900;
-      letter-spacing: 0;
+    }
+
+    .issue-meta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .issue-meta span {
+      padding: 7px 12px;
+      border: 1px solid rgba(200, 157, 92, 0.45);
+      background: rgba(200, 157, 92, 0.09);
     }
 
     .flip-page h4 {
       margin: 12px 0 14px;
-      font-size: clamp(28px, 4vw, 48px);
-      line-height: 1.25;
+      font-size: clamp(32px, 5vw, 68px);
+      line-height: 1.15;
+    }
+
+    .flip-page h5 {
+      color: var(--navy);
+      font-size: 22px;
+      margin-bottom: 10px;
     }
 
     .flip-page p,
@@ -2118,39 +2180,88 @@
       font-size: 17px;
     }
 
+    .mag-cover p {
+      color: rgba(255, 255, 255, 0.78);
+    }
+
     .flip-page ul {
       margin-right: 20px;
     }
 
-    .flip-visual {
-      min-height: 260px;
-      border: 1px solid rgba(200, 157, 92, 0.34);
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.9), transparent 34%),
-        linear-gradient(145deg, rgba(15, 26, 43, 0.96), rgba(31, 45, 64, 0.94));
-      display: grid;
-      place-items: center;
-      color: var(--ivory);
-      text-align: center;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .flip-visual::after {
-      content: "";
-      position: absolute;
-      width: 220px;
-      height: 220px;
-      border: 1px solid rgba(200, 157, 92, 0.5);
-      border-radius: 50%;
-    }
-
-    .flip-visual strong {
+    .mag-page-aside,
+    .mag-page-body {
       position: relative;
       z-index: 1;
-      font-size: 52px;
+    }
+
+    .mag-page-aside {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+      min-height: 100%;
+    }
+
+    .editor-note {
+      padding: 24px;
+      border-right: 4px solid var(--gold);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .editor-note p {
+      font-size: 20px;
+      color: var(--navy);
+    }
+
+    .mag-toc {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .toc-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(200, 157, 92, 0.28);
+      color: var(--navy);
+      font-weight: 900;
+    }
+
+    .article-columns {
+      columns: 2 240px;
+      column-gap: 28px;
+    }
+
+    .pull-quote {
+      margin-top: 18px;
+      padding: 20px;
+      color: var(--navy);
+      background: rgba(200, 157, 92, 0.12);
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      font-size: 24px;
+      font-weight: 900;
+      line-height: 1.8;
+    }
+
+    .word-feature {
+      display: grid;
+      gap: 16px;
+      padding: 24px;
+      background: var(--navy);
+      color: #fff;
+      border: 1px solid rgba(200, 157, 92, 0.5);
+    }
+
+    .word-feature strong {
       color: var(--gold);
+      font-size: clamp(44px, 7vw, 78px);
+    }
+
+    .word-feature p {
+      color: rgba(255, 255, 255, 0.82);
     }
 
     .flip-controls {
@@ -3350,61 +3461,100 @@
               <h3>تصفحي العدد</h3>
               <p>قسم مستقل يحاكي قلب صفحات المجلة، يعرض النصوص المعتمدة بروح تحريرية هادئة.</p>
             </div>
-            <span class="flip-counter" id="flipCounter">1 / 5</span>
+            <span class="flip-counter" id="flipCounter">صفحة 1 من 6</span>
           </div>
 
           <div class="flip-book" id="flipBook">
-            <article class="flip-page active">
-              <div>
-                <span class="flip-number">الغلاف</span>
-                <h4>مجلة سِمْط</h4>
-                <p>نكتب لا لنملأ السطور، بل لنترك أثرًا واضحًا في الفكرة واللغة والوجدان.</p>
+            <article class="flip-page mag-cover active">
+              <div class="mag-page-aside">
+                <div>
+                  <span class="mag-page-label">العدد 1</span>
+                  <h4>مجلة سِمْط</h4>
+                  <p>نشرة أدبية تربوية تعرض نصوص الطالبات المعتمدة، وتحتفي بالكلمة حين تصبح أثرًا.</p>
+                </div>
+                <div class="issue-meta">
+                  <span>مايو 2026</span>
+                  <span>إبداعات الطالبات</span>
+                  <span>لغة ووعي وأثر</span>
+                </div>
               </div>
-              <div class="flip-visual"><strong>سِمْط</strong></div>
+              <div class="mag-logo-mark">سِمْط</div>
             </article>
+
             <article class="flip-page">
-              <div>
-                <span class="flip-number">مقال الشهر</span>
+              <div class="mag-page-aside">
+                <span class="mag-page-label">افتتاحية</span>
+                <h4>كلمة رئيسة التحرير</h4>
+                <p>كل عدد من مجلة سِمْط هو مساحة صغيرة ليتحوّل التدريب إلى أثر منشور، وتتحول الملاحظة إلى نمو.</p>
+              </div>
+              <div class="mag-page-body">
+                <div class="editor-note">
+                  <p>نؤمن أن النص الجميل لا يولد كاملًا من أول محاولة، بل ينضج بالمراجعة، واتساع المعجم، وصدق الفكرة.</p>
+                </div>
+                <div class="pull-quote">نحن لا نبحث عن نص بلا خطأ، بل عن صوت يتطور بثقة.</div>
+              </div>
+            </article>
+
+            <article class="flip-page">
+              <div class="mag-page-aside">
+                <span class="mag-page-label">فهرس العدد</span>
+                <h4>في هذا العدد</h4>
+                <p>صفحات قصيرة، واضحة، وقابلة للتحديث عند اعتماد مشاركات الطالبات.</p>
+              </div>
+              <div class="mag-page-body">
+                <div class="mag-toc">
+                  <div class="toc-row"><span>01</span><span>كلمة رئيسة التحرير</span><span>ص 2</span></div>
+                  <div class="toc-row"><span>02</span><span>مقال الشهر</span><span>ص 4</span></div>
+                  <div class="toc-row"><span>03</span><span>خاطرة أدبية</span><span>ص 5</span></div>
+                  <div class="toc-row"><span>04</span><span>مفردة العدد</span><span>ص 6</span></div>
+                  <div class="toc-row"><span>05</span><span>دفتر المحررة</span><span>ص 7</span></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="flip-page">
+              <div class="mag-page-aside">
+                <span class="mag-page-label">مقال الشهر</span>
                 <h4>حين يصبح الحرف أثرًا</h4>
-                <p>مساحة للنص الأكثر نضجًا في الفكرة، والأوضح في البناء، والأقرب إلى روح المجلة.</p>
+                <p>ينشر هنا النص المعتمد بعد مراجعة المعلمة، مع إبراز سبب اختياره ونقاط قوته.</p>
               </div>
-              <div>
+              <div class="mag-page-body article-columns">
+                <p>النص المتميز لا يعتمد على كثرة الكلمات وحدها، بل على وضوح الفكرة وحسن ترتيبها. حين تعرف الكاتبة ماذا تريد أن تقول، يصبح كل سطر خطوة في طريق المعنى.</p>
+                <p>في مجلة سِمْط نحتفي بالنص الذي يكشف وعي الطالبة، ويستخدم اللغة بصدق، ويترك عند القارئ أثرًا من تفكير أو شعور أو سؤال.</p>
+                <div class="pull-quote">قوة المقال تبدأ من فكرة واضحة، وتنتهي بخاتمة لا تُنسى.</div>
+              </div>
+            </article>
+
+            <article class="flip-page">
+              <div class="mag-page-aside">
+                <span class="mag-page-label">مفردة العدد</span>
+                <h4>أثر</h4>
+                <p>مفردة قصيرة، لكنها تصلح لبناء جملة عميقة وخاتمة مؤثرة.</p>
+              </div>
+              <div class="mag-page-body">
+                <div class="word-feature">
+                  <strong>أثر</strong>
+                  <p>ما يبقى في النفس أو الواقع بعد قول أو فعل أو موقف.</p>
+                  <p>مثال: لا تقاس قيمة الكلمة بطولها، بل بالأثر الذي تتركه في عقل القارئ ووجدانه.</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="flip-page">
+              <div class="mag-page-aside">
+                <span class="mag-page-label">دفتر المحررة</span>
+                <h4>قبل النشر</h4>
+                <p>مراجعة صغيرة تجعل النص أقرب إلى المجلة وأكثر نضجًا.</p>
+              </div>
+              <div class="mag-page-body">
                 <ul>
-                  <li>فكرة واضحة ومتماسكة.</li>
-                  <li>لغة سليمة ومفردات منتقاة.</li>
-                  <li>خاتمة تترك معنى لدى القارئ.</li>
+                  <li>هل يظهر رأيك بوضوح من المقدمة؟</li>
+                  <li>هل كل فقرة تحمل فكرة واحدة؟</li>
+                  <li>هل استخدمتِ مفردات دقيقة بدل الكلمات العامة؟</li>
+                  <li>هل تركت الخاتمة أثرًا واضحًا؟</li>
                 </ul>
+                <div class="pull-quote">راجعي النص مرة أخيرة، ثم دعيه يتحدث عنك.</div>
               </div>
-            </article>
-            <article class="flip-page">
-              <div>
-                <span class="flip-number">خاطرة أدبية</span>
-                <h4>نصوص وجدانية</h4>
-                <p>صفحة للنصوص القصيرة التي تكشف حس الطالبة وقدرتها على التصوير والتعبير.</p>
-              </div>
-              <div class="flip-visual"><strong>أثر</strong></div>
-            </article>
-            <article class="flip-page">
-              <div>
-                <span class="flip-number">مفردة العدد</span>
-                <h4>ثروة لغوية</h4>
-                <p>كل عدد يختار مفردة أصيلة، ومعناها، وموضعها المناسب في المقال.</p>
-              </div>
-              <div>
-                <ul>
-                  <li>المعنى الدقيق.</li>
-                  <li>مرادفات مناسبة.</li>
-                  <li>جملة سياقية قابلة للتطوير.</li>
-                </ul>
-              </div>
-            </article>
-            <article class="flip-page">
-              <div>
-                <span class="flip-number">دفتر المحررة</span>
-                <h4>ملاحظة تطوير</h4>
-                <p>تعليق قصير يساعد الطالبة على صقل نصها القادم بثقة، دون أن يفقد النص صوتها الخاص.</p>
-              </div>
-              <div class="flip-visual"><strong>نمو</strong></div>
             </article>
           </div>
 
@@ -3702,7 +3852,7 @@
         page.classList.toggle("turning", index < currentFlipPage);
       });
       if (flipCounter) {
-        flipCounter.textContent = `${currentFlipPage + 1} / ${flipPages.length}`;
+        flipCounter.textContent = `صفحة ${currentFlipPage + 1} من ${flipPages.length}`;
       }
       if (flipDots) {
         flipDots.innerHTML = flipPages.map(function (_, index) {
