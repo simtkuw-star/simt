@@ -1488,6 +1488,19 @@
       background: #f7f1e8;
     }
 
+    .status-pill.published {
+      color: var(--navy);
+      background: rgba(200, 157, 92, 0.24);
+      border-color: var(--gold);
+    }
+
+    .dashboard-row-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
     .dashboard-empty {
       padding: 18px;
       background: #fffaf2;
@@ -3902,7 +3915,11 @@
             <div>آخر تحديث: ${student.updated}</div>
             <small>${student.trainingSummary || "آخر تدريب فوري: لا يوجد"}</small>
             <small>${student.magazineSummary || "المجلة: لا يوجد ترشيح"}</small>
-            <button class="mini-btn primary dashboard-evaluate" type="button" data-uid="${student.uid}">تقييم</button>
+            <div class="dashboard-row-actions">
+              ${student.hasMagazineSubmission ? `<span class="status-pill ${student.magazineStatus === "معتمد للنشر" ? "published" : "waiting"}">${student.magazineStatus}</span>` : ""}
+              ${student.hasMagazineSubmission && student.magazineStatus !== "معتمد للنشر" ? `<button class="mini-btn dashboard-approve-magazine" type="button" data-uid="${student.uid}">اعتماد للمجلة</button>` : ""}
+              <button class="mini-btn primary dashboard-evaluate" type="button" data-uid="${student.uid}">تقييم</button>
+            </div>
           </article>
         `;
       }).join("");
@@ -5177,6 +5194,13 @@
 
     if (teacherStudentList) {
       teacherStudentList.addEventListener("click", function (event) {
+        const approveButton = event.target.closest(".dashboard-approve-magazine");
+        if (approveButton) {
+          window.dispatchEvent(new CustomEvent("simtApproveMagazineSubmission", {
+            detail: { uid: approveButton.dataset.uid }
+          }));
+          return;
+        }
         const button = event.target.closest(".dashboard-evaluate");
         if (!button) return;
         window.dispatchEvent(new CustomEvent("simtSelectTeacherStudent", {
@@ -5297,7 +5321,11 @@
         الحالة: ${data.status || "بانتظار اعتماد المعلمة"}.
         <span class="submission-badge">محفوظ في حسابك</span>
       `;
-      if (magazineStatus) magazineStatus.textContent = "آخر ترشيح للمجلة محفوظ في حساب الطالبة.";
+      if (magazineStatus) {
+        magazineStatus.textContent = data.status === "معتمد للنشر"
+          ? "تم اعتماد ترشيحك للمجلة."
+          : "آخر ترشيح للمجلة محفوظ في حساب الطالبة.";
+      }
     });
 
     renderFlipMagazine(0);
