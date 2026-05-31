@@ -103,6 +103,8 @@
       --line: rgba(200, 157, 92, 0.32);
       --soft-shadow: 0 22px 70px rgba(15, 26, 43, 0.12);
       --hard-shadow: 0 30px 80px rgba(15, 26, 43, 0.22);
+      --radius: 6px;
+      --paper-shadow: 0 22px 48px rgba(15, 26, 43, 0.1);
     }
 
     * {
@@ -137,6 +139,55 @@
     .shell {
       width: min(1160px, calc(100% - 40px));
       margin: 0 auto;
+    }
+
+    .meaning-card,
+    .student-guide-card,
+    .step,
+    .lesson-menu,
+    .lesson-view,
+    .idea-lab,
+    .review-panel,
+    .submission-panel,
+    .training-tabs,
+    .training-workspace,
+    .editor-card,
+    .teacher-rubric,
+    .dashboard-gate,
+    .dashboard-panel,
+    .smart-writing,
+    .lexicon-card,
+    .analytics-card,
+    .faq-item,
+    .issue,
+    .cover-story,
+    .result-box,
+    .suggestion-box,
+    .prompt-box,
+    textarea,
+    input,
+    select,
+    .mini-btn,
+    .btn {
+      border-radius: var(--radius);
+    }
+
+    .meaning-card,
+    .student-guide-card,
+    .step,
+    .lesson-view,
+    .idea-lab,
+    .review-panel,
+    .submission-panel,
+    .training-workspace,
+    .editor-card,
+    .teacher-rubric,
+    .dashboard-panel,
+    .smart-writing,
+    .lexicon-card,
+    .analytics-card,
+    .faq-item {
+      box-shadow: var(--paper-shadow);
     }
 
     .hero-wrap {
@@ -554,6 +605,17 @@
 
     section {
       padding: 84px 0;
+      position: relative;
+    }
+
+    main > section:nth-of-type(even) {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(242, 237, 228, 0.72));
+    }
+
+    main > section:nth-of-type(odd) {
+      background:
+        linear-gradient(180deg, rgba(251, 248, 242, 0.9), rgba(255, 255, 255, 0.44));
     }
 
     .section-title {
@@ -577,6 +639,7 @@
     .section-title h2 {
       font-size: clamp(30px, 4vw, 46px);
       line-height: 1.3;
+      letter-spacing: 0;
     }
 
     .section-title.compact-title {
@@ -889,6 +952,13 @@
       background: #fff;
       cursor: pointer;
       font-weight: 800;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      box-shadow: 0 10px 24px rgba(15, 26, 43, 0.04);
+    }
+
+    .mini-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(15, 26, 43, 0.1);
     }
 
     .mini-btn.primary {
@@ -2038,13 +2108,15 @@
 
     .flip-magazine {
       margin-top: 30px;
-      padding: clamp(18px, 3vw, 32px);
+      padding: clamp(20px, 3vw, 34px);
       background:
+        linear-gradient(90deg, rgba(200, 157, 92, 0.12), transparent 18%, transparent 82%, rgba(200, 157, 92, 0.1)),
         linear-gradient(135deg, rgba(15, 26, 43, 0.98), rgba(31, 45, 64, 0.95)),
         var(--navy);
       border: 1px solid rgba(200, 157, 92, 0.42);
       box-shadow: var(--hard-shadow);
       color: #fff;
+      border-radius: 8px;
     }
 
     .flip-head {
@@ -2078,19 +2150,46 @@
       position: relative;
       min-height: 560px;
       perspective: 1800px;
+      padding: 18px;
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(7, 13, 22, 0.72), transparent 7%, transparent 93%, rgba(7, 13, 22, 0.64)),
+        rgba(5, 10, 18, 0.28);
+      box-shadow:
+        inset 0 0 0 1px rgba(200, 157, 92, 0.14),
+        inset 0 34px 60px rgba(0, 0, 0, 0.18);
+    }
+
+    .flip-book::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      right: calc(50% - 2px);
+      width: 4px;
+      z-index: 4;
+      background:
+        linear-gradient(180deg, transparent, rgba(15, 26, 43, 0.22), transparent),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(15, 26, 43, 0.22), rgba(255, 255, 255, 0.42));
+      box-shadow:
+        -18px 0 30px rgba(15, 26, 43, 0.14),
+        18px 0 28px rgba(15, 26, 43, 0.12);
+      pointer-events: none;
     }
 
     .flip-page {
       position: absolute;
-      inset: 0;
+      inset: 18px;
       display: grid;
       grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.22fr);
       gap: clamp(18px, 3vw, 34px);
       padding: clamp(24px, 4vw, 46px);
       background:
-        linear-gradient(90deg, rgba(232, 224, 211, 0.64), transparent 10%, transparent 90%, rgba(15, 26, 43, 0.08)),
+        linear-gradient(90deg, rgba(232, 224, 211, 0.62), transparent 9%, transparent 91%, rgba(15, 26, 43, 0.08)),
+        repeating-linear-gradient(0deg, rgba(15, 26, 43, 0.025) 0 1px, transparent 1px 8px),
         linear-gradient(115deg, #fffaf2 0%, #f7f1e8 54%, #fff 100%);
       border: 1px solid rgba(200, 157, 92, 0.48);
+      border-radius: 4px;
       color: var(--navy);
       transform: rotateY(-14deg) translateX(-22px);
       transform-origin: right center;
@@ -2098,6 +2197,9 @@
       pointer-events: none;
       transition: transform 0.6s ease, opacity 0.35s ease;
       overflow: hidden;
+      box-shadow:
+        0 28px 60px rgba(0, 0, 0, 0.22),
+        inset 0 0 0 12px rgba(255, 255, 255, 0.22);
     }
 
     .flip-page::before {
@@ -2117,6 +2219,24 @@
       inset: 18px;
       border: 1px solid rgba(200, 157, 92, 0.24);
       pointer-events: none;
+    }
+
+    .mag-page-aside::after,
+    .mag-page-body::after {
+      content: attr(data-page);
+      position: absolute;
+      bottom: -22px;
+      color: rgba(15, 26, 43, 0.42);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .mag-page-aside::after {
+      right: 0;
+    }
+
+    .mag-page-body::after {
+      left: 0;
     }
 
     .flip-page.active {
@@ -2154,11 +2274,25 @@
       margin: auto;
       border: 2px solid var(--gold);
       border-radius: 50%;
-      color: var(--navy);
       background: #fffaf2;
       box-shadow: 0 24px 70px rgba(15, 26, 43, 0.24);
-      font-size: clamp(52px, 8vw, 92px);
-      font-weight: 900;
+      padding: 18px;
+      position: relative;
+    }
+
+    .mag-logo-mark::before {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      border: 1px solid rgba(200, 157, 92, 0.36);
+      border-radius: 50%;
+    }
+
+    .mag-logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 50%;
     }
 
     .issue-meta {
@@ -2759,7 +2893,7 @@
       }
 
       .flip-book {
-        min-height: 640px;
+        min-height: 780px;
       }
 
       .flip-page {
@@ -2767,8 +2901,19 @@
         padding: 22px;
       }
 
+      .flip-book::before,
       .flip-page::before {
         display: none;
+      }
+
+      .mag-cover {
+        background:
+          linear-gradient(180deg, rgba(15, 26, 43, 0.96) 0 56%, rgba(255, 250, 242, 0.98) 56% 100%),
+          var(--navy);
+      }
+
+      .mag-logo-mark {
+        width: min(230px, 72%);
       }
 
       .brand-stage {
@@ -2881,6 +3026,28 @@
 
       .search-row {
         grid-template-columns: 1fr;
+      }
+
+      .flip-magazine {
+        padding: 14px;
+      }
+
+      .flip-book {
+        min-height: 920px;
+        padding: 10px;
+      }
+
+      .flip-page {
+        inset: 10px;
+        padding: 20px;
+      }
+
+      .flip-page h4 {
+        font-size: clamp(30px, 12vw, 46px);
+      }
+
+      .flip-controls .mini-btn {
+        flex: 1;
       }
 
       .meter-row {
@@ -3479,7 +3646,7 @@
 
           <div class="flip-book" id="flipBook">
             <article class="flip-page mag-cover active">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="01">
                 <div>
                   <span class="mag-page-label">العدد 1</span>
                   <h4>مجلة سِمْط</h4>
@@ -3491,16 +3658,16 @@
                   <span>لغة ووعي وأثر</span>
                 </div>
               </div>
-              <div class="mag-logo-mark">سِمْط</div>
+              <div class="mag-logo-mark"><img src="logo-simt.png" alt="شعار سِمْط"></div>
             </article>
 
             <article class="flip-page">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="02">
                 <span class="mag-page-label">افتتاحية</span>
                 <h4>كلمة رئيسة التحرير</h4>
                 <p>كل عدد من مجلة سِمْط هو مساحة صغيرة ليتحوّل التدريب إلى أثر منشور، وتتحول الملاحظة إلى نمو.</p>
               </div>
-              <div class="mag-page-body">
+              <div class="mag-page-body" data-page="03">
                 <div class="editor-note">
                   <p>نؤمن أن النص الجميل لا يولد كاملًا من أول محاولة، بل ينضج بالمراجعة، واتساع المعجم، وصدق الفكرة.</p>
                 </div>
@@ -3509,12 +3676,12 @@
             </article>
 
             <article class="flip-page">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="04">
                 <span class="mag-page-label">فهرس العدد</span>
                 <h4>في هذا العدد</h4>
                 <p>صفحات قصيرة، واضحة، وقابلة للتحديث عند اعتماد مشاركات الطالبات.</p>
               </div>
-              <div class="mag-page-body">
+              <div class="mag-page-body" data-page="05">
                 <div class="mag-toc">
                   <div class="toc-row"><span>01</span><span>كلمة رئيسة التحرير</span><span>ص 2</span></div>
                   <div class="toc-row"><span>02</span><span>مقال الشهر</span><span>ص 4</span></div>
@@ -3526,12 +3693,12 @@
             </article>
 
             <article class="flip-page">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="06">
                 <span class="mag-page-label">مقال الشهر</span>
                 <h4>حين يصبح الحرف أثرًا</h4>
                 <p>ينشر هنا النص المعتمد بعد مراجعة المعلمة، مع إبراز سبب اختياره ونقاط قوته.</p>
               </div>
-              <div class="mag-page-body article-columns">
+              <div class="mag-page-body article-columns" data-page="07">
                 <p>النص المتميز لا يعتمد على كثرة الكلمات وحدها، بل على وضوح الفكرة وحسن ترتيبها. حين تعرف الكاتبة ماذا تريد أن تقول، يصبح كل سطر خطوة في طريق المعنى.</p>
                 <p>في مجلة سِمْط نحتفي بالنص الذي يكشف وعي الطالبة، ويستخدم اللغة بصدق، ويترك عند القارئ أثرًا من تفكير أو شعور أو سؤال.</p>
                 <div class="pull-quote">قوة المقال تبدأ من فكرة واضحة، وتنتهي بخاتمة لا تُنسى.</div>
@@ -3539,12 +3706,12 @@
             </article>
 
             <article class="flip-page">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="08">
                 <span class="mag-page-label">مفردة العدد</span>
                 <h4>أثر</h4>
                 <p>مفردة قصيرة، لكنها تصلح لبناء جملة عميقة وخاتمة مؤثرة.</p>
               </div>
-              <div class="mag-page-body">
+              <div class="mag-page-body" data-page="09">
                 <div class="word-feature">
                   <strong>أثر</strong>
                   <p>ما يبقى في النفس أو الواقع بعد قول أو فعل أو موقف.</p>
@@ -3554,12 +3721,12 @@
             </article>
 
             <article class="flip-page">
-              <div class="mag-page-aside">
+              <div class="mag-page-aside" data-page="10">
                 <span class="mag-page-label">دفتر المحررة</span>
                 <h4>قبل النشر</h4>
                 <p>مراجعة صغيرة تجعل النص أقرب إلى المجلة وأكثر نضجًا.</p>
               </div>
-              <div class="mag-page-body">
+              <div class="mag-page-body" data-page="11">
                 <ul>
                   <li>هل يظهر رأيك بوضوح من المقدمة؟</li>
                   <li>هل كل فقرة تحمل فكرة واحدة؟</li>
