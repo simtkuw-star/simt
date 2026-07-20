@@ -1,0 +1,28 @@
+{
+  "name": "سِمْط | منصة سمط الأدبية",
+  "short_name": "سِمْط",
+  "description": "منصة أدبية تربوية لتنمية مهارات الكتابة الإبداعية لدى طالبات المرحلة الثانوية.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2ede4",
+  "theme_color": "#0f1a2b",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -7,6 +7,12 @@
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
   <link rel="apple-touch-icon" href="/logo-simt.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#0f1a2b" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="سِمْط" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="google-site-verification" content="X_1T9kwwQ6CV4mGp4zhUh0vXhIU1Cfg81Mm0Zq-hA2w" />
   <meta name="description" content="سِمْط منصة أدبية تربوية تفاعلية تساعد طالبات المرحلة الثانوية على تنمية مهارات الكتابة الإبداعية، بناء المقال، استخدام معجم سِمْط، وتطوير الأسلوب." />
   <meta name="keywords" content="سِمْط, سمط, منصة أدبية تربوية, كتابة إبداعية, مهارات الكتابة, طالبات المرحلة الثانوية, معجم سِمْط, معسكر سِمْط, محرر الكتابة, تعليم الكتابة" />
@@ -2934,6 +2940,10 @@
     }
 
     @media (max-width: 680px) {
+      body {
+        padding-top: env(safe-area-inset-top);
+      }
+
       .shell {
         width: min(100% - 24px, 1160px);
       }
@@ -2946,10 +2956,30 @@
       .nav-links {
         justify-content: flex-start;
         flex-wrap: wrap;
+        width: 100%;
       }
 
       .hero {
         padding-top: 46px;
+        gap: 28px;
+      }
+
+      .hero-wrap {
+        min-height: auto;
+        padding-bottom: 42px;
+      }
+
+      .hero-copy {
+        font-size: 17px;
+        line-height: 1.9;
+      }
+
+      .hero-login {
+        padding: 18px;
+      }
+
+      .hero-logo {
+        max-width: min(340px, 86vw);
       }
 
       .actions,
@@ -2990,6 +3020,13 @@
 
       .login-footer .mini-btn {
         width: 100%;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        font-size: 16px;
       }
 
       .teacher-gate {
@@ -5739,6 +5776,15 @@
     const loggedName = localStorage.getItem("simtLoggedInName");
     if (loggedName && localStorage.getItem("simtLoggedIn") === "true") {
       setLoggedIn(loggedName);
+    }
+  </script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/service-worker.js").catch(function () {
+          // يبقى الموقع يعمل طبيعيًا حتى لو لم يدعم المتصفح خدمة التطبيق.
+        });
+      });
     }
   </script>
   <script type="module" src="simt-firebase.js?v=31"></script>
