@@ -129,8 +129,59 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 <div class="tools"><button class="toolbtn" onclick="openDrawer('dict')">📚 معجم سِمْط</button><button class="toolbtn" onclick="openDrawer('ideas')">💡 أحتاج فكرة</button></div>
 
 <aside class="drawer" id="dict"><button class="close" onclick="closeDrawers()">×</button><h3>📚 معجم سِمْط</h3><p class="hint">أداة سريعة أثناء الكتابة.</p><input id="dictWord" placeholder="اكتبي كلمة..."><button class="btn primary" style="margin-top:10px" onclick="lookup()">بحث</button><div class="dict-result" id="dictResult">جرّبي: أثر، تأمل، شغف، عزم.</div></aside>
-<aside class="drawer" id="ideas"><button class="close" onclick="closeDrawers()">×</button><h3>💡 أحتاج فكرة</h3><p class="hint">لا نعطيك قصة جاهزة؛ نعطيك سؤالًا يفتح بابًا.</p><div class="idea-box" id="ideaPrompt"></div><button class="btn primary" style="margin-top:12px" onclick="newPrompt()">سؤال آخر</button></aside>
+<aside class="drawer" id="ideas">
+  <button class="close" onclick="closeDrawers()">×</button>
 
+  <h3>💡 أحتاج فكرة</h3>
+  <p style="line-height:1.8;color:#737783">
+    لن أكتب القصة بدلًا منكِ؛ سأساعدكِ فقط على اكتشاف بذرتها الأولى.
+  </p>
+
+  <div style="margin-top:18px">
+
+    <label>① اختاري جو القصة</label>
+    <select id="ideaMood" style="width:100%;padding:12px;border:1px solid #ded2bf;border-radius:12px;margin:8px 0 16px">
+      <option value="غموض">🔎 غموض</option>
+      <option value="إنساني">🤍 موقف إنساني</option>
+      <option value="مدرسي">🎒 موقف مدرسي</option>
+      <option value="مغامرة">🧭 مغامرة</option>
+      <option value="خيال">✨ خيال</option>
+      <option value="يومي">☕ من الحياة اليومية</option>
+    </select>
+
+    <label>② من الشخصية الرئيسة؟</label>
+    <input id="ideaHero" placeholder="مثال: طالبة جديدة في المدرسة">
+
+    <label>③ ماذا تريد هذه الشخصية؟</label>
+    <input id="ideaWant" placeholder="مثال: أن تكسب ثقة زميلاتها">
+
+    <label>④ ما العقبة التي تواجهها؟</label>
+    <input id="ideaObstacle" placeholder="مثال: انتشر عنها فهم خاطئ">
+
+    <button class="btn primary"
+      style="width:100%;margin-top:14px"
+      onclick="buildIdea()">
+      ✨ كوّني بذرة قصتي
+    </button>
+
+    <div id="ideaResult"
+      style="display:none;margin-top:16px;padding:16px;border-radius:16px;background:#f8f4ed;line-height:1.9">
+    </div>
+
+    <hr style="border:0;border-top:1px solid #e5d8c3;margin:22px 0">
+
+    <p style="font-weight:700">أو ابدئي بشرارة عشوائية:</p>
+
+    <div id="ideaPrompt"
+      style="padding:14px;border-radius:14px;background:#fff8ec;line-height:1.8;margin-bottom:10px">
+    </div>
+
+    <button class="btn soft" onclick="newPrompt()">
+      🎲 أعطني شرارة أخرى
+    </button>
+
+  </div>
+</aside>
 <script>
 const cards=[...document.querySelectorAll('.card')], key='simt_story_journey_v2';let step=0;
 const fields=[...document.querySelectorAll('input:not([type=checkbox]),textarea')];
