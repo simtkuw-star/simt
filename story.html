@@ -128,8 +128,35 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 
 <div class="tools"><button class="toolbtn" onclick="openDrawer('dict')">📚 معجم سِمْط</button><button class="toolbtn" onclick="openDrawer('ideas')">💡 أحتاج فكرة</button></div>
 
-<aside class="drawer" id="dict"><button class="close" onclick="closeDrawers()">×</button><h3>📚 معجم سِمْط</h3><p class="hint">أداة سريعة أثناء الكتابة.</p><input id="dictWord" placeholder="اكتبي كلمة..."><button class="btn primary" style="margin-top:10px" onclick="lookup()">بحث</button><div class="dict-result" id="dictResult">جرّبي: أثر، تأمل، شغف، عزم.</div></aside>
-<aside class="drawer" id="ideas">
+<aside class="drawer" id="dict">
+  <button class="close" onclick="closeDrawers()">×</button>
+
+  <h3>📚 معجم سِمْط القصصي</h3>
+
+  <p style="line-height:1.8;color:#737783">
+    ماذا تحتاجين الآن في قصتك؟ اختاري المجال، وسِمْط يقترح لكِ مفردات وتراكيب تساعدكِ على التعبير.
+  </p>
+
+  <label>اختاري مجالًا:</label>
+
+  <select id="storyLexiconCategory"
+    onchange="showStoryWords()"
+    style="width:100%;padding:12px;border:1px solid #ded2bf;border-radius:12px;margin:8px 0 16px">
+
+    <option value="">— اختاري —</option>
+    <option value="feelings">💭 وصف المشاعر</option>
+    <option value="place">🏡 وصف المكان</option>
+    <option value="movement">🏃 الحركة</option>
+    <option value="dialogue">💬 الحوار</option>
+    <option value="beginnings">✨ بدايات السرد</option>
+    <option value="transitions">🔗 الانتقال بين الأحداث</option>
+  </select>
+
+  <div id="storyLexiconResult"
+    style="padding:16px;background:#f8f4ed;border-radius:16px;line-height:2">
+    اختاري مجالًا لتظهر لكِ لآلئ لغوية مناسبة ✨
+  </div>
+</aside><aside class="drawer" id="ideas">
   <button class="close" onclick="closeDrawers()">×</button>
 
   <h3>💡 أحتاج فكرة</h3>
@@ -244,7 +271,18 @@ function buildIdea(){
     '، لكن '+obstacle+
     '.<br><br><b>والآن دوركِ:</b> ما الحدث الذي سيجعل المشكلة تبدأ فعلًا؟';
 }
-function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
+// كود معجم سِمْط الجديد كله هنا
+const storyLexicon = {
+   ...
+};
+
+function showStoryWords(){
+   ...
+}
+
+// وبعده يظل هذا مثل ما هو
+function downloadStory(){
+  function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
 load();go(step);count();
 </script>
 </body></html>
