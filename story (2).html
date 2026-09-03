@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>سِمْط | رحلة القصة القصيرة</title>
+<style>
+:root{--navy:#0f2345;--gold:#c7a86b;--cream:#f7f2ea;--ink:#263247;--muted:#737783;--line:#e5d8c3;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif}
+a{text-decoration:none;color:inherit}button,input,textarea{font:inherit}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;background:#fffdf9;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
+.brand{font-size:29px;font-weight:800;color:var(--navy)}nav{display:flex;gap:8px;flex-wrap:wrap}nav a{padding:9px 13px;border-radius:999px}nav a.active{background:var(--navy);color:white}
+main{width:min(900px,92%);margin:42px auto 70px}
+.intro{text-align:center;margin-bottom:26px}.intro h1{color:var(--navy);font-size:40px;margin:0 0 10px}.intro p{color:var(--muted);line-height:1.9}
+.pearls{display:flex;align-items:center;justify-content:center;margin:28px 0 35px;gap:0}
+.pearl{width:25px;height:25px;border-radius:50%;background:#e9dfd0;border:2px solid #d7c29e;transition:.25s;position:relative}
+.pearl:not(:last-child)::after{content:"";position:absolute;right:23px;top:9px;width:34px;height:3px;background:#dfd2bf}
+.pearl:not(:last-child){margin-left:34px}.pearl.active,.pearl.done{background:var(--gold);box-shadow:0 0 0 5px rgba(199,168,107,.14)}
+.card{background:white;border:1px solid var(--line);border-radius:28px;padding:34px;box-shadow:0 16px 45px rgba(15,35,69,.07);display:none}
+.card.active{display:block}.eyebrow{color:#9a7a42;font-weight:700;font-size:14px}.card h2{font-size:29px;color:var(--navy);margin:7px 0 10px}.hint{color:var(--muted);line-height:1.9;margin-bottom:20px}
+label{display:block;color:var(--navy);font-weight:700;margin:16px 0 8px}input,textarea{width:100%;border:1.5px solid #ded2bf;border-radius:16px;background:#fffdfa;padding:14px;outline:none;line-height:1.8}
+textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(199,168,107,.13)}
+.actions{display:flex;justify-content:space-between;gap:12px;margin-top:26px}.btn{border:0;border-radius:999px;padding:12px 22px;font-weight:700;cursor:pointer}.primary{background:var(--navy);color:white}.soft{background:#eee5d7;color:var(--navy)}
+.tools{position:fixed;left:22px;bottom:22px;display:grid;gap:10px;z-index:20}.toolbtn{border:0;border-radius:999px;background:var(--navy);color:white;padding:12px 16px;box-shadow:0 8px 25px rgba(0,0,0,.15);cursor:pointer}
+.drawer{position:fixed;left:-370px;top:0;width:min(360px,88vw);height:100vh;background:white;z-index:30;padding:26px;box-shadow:12px 0 40px rgba(0,0,0,.16);transition:.25s;overflow:auto}.drawer.open{left:0}.close{float:left;border:0;background:#eee5d7;border-radius:50%;width:35px;height:35px;cursor:pointer}
+.drawer h3{color:var(--navy)}.dict-result,.idea-box{background:#faf6ef;border:1px dashed #d6c09a;border-radius:16px;padding:14px;margin-top:12px;line-height:1.8}
+.summary{background:#f8f4ed;border-radius:18px;padding:16px;margin-bottom:18px;line-height:1.9}.final{min-height:330px}.stats{display:flex;gap:12px;margin-top:12px;color:var(--muted);font-size:14px}
+.review label{font-weight:400;color:var(--ink)}.review input{width:auto;margin-left:8px}
+.finish{text-align:center}.finish .big{font-size:58px}.finish h2{font-size:32px}
+@media(max-width:650px){.intro h1{font-size:32px}.card{padding:23px}.pearl{width:18px;height:18px}.pearl:not(:last-child){margin-left:18px}.pearl:not(:last-child)::after{right:16px;width:20px;top:6px}header{align-items:flex-start;flex-direction:column;gap:10px}.tools{left:12px;bottom:12px}}
+</style>
+</head>
+<body>
+<header>
+<a class="brand" href="index.html">سِمْط</a>
+<nav><a href="index.html">الرئيسية</a><a href="index.html#editor">✍️ المقال</a><a class="active" href="story.html">📖 القصة القصيرة</a></nav>
+</header>
+
+<main>
+<div class="intro"><h1>رحلة القصة القصيرة</h1><p>مرحلة واحدة في كل مرة. كل خطوة تنجزينها تضيف لؤلؤة إلى سِمْط قصتك.</p></div>
+<div class="pearls" id="pearls"></div>
+
+<form id="wizard" onsubmit="return false">
+<section class="card active">
+<span class="eyebrow">البداية</span><h2>كل قصة تبدأ بفكرة صغيرة</h2>
+<p class="hint">ما الرسالة أو الشعور الذي تريدين أن يبقى مع القارئ؟ لا تبحثي عن صياغة مثالية الآن.</p>
+<label>فكرة القصة</label><textarea id="idea" placeholder="مثال: أحيانًا نعرف قيمة الأشياء بعد أن نفقدها..."></textarea>
+<label>عنوان مؤقت</label><input id="title" placeholder="يمكنك تغييره لاحقًا">
+</section>
+
+<section class="card">
+<span class="eyebrow">الشخصية</span><h2>من بطلة قصتك؟</h2>
+<p class="hint">اختاري شخصية رئيسة واضحة، ثم امنحيها هدفًا وعائقًا.</p>
+<label>من هي؟</label><input id="hero" placeholder="الاسم أو وصف مختصر">
+<label>ماذا تريد؟ وما الذي يمنعها؟</label><textarea id="goal" placeholder="هدف الشخصية والعائق الذي تواجهه..."></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">المشهد</span><h2>أين ومتى تبدأ الحكاية؟</h2>
+<p class="hint">تفصيل واحد محسوس قد يجعل المكان حيًا أكثر من وصف طويل.</p>
+<label>الزمان والمكان</label><input id="setting" placeholder="مثال: مساء شتوي في مكتبة المدرسة">
+<label>تفصيل حسي واحد</label><textarea id="sense" placeholder="صوت، رائحة، ضوء، ملمس، حركة..."></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">الانطلاق</span><h2>ما اللحظة التي حرّكت القصة؟</h2>
+<p class="hint">اكتبي حدثًا يجعل حياة الشخصية مختلفة عما كانت عليه قبل لحظات.</p>
+<textarea id="start" placeholder="في ذلك اليوم حدث شيء لم تكن تتوقعه..."></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">التصاعد</span><h2>ماذا حدث بعد ذلك؟</h2>
+<p class="hint">اختاري أهم حدثين فقط الآن. يجب أن يقود كل حدث إلى ما بعده.</p>
+<label>الحدث الأول</label><textarea id="event1"></textarea>
+<label>الحدث الثاني</label><textarea id="event2"></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">الذروة</span><h2>ما أصعب لحظة؟</h2>
+<p class="hint">هنا تصل المشكلة إلى أقوى نقطة، وتضطر الشخصية إلى قرار أو مواجهة.</p>
+<textarea id="climax" placeholder="ما القرار أو المواجهة التي تغيّر مجرى القصة؟"></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">النهاية</span><h2>ماذا تغيّر؟</h2>
+<p class="hint">لا تسألي فقط: كيف انتهت المشكلة؟ اسألي أيضًا: كيف تغيّرت الشخصية؟</p>
+<textarea id="ending" placeholder="الحل، التغير، والأثر الأخير..."></textarea>
+</section>
+
+<section class="card">
+<span class="eyebrow">الكتابة</span><h2>الآن… اكتبي قصتك</h2>
+<p class="hint">استخدمي مخططك كدليل، وليس كقيد. يمكنك تغيير أي فكرة أثناء الكتابة.</p>
+<div class="summary" id="summary"></div>
+<textarea class="final" id="story" placeholder="اكتبي النسخة الكاملة من القصة هنا..."></textarea>
+<div class="stats"><span id="words">0 كلمة</span><span id="chars">0 حرف</span></div>
+</section>
+
+<section class="card review">
+<span class="eyebrow">المراجعة</span><h2>اقرئيها بعين القارئ</h2>
+<p class="hint">لا تبحثي عن الكمال؛ تأكدي أولًا أن القصة واضحة ومترابطة.</p>
+<label><input type="checkbox">للشخصية هدف أو رغبة واضحة.</label>
+<label><input type="checkbox">الأحداث مترابطة ولا توجد قفزات مربكة.</label>
+<label><input type="checkbox">توجد لحظة ذروة واضحة.</label>
+<label><input type="checkbox">النهاية مرتبطة بما سبقها.</label>
+<label><input type="checkbox">راجعت الإملاء وعلامات الترقيم والتكرار.</label>
+</section>
+
+<section class="card finish">
+<div class="big">✨</div><h2>اكتمل سِمْط قصتك</h2>
+<p class="hint">الفكرة أصبحت حكاية. يمكنك العودة لأي لؤلؤة وتعديلها متى شئت.</p>
+<button class="btn primary" onclick="downloadStory()">حفظ القصة كنص</button>
+</section>
+
+<div class="actions" id="actions"><button class="btn soft" id="prev">السابق</button><button class="btn primary" id="next">التالي ←</button></div>
+</form>
+</main>
+
+<div class="tools"><button class="toolbtn" onclick="openDrawer('dict')">📚 معجم سِمْط</button><button class="toolbtn" onclick="openDrawer('ideas')">💡 أحتاج فكرة</button></div>
+
+<aside class="drawer" id="dict"><button class="close" onclick="closeDrawers()">×</button><h3>📚 معجم سِمْط</h3><p class="hint">أداة سريعة أثناء الكتابة.</p><input id="dictWord" placeholder="اكتبي كلمة..."><button class="btn primary" style="margin-top:10px" onclick="lookup()">بحث</button><div class="dict-result" id="dictResult">جرّبي: أثر، تأمل، شغف، عزم.</div></aside>
+<aside class="drawer" id="ideas"><button class="close" onclick="closeDrawers()">×</button><h3>💡 أحتاج فكرة</h3><p class="hint">لا نعطيك قصة جاهزة؛ نعطيك سؤالًا يفتح بابًا.</p><div class="idea-box" id="ideaPrompt"></div><button class="btn primary" style="margin-top:12px" onclick="newPrompt()">سؤال آخر</button></aside>
+
+<script>
+const cards=[...document.querySelectorAll('.card')], key='simt_story_journey_v2';let step=0;
+const fields=[...document.querySelectorAll('input:not([type=checkbox]),textarea')];
+const pearls=document.getElementById('pearls');
+cards.forEach((_,i)=>{const p=document.createElement('span');p.className='pearl';p.onclick=()=>go(i);pearls.appendChild(p)});
+function save(){const d={step};fields.forEach(x=>d[x.id]=x.value);localStorage.setItem(key,JSON.stringify(d))}
+function load(){try{const d=JSON.parse(localStorage.getItem(key)||'{}');fields.forEach(x=>{if(d[x.id]!=null)x.value=d[x.id]});if(Number.isInteger(d.step))step=Math.min(d.step,cards.length-1)}catch(e){}}
+function go(n){step=Math.max(0,Math.min(n,cards.length-1));cards.forEach((c,i)=>c.classList.toggle('active',i===step));[...pearls.children].forEach((p,i)=>{p.className='pearl '+(i<step?'done':i===step?'active':'')});document.getElementById('prev').style.visibility=step===0?'hidden':'visible';document.getElementById('next').style.display=step===cards.length-1?'none':'inline-block';document.getElementById('actions').style.justifyContent=step===0?'flex-end':'space-between';if(step===7)makeSummary();save();window.scrollTo({top:0,behavior:'smooth'})}
+document.getElementById('next').onclick=()=>go(step+1);document.getElementById('prev').onclick=()=>go(step-1);
+fields.forEach(x=>x.addEventListener('input',()=>{save();count()}));
+function makeSummary(){const g=id=>document.getElementById(id).value.trim()||'—';document.getElementById('summary').innerHTML='<b>خيطك حتى الآن:</b><br>الفكرة: '+g('idea')+'<br>الشخصية: '+g('hero')+'<br>الزمان والمكان: '+g('setting')+'<br>الذروة: '+g('climax')+'<br>النهاية: '+g('ending')}
+function count(){const t=document.getElementById('story').value.trim();document.getElementById('words').textContent=(t?t.split(/\s+/).length:0)+' كلمة';document.getElementById('chars').textContent=t.length+' حرف'}
+function openDrawer(id){closeDrawers();document.getElementById(id).classList.add('open');if(id==='ideas')newPrompt()}
+function closeDrawers(){document.querySelectorAll('.drawer').forEach(d=>d.classList.remove('open'))}
+const dict={'أثر':['ما يبقى من الشيء أو يدل عليه.','بصمة، علامة، نتيجة'],'تأمل':['إدامة النظر والفكر بتدبر.','تدبر، تفكر، إمعان'],'شغف':['شدة الحب والتعلق بالشيء.','ولع، حب، تعلق'],'عزم':['قصد مؤكد وإرادة ثابتة.','إرادة، تصميم، إصرار']};
+function lookup(){const w=document.getElementById('dictWord').value.trim(),r=document.getElementById('dictResult');r.innerHTML=dict[w]?'<b>'+w+'</b><br>المعنى: '+dict[w][0]+'<br>مرادفات: '+dict[w][1]:'الكلمة غير موجودة في القاموس المصغر حاليًا.'}
+const prompts=['ماذا لو وجدت الشخصية شيئًا لا يخصها؟','ما السر الذي تخشى الشخصية أن يعرفه الآخرون؟','ماذا لو وصلت رسالة إلى الشخص الخطأ؟','ما الشيء الذي تريده الشخصية بشدة، لكنها لا تستطيع طلبه؟','ما قرار صغير يمكن أن يغيّر يوم الشخصية كله؟','ما المكان المألوف الذي يمكن أن يبدو مختلفًا تمامًا في وقت غير معتاد؟'];
+function newPrompt(){document.getElementById('ideaPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]}
+function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
+load();go(step);count();
+</script>
+</body></html>
