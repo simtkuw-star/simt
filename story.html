@@ -198,8 +198,52 @@ function openDrawer(id){closeDrawers();document.getElementById(id).classList.add
 function closeDrawers(){document.querySelectorAll('.drawer').forEach(d=>d.classList.remove('open'))}
 const dict={'أثر':['ما يبقى من الشيء أو يدل عليه.','بصمة، علامة، نتيجة'],'تأمل':['إدامة النظر والفكر بتدبر.','تدبر، تفكر، إمعان'],'شغف':['شدة الحب والتعلق بالشيء.','ولع، حب، تعلق'],'عزم':['قصد مؤكد وإرادة ثابتة.','إرادة، تصميم، إصرار']};
 function lookup(){const w=document.getElementById('dictWord').value.trim(),r=document.getElementById('dictResult');r.innerHTML=dict[w]?'<b>'+w+'</b><br>المعنى: '+dict[w][0]+'<br>مرادفات: '+dict[w][1]:'الكلمة غير موجودة في القاموس المصغر حاليًا.'}
-const prompts=['ماذا لو وجدت الشخصية شيئًا لا يخصها؟','ما السر الذي تخشى الشخصية أن يعرفه الآخرون؟','ماذا لو وصلت رسالة إلى الشخص الخطأ؟','ما الشيء الذي تريده الشخصية بشدة، لكنها لا تستطيع طلبه؟','ما قرار صغير يمكن أن يغيّر يوم الشخصية كله؟','ما المكان المألوف الذي يمكن أن يبدو مختلفًا تمامًا في وقت غير معتاد؟'];
-function newPrompt(){document.getElementById('ideaPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]}
+const prompts=[
+'وجدت الشخصية رسالة لا تحمل اسم المرسل، لكنها تعرف أمرًا لا يعرفه أحد.',
+'دخلت الطالبة فصلها صباحًا ولاحظت شيئًا تغيّر، بينما لم ينتبه إليه أحد.',
+'اضطرت الشخصية إلى اتخاذ قرار قبل نهاية هذا اليوم.',
+'وصلت حقيبة إلى المكان الخطأ، وكان بداخلها شيء يغيّر مجرى الأحداث.',
+'سمعت الشخصية جملة عابرة جعلتها تعيد التفكير في موقف قديم.',
+'اختفى شيء بسيط، لكن البحث عنه كشف أمرًا أكبر بكثير.',
+'تلقت الشخصية خبرًا سعيدًا، لكن فرحتها لم تكتمل لسبب غير متوقع.',
+'وجدت الشخصية صورة قديمة لم ترها من قبل، وبدأت تبحث عن قصتها.'
+];
+
+function newPrompt(){
+  document.getElementById('ideaPrompt').textContent=
+    prompts[Math.floor(Math.random()*prompts.length)];
+}
+
+function buildIdea(){
+  const mood=document.getElementById('ideaMood').value;
+  const hero=document.getElementById('ideaHero').value.trim();
+  const want=document.getElementById('ideaWant').value.trim();
+  const obstacle=document.getElementById('ideaObstacle').value.trim();
+  const box=document.getElementById('ideaResult');
+
+  if(!hero || !want || !obstacle){
+    box.style.display='block';
+    box.innerHTML='🌱 أكملي الأسئلة الثلاثة أولًا، وبعدها سأساعدكِ في تكوين بذرة القصة.';
+    return;
+  }
+
+  const openings={
+    'غموض':'في أجواء يلفّها الغموض،',
+    'إنساني':'في موقف إنساني مؤثر،',
+    'مدرسي':'في يوم مدرسي لم يكن عاديًا،',
+    'مغامرة':'في بداية مغامرة غير متوقعة،',
+    'خيال':'في عالم تتجاوز فيه الأحداث حدود المألوف،',
+    'يومي':'في موقف بسيط من الحياة اليومية،'
+  };
+
+  box.style.display='block';
+  box.innerHTML=
+    '<b>✨ بذرة قصتك:</b><br>'+
+    openings[mood]+' نتابع '+hero+
+    ' التي تسعى إلى '+want+
+    '، لكن '+obstacle+
+    '.<br><br><b>والآن دوركِ:</b> ما الحدث الذي سيجعل المشكلة تبدأ فعلًا؟';
+}
 function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
 load();go(step);count();
 </script>
