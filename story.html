@@ -271,17 +271,87 @@ function buildIdea(){
     '، لكن '+obstacle+
     '.<br><br><b>والآن دوركِ:</b> ما الحدث الذي سيجعل المشكلة تبدأ فعلًا؟';
 }
-// كود معجم سِمْط الجديد كله هنا
 const storyLexicon = {
-   ...
+  feelings: [
+    'تردّد — حيرة بين قرارين',
+    'انقباض — شعور بالضيق أو القلق',
+    'طمأنينة — سكون وراحة داخلية',
+    'دهشة — مفاجأة قوية',
+    'ترقّب — انتظار مشوب بالتوتر',
+    'خيبة — حزن بسبب نتيجة لم تكن متوقعة',
+    'امتنان — شعور بالشكر والتقدير',
+    'ارتباك — اضطراب في التفكير أو التصرف'
+  ],
+
+  place: [
+    'خافت الإضاءة',
+    'ضيق الممرات',
+    'ساكن الأرجاء',
+    'مزدحم بالتفاصيل',
+    'تتسلل إليه أشعة الشمس',
+    'تغمره رائحة قديمة',
+    'يخيّم عليه الصمت',
+    'تتردد فيه الأصوات'
+  ],
+
+  movement: [
+    'أسرعت بخطوات متلاحقة',
+    'توقفت فجأة',
+    'التفتت بحذر',
+    'اقتربت ببطء',
+    'تراجعت خطوة',
+    'اندفعت نحو الباب',
+    'مدّت يدها بتردد',
+    'ثبتت في مكانها'
+  ],
+
+  dialogue: [
+    'قالت بصوت خافت:',
+    'سألت مترددة:',
+    'أجاب بعد صمت:',
+    'قاطعتها قائلة:',
+    'همست:',
+    'قالت بلهجة حازمة:',
+    'تساءلت في دهشة:',
+    'ردّت بهدوء:'
+  ],
+
+  beginnings: [
+    'لم يكن ذلك اليوم عاديًا.',
+    'بدأ كل شيء حين...',
+    'ما زلت أذكر تلك اللحظة جيدًا.',
+    'في صباح بدا مألوفًا، حدث ما لم يكن في الحسبان.',
+    'لم تتوقع أن يتغير كل شيء بسبب موقف واحد.',
+    'قبل أن تصل، كانت تظن أن الأمر بسيط.'
+  ],
+
+  transitions: [
+    'بعد لحظات...',
+    'في الوقت نفسه...',
+    'لم تمضِ دقائق حتى...',
+    'بعد ذلك...',
+    'مع مرور الوقت...',
+    'فجأة...',
+    'وقبل أن تتمكن من التفكير...',
+    'عندها أدركت أن...'
+  ]
 };
 
 function showStoryWords(){
-   ...
-}
+  const category = document.getElementById('storyLexiconCategory').value;
+  const result = document.getElementById('storyLexiconResult');
 
-// وبعده يظل هذا مثل ما هو
-function downloadStory(){
+  if(!category){
+    result.innerHTML = 'اختاري مجالًا لتظهر لكِ لآلئ لغوية مناسبة ✨';
+    return;
+  }
+
+  result.innerHTML =
+    '<b>لآلئ مقترحة:</b><br>' +
+    storyLexicon[category]
+      .map(word => '• ' + word)
+      .join('<br>');
+}
   function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
 load();go(step);count();
 </script>
