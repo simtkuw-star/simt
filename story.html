@@ -120,6 +120,7 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 <div class="big">✨</div><h2>اكتمل سِمْط قصتك</h2>
 <p class="hint">الفكرة أصبحت حكاية. يمكنك العودة لأي لؤلؤة وتعديلها متى شئت.</p>
 <button class="btn primary" onclick="downloadStory()">حفظ القصة كنص</button>
+  <button class="btn primary" type="button" onclick="saveStoryToAccount()">💾 حفظ القصة في أعمالي</button>
 </section>
 
 <div class="actions" id="actions"><button class="btn soft" id="prev">السابق</button><button class="btn primary" id="next">التالي ←</button></div>
@@ -354,5 +355,69 @@ function showStoryWords(){
 }
   function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
 load();go(step);count();
+</script>
+<script src="firebase-config.js"></script>
+<script type="module">
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+  import {
+    getDatabase,
+    ref,
+    update,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+  const storyFirebaseApp = initializeApp(window.SIMT_FIREBASE_CONFIG);
+  const storyAuth = getAuth(storyFirebaseApp);
+  const storyDatabase = getDatabase(storyFirebaseApp);
+
+  let storyActiveUser = null;
+
+  onAuthStateChanged(storyAuth, (user) => {
+    storyActiveUser = user || null;
+  });
+
+  async function saveStoryToAccount() {
+    if (!storyActiveUser) {
+      alert("سجّلي الدخول أولًا حتى يتم حفظ قصتك في أعمالك.");
+      return;
+    }
+
+    const storyTitle =
+      document.getElementById("title")?.value.trim() || "قصة بلا عنوان";
+
+    const storyText =
+      document.getElementById("story")?.value.trim() || "";
+
+    if (!storyText) {
+      alert("اكتبي قصتك أولًا قبل الحفظ.");
+      return;
+    }
+
+    try {
+      await update(
+        ref(storyDatabase, `students/${storyActiveUser.uid}/storyWork`),
+        {
+          title: storyTitle,
+          story: storyText,
+          updatedAt: serverTimestamp()
+        }
+      );
+
+      alert("تم حفظ قصتك في حسابك ✨");
+    } catch (error) {
+      console.error(error);
+      alert("تعذّر حفظ القصة الآن. حاولي مرة أخرى.");
+    }
+  }
+
+  window.saveStoryToAccount = saveStoryToAccount;
 </script>
 </body></html>
