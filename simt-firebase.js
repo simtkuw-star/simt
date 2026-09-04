@@ -42,10 +42,10 @@ function setLoggedInUi(user) {
   if (forgotButton) forgotButton.hidden = true;
   if (logoutButton) logoutButton.hidden = false;
 
-  if (accountStatus) {
-    accountStatus.textContent =
-      `مرحبًا، ${user.displayName || user.email} — تم تسجيل الدخول.`;
-  }
+if (accountStatus) {
+  accountStatus.textContent =
+    `✓ تم تسجيل الدخول بالحساب: ${user.email}`;
+}
 
   if (authMessage) authMessage.textContent = "";
 }
