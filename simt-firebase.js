@@ -66,6 +66,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     onValue,
     ref,
     serverTimestamp,
+   push,
     set,
     update
   } = await import("https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js");
@@ -275,31 +276,101 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
     }
   }
 
-  async function submitStudentDraft() {
-    if (!activeUser) {
-      window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
-        detail: { message: "سجلي الدخول أولًا قبل إرسال النص." }
-      }));
-      return;
+async function submitStudentDraft() {
+  if (!activeUser) {
+    window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+      detail: { message: "سجّلي الدخول أولًا قبل إرسال النص." }
+    }));
+    return;
+  }
+
+  if (!isVerifiedUser()) {
+    showVerifyMessage();
+    return;
+  }
+
+  const draft = writingBox ? writingBox.value.trim() : "";
+
+  if (!draft) {
+    window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+      detail: { message: "اكتبي النص أولًا قبل الإرسال." }
+    }));
+    return;
+  }
+
+  const firstLine = draft
+    .split("\n")
+    .map(line => line.trim())
+    .find(line => line.length > 0);
+
+  const articleTitle = firstLine
+    ? firstLine.slice(0, 60)
+    : "مقال بلا عنوان";
+
+  try {
+    // نحافظ على نظام المقال القديم حتى لا يتأثر التقييم أو بقية الموقع
+    await update(
+      ref(database, `students/${activeUser.uid}/work`),
+      {
+        draft,
+        submittedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+    );
+
+    // نظام المقالات المتعددة
+    const storageKey =
+      `simt_current_article_id_${activeUser.uid}`;
+
+    let currentArticleId =
+      localStorage.getItem(storageKey);
+
+    if (currentArticleId) {
+      await update(
+        ref(
+          database,
+          `students/${activeUser.uid}/articles/${currentArticleId}`
+        ),
+        {
+          title: articleTitle,
+          draft,
+          updatedAt: serverTimestamp()
+        }
+      );
+    } else {
+      const newArticleRef = push(
+        ref(
+          database,
+          `students/${activeUser.uid}/articles`
+        )
+      );
+
+      currentArticleId = newArticleRef.key;
+
+      await update(newArticleRef, {
+        title: articleTitle,
+        draft,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      localStorage.setItem(
+        storageKey,
+        currentArticleId
+      );
     }
-    if (!isVerifiedUser()) {
-      showVerifyMessage();
-      return;
-    }
-    const draft = writingBox ? writingBox.value.trim() : "";
-    if (!draft) {
-      window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
-        detail: { message: "اكتبي النص أولًا قبل الإرسال." }
-      }));
-      return;
-    }
-    await update(ref(database, `students/${activeUser.uid}/work`), {
-      draft,
-      submittedAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+
     window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
       detail: { message: "تم إرسال النص للمعلمة للمراجعة." }
+    }));
+
+  } catch (error) {
+    console.error(error);
+
+    window.dispatchEvent(new CustomEvent("simtSubmitStatus", {
+      detail: {
+        message: "تعذّر حفظ المقال الآن. حاولي مرة أخرى."
+      }
     }));
   }
 
