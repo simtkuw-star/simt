@@ -367,12 +367,13 @@ load();go(step);count();
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
-  import {
-    getDatabase,
-    ref,
-    update,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  update,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
   const storyFirebaseApp = initializeApp(window.SIMT_FIREBASE_CONFIG);
   const storyAuth = getAuth(storyFirebaseApp);
@@ -384,26 +385,33 @@ load();go(step);count();
     storyActiveUser = user || null;
   });
 
-  async function saveStoryToAccount() {
-    if (!storyActiveUser) {
-      alert("سجّلي الدخول أولًا حتى يتم حفظ قصتك في أعمالك.");
-      return;
-    }
+async function saveStoryToAccount() {
+  if (!storyActiveUser) {
+    alert("سجّلي الدخول أولًا حتى يتم حفظ قصتك في أعمالك.");
+    return;
+  }
 
-    const storyTitle =
-      document.getElementById("title")?.value.trim() || "قصة بلا عنوان";
+  const storyTitle =
+    document.getElementById("title")?.value.trim() || "قصة بلا عنوان";
 
-    const storyText =
-      document.getElementById("story")?.value.trim() || "";
+  const storyText =
+    document.getElementById("story")?.value.trim() || "";
 
-    if (!storyText) {
-      alert("اكتبي قصتك أولًا قبل الحفظ.");
-      return;
-    }
+  if (!storyText) {
+    alert("اكتبي قصتك أولًا قبل الحفظ.");
+    return;
+  }
 
-    try {
+  try {
+    const storageKey = `simt_current_story_id_${storyActiveUser.uid}`;
+    let currentStoryId = localStorage.getItem(storageKey);
+
+    if (currentStoryId) {
       await update(
-        ref(storyDatabase, `students/${storyActiveUser.uid}/storyWork`),
+        ref(
+          storyDatabase,
+          `students/${storyActiveUser.uid}/stories/${currentStoryId}`
+        ),
         {
           title: storyTitle,
           story: storyText,
@@ -411,13 +419,33 @@ load();go(step);count();
         }
       );
 
-      alert("تم حفظ قصتك في حسابك ✨");
-    } catch (error) {
-      console.error(error);
-      alert("تعذّر حفظ القصة الآن. حاولي مرة أخرى.");
-    }
-  }
+      alert("✨ تم تحديث قصتك في أعمالك");
+    } else {
+      const newStoryRef = push(
+        ref(
+          storyDatabase,
+          `students/${storyActiveUser.uid}/stories`
+        )
+      );
 
+      currentStoryId = newStoryRef.key;
+
+      await update(newStoryRef, {
+        title: storyTitle,
+        story: storyText,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      localStorage.setItem(storageKey, currentStoryId);
+
+      alert("✨ تم حفظ قصتك في أعمالك");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("تعذّر حفظ القصة الآن. حاولي مرة أخرى.");
+  }
+}
   window.saveStoryToAccount = saveStoryToAccount;
 </script>
 </body></html>
