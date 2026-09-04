@@ -77,6 +77,8 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   const {
     createUserWithEmailAndPassword,
     getAuth,
+   browserLocalPersistence,
+setPersistence,
     onAuthStateChanged,
     sendEmailVerification,
     sendPasswordResetEmail,
@@ -98,6 +100,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
 
   const app = initializeApp(config);
   const auth = getAuth(app);
+await setPersistence(auth, browserLocalPersistence);
   auth.languageCode = "ar";
   const database = getDatabase(app);
   const writingBox = document.getElementById("writingBox");
