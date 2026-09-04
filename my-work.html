@@ -174,8 +174,9 @@
     <p>هنا تجدين القصص التي حفظتها في حسابك، ويمكنك العودة إليها ومتابعة الكتابة.</p>
   </div>
 
-  <a class="btn new-story" href="story.html">＋ قصة جديدة</a>
-
+<button class="btn new-story" type="button" onclick="startNewStory()">
+  ＋ قصة جديدة
+</button>
   <h2 class="section-title">قصصي</h2>
 
   <div id="storiesContainer" class="stories-grid">
@@ -298,6 +299,27 @@
     }
 
   });
+function startNewStory() {
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("سجّلي الدخول أولًا.");
+    return;
+  }
+
+  const ok = confirm(
+    "هل تريدين بدء قصة جديدة؟ تأكدي من حفظ قصتك الحالية أولًا."
+  );
+
+  if (!ok) return;
+
+  localStorage.removeItem(`simt_current_story_id_${user.uid}`);
+  localStorage.removeItem("simt_story_journey_v2");
+
+  window.location.href = "story.html?new=1";
+}
+
+window.startNewStory = startNewStory;
 </script>
 
 </body>
