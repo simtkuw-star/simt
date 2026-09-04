@@ -34,15 +34,40 @@ function markFirebaseMode() {
 }
 
 function setLoggedInUi(user) {
+  if (displayNameInput) displayNameInput.hidden = true;
+  if (emailInput) emailInput.hidden = true;
+  if (passwordInput) passwordInput.hidden = true;
+
+  if (loginButton) loginButton.hidden = true;
+  if (forgotButton) forgotButton.hidden = true;
   if (logoutButton) logoutButton.hidden = false;
-  if (loginButton) loginButton.textContent = "تحديث الدخول";
-  if (accountStatus) accountStatus.textContent = `الحساب النشط: ${user.email}`;
+
+  if (accountStatus) {
+    accountStatus.textContent =
+      `مرحبًا، ${user.displayName || user.email} — تم تسجيل الدخول.`;
+  }
+
+  if (authMessage) authMessage.textContent = "";
 }
 
 function setLoggedOutUi() {
+  if (displayNameInput) displayNameInput.hidden = false;
+  if (emailInput) emailInput.hidden = false;
+  if (passwordInput) passwordInput.hidden = false;
+
+  if (loginButton) {
+    loginButton.hidden = false;
+    loginButton.textContent = "دخول / تسجيل";
+  }
+
+  if (forgotButton) forgotButton.hidden = false;
   if (logoutButton) logoutButton.hidden = true;
-  if (loginButton) loginButton.textContent = "دخول  /  تسجيل";
-  if (accountStatus) accountStatus.textContent = "لم يتم تسجيل الدخول بعد.";
+
+  if (accountStatus) {
+    accountStatus.textContent = "لم يتم تسجيل الدخول بعد.";
+  }
+
+  if (authMessage) authMessage.textContent = "";
 }
 
 if (isConfigured && loginButton && emailInput && passwordInput) {
