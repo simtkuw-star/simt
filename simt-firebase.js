@@ -77,8 +77,7 @@ if (isConfigured && loginButton && emailInput && passwordInput) {
   const {
     createUserWithEmailAndPassword,
     getAuth,
-   browserLocalPersistence,
-setPersistence,
+
     onAuthStateChanged,
     sendEmailVerification,
     sendPasswordResetEmail,
