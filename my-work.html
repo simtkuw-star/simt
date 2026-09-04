@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أعمالي | سِمْط</title>
+
+  <style>
+    :root{
+      --navy:#0f2345;
+      --gold:#c7a86b;
+      --ivory:#f6f2eb;
+      --white:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --border:#e7dfd2;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:var(--ivory);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--white);
+      border-bottom:1px solid var(--border);
+      padding:18px 6%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      font-size:30px;
+      font-weight:800;
+      color:var(--navy);
+      text-decoration:none;
+    }
+
+    nav{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+    }
+
+    nav a{
+      color:var(--navy);
+      text-decoration:none;
+      font-weight:700;
+    }
+
+    nav a.active{
+      color:#8a6b28;
+    }
+
+    main{
+      width:min(1050px,92%);
+      margin:50px auto;
+    }
+
+    .hero{
+      text-align:center;
+      margin-bottom:36px;
+    }
+
+    .hero h1{
+      color:var(--navy);
+      font-size:42px;
+      margin:0 0 10px;
+    }
+
+    .hero p{
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.9;
+    }
+
+    .section-title{
+      color:var(--navy);
+      margin:30px 0 18px;
+      font-size:26px;
+    }
+
+    .stories-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:18px;
+    }
+
+    .story-card{
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 10px 30px rgba(15,35,69,.06);
+    }
+
+    .story-card h3{
+      color:var(--navy);
+      margin:0 0 10px;
+      font-size:21px;
+    }
+
+    .story-card p{
+      color:var(--muted);
+      line-height:1.8;
+      min-height:55px;
+    }
+
+    .meta{
+      font-size:13px;
+      color:#8a8174;
+      margin:12px 0;
+    }
+
+    .btn{
+      display:inline-block;
+      border:0;
+      background:var(--navy);
+      color:white;
+      padding:11px 18px;
+      border-radius:999px;
+      text-decoration:none;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .new-story{
+      background:var(--gold);
+      color:var(--navy);
+      margin-bottom:25px;
+    }
+
+    .message{
+      background:white;
+      border:1px dashed var(--gold);
+      padding:24px;
+      border-radius:20px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    footer{
+      text-align:center;
+      padding:30px;
+      color:var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a class="brand" href="index.html">سِمْط</a>
+
+  <nav>
+    <a href="index.html">الرئيسية</a>
+    <a href="index.html#editor">المقال</a>
+    <a href="story.html">القصة القصيرة</a>
+    <a class="active" href="my-work.html">أعمالي</a>
+  </nav>
+</header>
+
+<main>
+
+  <div class="hero">
+    <h1>أعمالي</h1>
+    <p>هنا تجدين القصص التي حفظتها في حسابك، ويمكنك العودة إليها ومتابعة الكتابة.</p>
+  </div>
+
+  <a class="btn new-story" href="story.html">＋ قصة جديدة</a>
+
+  <h2 class="section-title">قصصي</h2>
+
+  <div id="storiesContainer" class="stories-grid">
+    <div class="message">جاري تحميل أعمالك...</div>
+  </div>
+
+</main>
+
+<footer>
+  سِمْط — نعقد الحرف.. لنصنع أثرًا
+</footer>
+
+<script src="firebase-config.js"></script>
+
+<script type="module">
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+  import {
+    getDatabase,
+    ref,
+    get
+  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
+
+  const app = initializeApp(window.SIMT_FIREBASE_CONFIG);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
+
+  const container = document.getElementById("storiesContainer");
+
+  function escapeHtml(text) {
+    return String(text || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function previewText(text) {
+    const clean = String(text || "").trim();
+    if (clean.length <= 120) return clean;
+    return clean.slice(0, 120) + "…";
+  }
+
+  function formatDate(timestamp) {
+    if (!timestamp) return "بدون تاريخ";
+    try {
+      return new Date(timestamp).toLocaleDateString("ar-KW");
+    } catch {
+      return "بدون تاريخ";
+    }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+      container.innerHTML =
+        '<div class="message">سجّلي الدخول أولًا حتى تظهر أعمالك.</div>';
+      return;
+    }
+
+    try {
+      const storiesRef = ref(
+        database,
+        `students/${user.uid}/stories`
+      );
+
+      const snapshot = await get(storiesRef);
+
+      if (!snapshot.exists()) {
+        container.innerHTML =
+          '<div class="message">لا توجد قصص محفوظة حتى الآن.</div>';
+        return;
+      }
+
+      const stories = snapshot.val();
+      const items = Object.entries(stories).reverse();
+
+      container.innerHTML = "";
+
+      items.forEach(([storyId, story]) => {
+
+        const title =
+          escapeHtml(story.title || "قصة بلا عنوان");
+
+        const preview =
+          escapeHtml(previewText(story.story));
+
+        const date =
+          formatDate(story.updatedAt || story.createdAt);
+
+        const card = document.createElement("div");
+        card.className = "story-card";
+
+        card.innerHTML = `
+          <h3>${title}</h3>
+          <p>${preview}</p>
+          <div class="meta">آخر حفظ: ${date}</div>
+          <a class="btn"
+             href="story.html?id=${encodeURIComponent(storyId)}">
+             فتح القصة
+          </a>
+        `;
+
+        container.appendChild(card);
+      });
+
+    } catch (error) {
+      console.error(error);
+
+      container.innerHTML =
+        '<div class="message">تعذّر تحميل أعمالك الآن.</div>';
+    }
+
+  });
+</script>
+
+</body>
+</html>
