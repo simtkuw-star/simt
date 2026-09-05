@@ -177,6 +177,11 @@
 <button class="btn new-story" type="button" onclick="startNewStory()">
   ＋ قصة جديدة
 </button>
+ <h2 class="section-title">مقالاتي</h2>
+
+<div id="articlesContainer" class="stories-grid">
+  <div class="message">جاري تحميل مقالاتك...</div>
+</div>
   <h2 class="section-title">قصصي</h2>
 
   <div id="storiesContainer" class="stories-grid">
@@ -211,8 +216,8 @@
   const auth = getAuth(app);
   const database = getDatabase(app);
 
-  const container = document.getElementById("storiesContainer");
-
+const storiesContainer = document.getElementById("storiesContainer");
+const articlesContainer = document.getElementById("articlesContainer");
   function escapeHtml(text) {
     return String(text || "")
       .replaceAll("&", "&amp;")
@@ -237,35 +242,80 @@
     }
   }
 
-  onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, async (user) => {
 
-    if (!user) {
-      container.innerHTML =
-        '<div class="message">سجّلي الدخول أولًا حتى تظهر أعمالك.</div>';
-      return;
+  if (!user) {
+    articlesContainer.innerHTML =
+      '<div class="message">سجّلي الدخول أولًا حتى تظهر مقالاتك.</div>';
+
+    storiesContainer.innerHTML =
+      '<div class="message">سجّلي الدخول أولًا حتى تظهر قصصك.</div>';
+
+    return;
+  }
+
+  try {
+    const articlesRef = ref(
+      database,
+      `students/${user.uid}/articles`
+    );
+
+    const storiesRef = ref(
+      database,
+      `students/${user.uid}/stories`
+    );
+
+    const [articlesSnapshot, storiesSnapshot] = await Promise.all([
+      get(articlesRef),
+      get(storiesRef)
+    ]);
+
+    if (!articlesSnapshot.exists()) {
+      articlesContainer.innerHTML =
+        '<div class="message">لا توجد مقالات محفوظة حتى الآن.</div>';
+    } else {
+      const articles = articlesSnapshot.val();
+      const articleItems = Object.entries(articles).reverse();
+
+      articlesContainer.innerHTML = "";
+
+      articleItems.forEach(([articleId, article]) => {
+        const title =
+          escapeHtml(article.title || "مقال بلا عنوان");
+
+        const preview =
+          escapeHtml(previewText(article.draft));
+
+        const date =
+          formatDate(article.updatedAt || article.createdAt);
+
+        const card = document.createElement("div");
+        card.className = "story-card";
+
+        card.innerHTML = `
+          <h3>${title}</h3>
+          <p>${preview}</p>
+          <div class="meta">آخر حفظ: ${date}</div>
+          <a class="btn"
+             href="index.html?article=${encodeURIComponent(articleId)}#editor">
+            فتح المقال
+          </a>
+        `;
+
+        articlesContainer.appendChild(card);
+      });
     }
 
-    try {
-      const storiesRef = ref(
-        database,
-        `students/${user.uid}/stories`
-      );
+    if (!storiesSnapshot.exists()) {
+      storiesContainer.innerHTML =
+        '<div class="message">لا توجد قصص محفوظة حتى الآن.</div>';
+    } else {
+      const stories = storiesSnapshot.val();
+      const storyItems = Object.entries(stories).reverse();
 
-      const snapshot = await get(storiesRef);
+      storiesContainer.innerHTML = "";
 
-      if (!snapshot.exists()) {
-        container.innerHTML =
-          '<div class="message">لا توجد قصص محفوظة حتى الآن.</div>';
-        return;
-      }
-
-      const stories = snapshot.val();
-      const items = Object.entries(stories).reverse();
-
-      container.innerHTML = "";
-
-      items.forEach(([storyId, story]) => {
-
+      storyItems.forEach(([storyId, story]) => {
         const title =
           escapeHtml(story.title || "قصة بلا عنوان");
 
@@ -284,21 +334,25 @@
           <div class="meta">آخر حفظ: ${date}</div>
           <a class="btn"
              href="story.html?id=${encodeURIComponent(storyId)}">
-             فتح القصة
+            فتح القصة
           </a>
         `;
 
-        container.appendChild(card);
+        storiesContainer.appendChild(card);
       });
-
-    } catch (error) {
-      console.error(error);
-
-      container.innerHTML =
-        '<div class="message">تعذّر تحميل أعمالك الآن.</div>';
     }
 
-  });
+  } catch (error) {
+    console.error(error);
+
+    articlesContainer.innerHTML =
+      '<div class="message">تعذّر تحميل مقالاتك الآن.</div>';
+
+    storiesContainer.innerHTML =
+      '<div class="message">تعذّر تحميل قصصك الآن.</div>';
+  }
+
+});
 function startNewStory() {
   const user = auth.currentUser;
 
