@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>رحلة كتابة المقال | سِمْط</title>
+
+<style>
+:root{
+  --navy:#0f2345;
+  --gold:#c7a86b;
+  --cream:#f7f2ea;
+  --ink:#263247;
+  --muted:#737783;
+  --line:#e5d8c3;
+  --white:#fff;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:Tahoma,Arial,sans-serif;
+}
+
+a{text-decoration:none;color:inherit}
+button,input,textarea{font:inherit}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 5%;
+  background:#fffffff9;
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.brand{
+  font-size:29px;
+  font-weight:800;
+  color:var(--navy);
+}
+
+nav{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+nav a{
+  padding:9px 13px;
+  border-radius:999px;
+}
+
+nav a.active{
+  background:var(--navy);
+  color:white;
+}
+
+main{
+  width:min(900px,92%);
+  margin:42px auto 70px;
+}
+
+.intro{
+  text-align:center;
+  margin-bottom:26px;
+}
+
+.intro h1{
+  color:var(--navy);
+  font-size:40px;
+  margin:0 0 10px;
+}
+
+.intro p{
+  color:var(--muted);
+  line-height:1.9;
+}
+
+.pearls{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:28px 0 35px;
+}
+
+.pearl{
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background:#e9dfd0;
+  border:2px solid #d7c29e;
+  position:relative;
+}
+
+.pearl:not(:last-child){
+  margin-left:25px;
+}
+
+.pearl:not(:last-child)::after{
+  content:"";
+  position:absolute;
+  right:23px;
+  top:9px;
+  width:27px;
+  height:3px;
+  background:#dfd2bf;
+}
+
+.pearl.active,
+.pearl.done{
+  background:var(--gold);
+  box-shadow:0 0 0 5px rgba(199,168,107,.14);
+}
+
+.card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:34px;
+  box-shadow:0 16px 45px rgba(15,35,69,.07);
+  display:none;
+}
+
+.card.active{display:block}
+
+.eyebrow{
+  color:#9a7a42;
+  font-weight:700;
+  font-size:14px;
+}
+
+.card h2{
+  font-size:29px;
+  color:var(--navy);
+  margin:7px 0 10px;
+}
+
+.hint{
+  color:var(--muted);
+  line-height:1.9;
+}
+
+label{
+  display:block;
+  color:var(--navy);
+  font-weight:700;
+  margin:16px 0 8px;
+}
+
+input,textarea{
+  width:100%;
+  border:1.5px solid #ddd2bf;
+  border-radius:16px;
+  background:#fffdfa;
+  padding:14px;
+  outline:none;
+}
+
+textarea{
+  min-height:135px;
+  resize:vertical;
+}
+
+input:focus,textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(199,168,107,.13);
+}
+
+.final{
+  min-height:330px;
+}
+
+.summary{
+  background:#f8f4ed;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:18px;
+  line-height:1.9;
+}
+
+.review label{
+  font-weight:400;
+  color:var(--ink);
+}
+
+.review input{
+  width:auto;
+  margin-left:8px;
+}
+
+.actions{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:26px;
+}
+
+.btn{
+  border:0;
+  border-radius:999px;
+  padding:12px 22px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--navy);
+  color:white;
+}
+
+.secondary{
+  background:#eadfcf;
+  color:var(--navy);
+}
+
+.finish{
+  text-align:center;
+}
+
+.finish .big{
+  font-size:58px;
+}
+
+.finish h2{
+  font-size:32px;
+}
+
+@media(max-width:650px){
+  header{display:block}
+  nav{margin-top:12px}
+  .intro h1{font-size:32px}
+  .card{padding:23px}
+  .pearl{width:18px;height:18px}
+  .pearl:not(:last-child){margin-left:13px}
+  .pearl:not(:last-child)::after{
+    right:16px;
+    top:6px;
+    width:15px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a class="brand" href="/">سِمْط</a>
+
+  <nav>
+    <a href="/">الرئيسية</a>
+    <a class="active" href="article.html">✍️ المقال</a>
+    <a href="story.html">📖 القصة القصيرة</a>
+    <a href="my-work.html">أعمالي</a>
+  </nav>
+</header>
+
+<main>
+
+<div class="intro">
+  <h1>رحلة كتابة المقال</h1>
+  <p>كل فكرة لؤلؤة، وكل خطوة تقرّبك من مقال أكثر وضوحًا وقوة.</p>
+</div>
+
+<div class="pearls" id="pearls"></div>
+
+<form id="wizard" onsubmit="return false">
+
+<section class="card active">
+  <span class="eyebrow">البداية</span>
+  <h2>ما القضية التي ستكتبين عنها؟</h2>
+  <p class="hint">حددي موضوعك بوضوح قبل أن تبدئي الكتابة.</p>
+
+  <label>موضوع المقال</label>
+  <input id="topic" placeholder="مثال: أثر القراءة في بناء شخصية الإنسان">
+
+  <label>لماذا اخترتِ هذا الموضوع؟</label>
+  <textarea id="why" placeholder="اكتبي باختصار لماذا ترين أن هذه القضية مهمة..."></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">الموقف</span>
+  <h2>ماذا ترين؟</h2>
+  <p class="hint">حددي موقفك بوضوح. ما الفكرة التي تريدين إقناع القارئ بها؟</p>
+
+  <label>موقفي من القضية</label>
+  <textarea id="position" placeholder="أرى أن..."></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">التخطيط</span>
+  <h2>كيف ستبنين مقالك؟</h2>
+  <p class="hint">رتبي أفكارك قبل الكتابة حتى يكون المقال مترابطًا.</p>
+
+  <label>الفكرة الرئيسة الأولى</label>
+  <textarea id="point1"></textarea>
+
+  <label>الفكرة الرئيسة الثانية</label>
+  <textarea id="point2"></textarea>
+
+  <label>الفكرة الرئيسة الثالثة</label>
+  <textarea id="point3"></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">المقدمة</span>
+  <h2>كيف ستجذبين القارئ؟</h2>
+  <p class="hint">مهدي للموضوع بعبارات واضحة، ثم قودي القارئ نحو القضية.</p>
+
+  <textarea id="introduction" placeholder="اكتبي مقدمة مقالك هنا..."></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">العرض</span>
+  <h2>ابني الفكرة الأولى</h2>
+  <p class="hint">قدمي الفكرة ثم فسريها وادعميها بمثال أو دليل مناسب.</p>
+
+  <label>الفكرة وشرحها</label>
+  <textarea id="body1"></textarea>
+
+  <label>الدليل أو المثال</label>
+  <textarea id="evidence1"></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">تعميق الفكرة</span>
+  <h2>طوّري حجتك</h2>
+  <p class="hint">انتقلي إلى فكرة أخرى تدعم موقفك وتحافظ على ترابط المقال.</p>
+
+  <label>الفكرة الثانية وشرحها</label>
+  <textarea id="body2"></textarea>
+
+  <label>الدليل أو المثال</label>
+  <textarea id="evidence2"></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">التفكير النقدي</span>
+  <h2>هل يوجد رأي آخر؟</h2>
+  <p class="hint">يمكنك عرض وجهة نظر مختلفة ثم مناقشتها بأسلوب منطقي وهادئ.</p>
+
+  <label>الرأي الآخر</label>
+  <textarea id="otherView"></textarea>
+
+  <label>مناقشتي لهذا الرأي</label>
+  <textarea id="response"></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">الخاتمة</span>
+  <h2>بماذا سيخرج القارئ؟</h2>
+  <p class="hint">لخّصي موقفك واتركي فكرة أخيرة مؤثرة أو توصية مناسبة.</p>
+
+  <textarea id="conclusion" placeholder="اكتبي خاتمة المقال..."></textarea>
+</section>
+
+<section class="card">
+  <span class="eyebrow">الكتابة</span>
+  <h2>الآن... اكتبي مقالك</h2>
+  <p class="hint">استخدمي مخططك السابق، لكن اكتبي المقال بصوتك وأسلوبك.</p>
+
+  <div class="summary" id="summary"></div>
+
+  <textarea class="final" id="finalArticle"
+    placeholder="اكتبي النسخة الكاملة من المقال هنا..."></textarea>
+
+  <div id="stats">0 كلمة</div>
+</section>
+
+<section class="card review">
+  <span class="eyebrow">المراجعة</span>
+  <h2>اقرئي بعين القارئ</h2>
+  <p class="hint">راجعي مقالك قبل اعتماده.</p>
+
+  <label><input type="checkbox"> موضوع المقال واضح.</label>
+  <label><input type="checkbox"> المقدمة مرتبطة بالقضية.</label>
+  <label><input type="checkbox"> الأفكار مرتبة ومترابطة.</label>
+  <label><input type="checkbox"> دعمت أفكاري بأمثلة أو أدلة.</label>
+  <label><input type="checkbox"> استخدمت أدوات الربط بين الفقرات.</label>
+  <label><input type="checkbox"> راجعت الإملاء وعلامات الترقيم.</label>
+  <label><input type="checkbox"> الخاتمة تلخص موقفي بوضوح.</label>
+</section>
+
+<section class="card finish">
+  <div class="big">✨</div>
+  <h2>اكتمل مقالك</h2>
+  <p>مررتِ بالفكرة والتخطيط والكتابة والمراجعة. أصبحت لديك الآن مسودة مقال متكاملة.</p>
+
+  <button class="btn primary" type="button" id="saveArticle">
+    حفظ المقال في أعمالي
+  </button>
+
+  <p id="saveMessage"></p>
+</section>
+
+<div class="actions">
+  <button class="btn secondary" type="button" id="prev">السابق</button>
+  <button class="btn primary" type="button" id="next">التالي</button>
+</div>
+
+</form>
+</main>
+
+<script>
+const cards = [...document.querySelectorAll(".card")];
+const pearlsBox = document.getElementById("pearls");
+let current = 0;
+
+cards.forEach((_,i)=>{
+  const pearl=document.createElement("div");
+  pearl.className="pearl";
+  pearlsBox.appendChild(pearl);
+});
+
+const pearls=[...document.querySelectorAll(".pearl")];
+
+function showStep(index){
+  cards.forEach((card,i)=>{
+    card.classList.toggle("active",i===index);
+  });
+
+  pearls.forEach((pearl,i)=>{
+    pearl.classList.toggle("active",i===index);
+    pearl.classList.toggle("done",i<index);
+  });
+
+  document.getElementById("prev").style.visibility =
+    index===0 ? "hidden" : "visible";
+
+  document.getElementById("next").style.display =
+    index===cards.length-1 ? "none" : "inline-block";
+
+  if(index===8) buildSummary();
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function value(id){
+  return document.getElementById(id)?.value.trim() || "";
+}
+
+function buildSummary(){
+  document.getElementById("summary").innerHTML=`
+    <strong>مخطط مقالك:</strong><br>
+    الموضوع: ${value("topic") || "—"}<br>
+    الموقف: ${value("position") || "—"}<br>
+    الفكرة الأولى: ${value("point1") || "—"}<br>
+    الفكرة الثانية: ${value("point2") || "—"}<br>
+    الفكرة الثالثة: ${value("point3") || "—"}
+  `;
+}
+
+document.getElementById("next").addEventListener("click",()=>{
+  if(current<cards.length-1){
+    current++;
+    showStep(current);
+  }
+});
+
+document.getElementById("prev").addEventListener("click",()=>{
+  if(current>0){
+    current--;
+    showStep(current);
+  }
+});
+
+const finalArticle=document.getElementById("finalArticle");
+
+finalArticle.addEventListener("input",()=>{
+  const text=finalArticle.value.trim();
+  const words=text ? text.split(/\s+/).length : 0;
+  document.getElementById("stats").textContent=words+" كلمة";
+});
+
+document.getElementById("saveArticle").addEventListener("click",()=>{
+  document.getElementById("saveMessage").textContent=
+    "سنربط زر الحفظ بحساب الطالبة بعد التأكد من أن رحلة المقال تعمل بصورة صحيحة.";
+});
+
+showStep(0);
+</script>
+
+</body>
+</html>
