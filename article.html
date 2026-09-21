@@ -495,7 +495,8 @@ import {
   getDatabase,
   ref,
   push,
-  set,
+ set,
+ get,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
@@ -505,8 +506,48 @@ const database = getDatabase(app);
 
 let activeUser = null;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   activeUser = user || null;
+
+  if (!activeUser) {
+    return;
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const articleId = params.get("id");
+
+  if (!articleId) {
+    return;
+  }
+
+  try {
+    const articleRef = ref(
+      database,
+      `students/${activeUser.uid}/articles/${articleId}`
+    );
+
+    const snapshot = await get(articleRef);
+
+    if (!snapshot.exists()) {
+      return;
+    }
+
+    const article = snapshot.val();
+    const finalArticle = document.getElementById("finalArticle");
+
+    if (finalArticle) {
+      finalArticle.value = article.draft || "";
+
+      const text = finalArticle.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+
+      document.getElementById("stats").textContent =
+        words + " كلمة";
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 const saveArticleButton = document.getElementById("saveArticle");
