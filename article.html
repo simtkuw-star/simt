@@ -496,7 +496,8 @@ import {
   ref,
   push,
  set,
- get,
+get,
+ update,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
 
@@ -568,11 +569,35 @@ saveArticleButton.addEventListener("click", async () => {
     return;
   }
 
-  try {
-    const articleRef = push(
-      ref(database, `students/${activeUser.uid}/articles`)
+try {
+  const params = new URLSearchParams(window.location.search);
+  const existingArticleId = params.get("id");
+
+  let articleRef;
+  let isExistingArticle = false;
+
+  if (existingArticleId) {
+    articleRef = ref(
+      database,
+      `students/${activeUser.uid}/articles/${existingArticleId}`
     );
 
+    isExistingArticle = true;
+  } else {
+    articleRef = push(
+      ref(database, `students/${activeUser.uid}/articles`)
+    );
+  }
+
+  if (isExistingArticle) {
+    await update(articleRef, {
+      title: articleText.split("\n")[0].slice(0, 60) || "مقال بلا عنوان",
+      draft: articleText,
+      updatedAt: serverTimestamp()
+    });
+
+    saveMessage.textContent = "تم تحديث المقال في «مقالاتي» ✓";
+  } else {
     await set(articleRef, {
       title: articleText.split("\n")[0].slice(0, 60) || "مقال بلا عنوان",
       draft: articleText,
@@ -581,6 +606,7 @@ saveArticleButton.addEventListener("click", async () => {
     });
 
     saveMessage.textContent = "تم حفظ المقال في «مقالاتي» ✓";
+  }
   } catch (error) {
     console.error(error);
     saveMessage.textContent = "تعذّر حفظ المقال. حاولي مرة أخرى.";
