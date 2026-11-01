@@ -28,7 +28,7 @@
   body.aj-focused .hero-wrap nav{margin-bottom:0;padding-top:16px;padding-bottom:16px}
   body.aj-focused .nav-links{flex-wrap:nowrap;overflow:auto;max-width:100%;gap:18px}
   body.aj-focused .nav-links a{white-space:nowrap;font-size:14px}
-  body.aj-focused .nav-links a:not([href="#editor"]):not([href="#training"]):not([href="#my-work"]):not([href="#lexicon"]){display:none}
+  body.aj-focused .nav-links a:not([href="#editor"]):not([href="story.html"]):not([href="#training"]):not([href="#my-work"]):not([href="#lexicon"]){display:none}
   body.aj-focused .nav-links a[aria-current=page]{border-bottom:2px solid #c89d5c;color:#0f1a2b}
   body.aj-focused main>section{padding-top:32px;min-height:65vh}
   body.aj-focused #editor .section-title h2{font-size:30px}

@@ -32,20 +32,8 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 </head>
 <body>
 <header>
-  <a class="brand" href="/">سِمْط</a>
-
-  <nav>
-    <a href="/">الرئيسية</a>
-    <a href="/#about">فكرة المشروع</a>
-    <a href="/#student-guide">دليل الطالبة</a>
-    <a href="/#academy">معسكر سِمْط</a>
-    <a href="/#training">تدريب فوري</a>
-    <a href="/#editor">✍️ المقال</a>
-    <a class="active" href="/story.html">📖 القصة القصيرة</a>
-    <a href="/#lexicon">المعجم</a>
-    <a href="/#magazine">المجلة</a>
-<a href="/my-work.html">أعمالي</a>
-  </nav>
+<a class="brand" href="index.html">سِمْط</a>
+<nav><a href="index.html">الرئيسية</a><a href="index.html#editor">✍️ المقال</a><a class="active" href="story.html">📖 القصة القصيرة</a></nav>
 </header>
 
 <main>
@@ -121,7 +109,6 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 <div class="big">✨</div><h2>اكتمل سِمْط قصتك</h2>
 <p class="hint">الفكرة أصبحت حكاية. يمكنك العودة لأي لؤلؤة وتعديلها متى شئت.</p>
 <button class="btn primary" onclick="downloadStory()">حفظ القصة كنص</button>
-  <button class="btn primary" type="button" onclick="saveStoryToAccount()">💾 حفظ القصة في أعمالي</button>
 </section>
 
 <div class="actions" id="actions"><button class="btn soft" id="prev">السابق</button><button class="btn primary" id="next">التالي ←</button></div>
@@ -130,87 +117,9 @@ textarea{min-height:135px;resize:vertical}input:focus,textarea:focus{border-colo
 
 <div class="tools"><button class="toolbtn" onclick="openDrawer('dict')">📚 معجم سِمْط</button><button class="toolbtn" onclick="openDrawer('ideas')">💡 أحتاج فكرة</button></div>
 
-<aside class="drawer" id="dict">
-  <button class="close" onclick="closeDrawers()">×</button>
+<aside class="drawer" id="dict"><button class="close" onclick="closeDrawers()">×</button><h3>📚 معجم سِمْط</h3><p class="hint">أداة سريعة أثناء الكتابة.</p><input id="dictWord" placeholder="اكتبي كلمة..."><button class="btn primary" style="margin-top:10px" onclick="lookup()">بحث</button><div class="dict-result" id="dictResult">جرّبي: أثر، تأمل، شغف، عزم.</div></aside>
+<aside class="drawer" id="ideas"><button class="close" onclick="closeDrawers()">×</button><h3>💡 أحتاج فكرة</h3><p class="hint">لا نعطيك قصة جاهزة؛ نعطيك سؤالًا يفتح بابًا.</p><div class="idea-box" id="ideaPrompt"></div><button class="btn primary" style="margin-top:12px" onclick="newPrompt()">سؤال آخر</button></aside>
 
-  <h3>📚 معجم سِمْط القصصي</h3>
-
-  <p style="line-height:1.8;color:#737783">
-    ماذا تحتاجين الآن في قصتك؟ اختاري المجال، وسِمْط يقترح لكِ مفردات وتراكيب تساعدكِ على التعبير.
-  </p>
-
-  <label>اختاري مجالًا:</label>
-
-  <select id="storyLexiconCategory"
-    onchange="showStoryWords()"
-    style="width:100%;padding:12px;border:1px solid #ded2bf;border-radius:12px;margin:8px 0 16px">
-
-    <option value="">— اختاري —</option>
-    <option value="feelings">💭 وصف المشاعر</option>
-    <option value="place">🏡 وصف المكان</option>
-    <option value="movement">🏃 الحركة</option>
-    <option value="dialogue">💬 الحوار</option>
-    <option value="beginnings">✨ بدايات السرد</option>
-    <option value="transitions">🔗 الانتقال بين الأحداث</option>
-  </select>
-
-  <div id="storyLexiconResult"
-    style="padding:16px;background:#f8f4ed;border-radius:16px;line-height:2">
-    اختاري مجالًا لتظهر لكِ لآلئ لغوية مناسبة ✨
-  </div>
-</aside><aside class="drawer" id="ideas">
-  <button class="close" onclick="closeDrawers()">×</button>
-
-  <h3>💡 أحتاج فكرة</h3>
-  <p style="line-height:1.8;color:#737783">
-    لن أكتب القصة بدلًا منكِ؛ سأساعدكِ فقط على اكتشاف بذرتها الأولى.
-  </p>
-
-  <div style="margin-top:18px">
-
-    <label>① اختاري جو القصة</label>
-    <select id="ideaMood" style="width:100%;padding:12px;border:1px solid #ded2bf;border-radius:12px;margin:8px 0 16px">
-      <option value="غموض">🔎 غموض</option>
-      <option value="إنساني">🤍 موقف إنساني</option>
-      <option value="مدرسي">🎒 موقف مدرسي</option>
-      <option value="مغامرة">🧭 مغامرة</option>
-      <option value="خيال">✨ خيال</option>
-      <option value="يومي">☕ من الحياة اليومية</option>
-    </select>
-
-    <label>② من الشخصية الرئيسة؟</label>
-    <input id="ideaHero" placeholder="مثال: طالبة جديدة في المدرسة">
-
-    <label>③ ماذا تريد هذه الشخصية؟</label>
-    <input id="ideaWant" placeholder="مثال: أن تكسب ثقة زميلاتها">
-
-    <label>④ ما العقبة التي تواجهها؟</label>
-    <input id="ideaObstacle" placeholder="مثال: انتشر عنها فهم خاطئ">
-
-    <button class="btn primary"
-      style="width:100%;margin-top:14px"
-      onclick="buildIdea()">
-      ✨ كوّني بذرة قصتي
-    </button>
-
-    <div id="ideaResult"
-      style="display:none;margin-top:16px;padding:16px;border-radius:16px;background:#f8f4ed;line-height:1.9">
-    </div>
-
-    <hr style="border:0;border-top:1px solid #e5d8c3;margin:22px 0">
-
-    <p style="font-weight:700">أو ابدئي بشرارة عشوائية:</p>
-
-    <div id="ideaPrompt"
-      style="padding:14px;border-radius:14px;background:#fff8ec;line-height:1.8;margin-bottom:10px">
-    </div>
-
-    <button class="btn soft" onclick="newPrompt()">
-      🎲 أعطني شرارة أخرى
-    </button>
-
-  </div>
-</aside>
 <script>
 const cards=[...document.querySelectorAll('.card')], key='simt_story_journey_v2';let step=0;
 const fields=[...document.querySelectorAll('input:not([type=checkbox]),textarea')];
@@ -227,226 +136,9 @@ function openDrawer(id){closeDrawers();document.getElementById(id).classList.add
 function closeDrawers(){document.querySelectorAll('.drawer').forEach(d=>d.classList.remove('open'))}
 const dict={'أثر':['ما يبقى من الشيء أو يدل عليه.','بصمة، علامة، نتيجة'],'تأمل':['إدامة النظر والفكر بتدبر.','تدبر، تفكر، إمعان'],'شغف':['شدة الحب والتعلق بالشيء.','ولع، حب، تعلق'],'عزم':['قصد مؤكد وإرادة ثابتة.','إرادة، تصميم، إصرار']};
 function lookup(){const w=document.getElementById('dictWord').value.trim(),r=document.getElementById('dictResult');r.innerHTML=dict[w]?'<b>'+w+'</b><br>المعنى: '+dict[w][0]+'<br>مرادفات: '+dict[w][1]:'الكلمة غير موجودة في القاموس المصغر حاليًا.'}
-const prompts=[
-'وجدت الشخصية رسالة لا تحمل اسم المرسل، لكنها تعرف أمرًا لا يعرفه أحد.',
-'دخلت الطالبة فصلها صباحًا ولاحظت شيئًا تغيّر، بينما لم ينتبه إليه أحد.',
-'اضطرت الشخصية إلى اتخاذ قرار قبل نهاية هذا اليوم.',
-'وصلت حقيبة إلى المكان الخطأ، وكان بداخلها شيء يغيّر مجرى الأحداث.',
-'سمعت الشخصية جملة عابرة جعلتها تعيد التفكير في موقف قديم.',
-'اختفى شيء بسيط، لكن البحث عنه كشف أمرًا أكبر بكثير.',
-'تلقت الشخصية خبرًا سعيدًا، لكن فرحتها لم تكتمل لسبب غير متوقع.',
-'وجدت الشخصية صورة قديمة لم ترها من قبل، وبدأت تبحث عن قصتها.'
-];
-
-function newPrompt(){
-  document.getElementById('ideaPrompt').textContent=
-    prompts[Math.floor(Math.random()*prompts.length)];
-}
-
-function buildIdea(){
-  const mood=document.getElementById('ideaMood').value;
-  const hero=document.getElementById('ideaHero').value.trim();
-  const want=document.getElementById('ideaWant').value.trim();
-  const obstacle=document.getElementById('ideaObstacle').value.trim();
-  const box=document.getElementById('ideaResult');
-
-  if(!hero || !want || !obstacle){
-    box.style.display='block';
-    box.innerHTML='🌱 أكملي الأسئلة الثلاثة أولًا، وبعدها سأساعدكِ في تكوين بذرة القصة.';
-    return;
-  }
-
-  const openings={
-    'غموض':'في أجواء يلفّها الغموض،',
-    'إنساني':'في موقف إنساني مؤثر،',
-    'مدرسي':'في يوم مدرسي لم يكن عاديًا،',
-    'مغامرة':'في بداية مغامرة غير متوقعة،',
-    'خيال':'في عالم تتجاوز فيه الأحداث حدود المألوف،',
-    'يومي':'في موقف بسيط من الحياة اليومية،'
-  };
-
-  box.style.display='block';
-  box.innerHTML=
-    '<b>✨ بذرة قصتك:</b><br>'+
-    openings[mood]+' نتابع '+hero+
-    ' التي تسعى إلى '+want+
-    '، لكن '+obstacle+
-    '.<br><br><b>والآن دوركِ:</b> ما الحدث الذي سيجعل المشكلة تبدأ فعلًا؟';
-}
-const storyLexicon = {
-  feelings: [
-    'تردّد — حيرة بين قرارين',
-    'انقباض — شعور بالضيق أو القلق',
-    'طمأنينة — سكون وراحة داخلية',
-    'دهشة — مفاجأة قوية',
-    'ترقّب — انتظار مشوب بالتوتر',
-    'خيبة — حزن بسبب نتيجة لم تكن متوقعة',
-    'امتنان — شعور بالشكر والتقدير',
-    'ارتباك — اضطراب في التفكير أو التصرف'
-  ],
-
-  place: [
-    'خافت الإضاءة',
-    'ضيق الممرات',
-    'ساكن الأرجاء',
-    'مزدحم بالتفاصيل',
-    'تتسلل إليه أشعة الشمس',
-    'تغمره رائحة قديمة',
-    'يخيّم عليه الصمت',
-    'تتردد فيه الأصوات'
-  ],
-
-  movement: [
-    'أسرعت بخطوات متلاحقة',
-    'توقفت فجأة',
-    'التفتت بحذر',
-    'اقتربت ببطء',
-    'تراجعت خطوة',
-    'اندفعت نحو الباب',
-    'مدّت يدها بتردد',
-    'ثبتت في مكانها'
-  ],
-
-  dialogue: [
-    'قالت بصوت خافت:',
-    'سألت مترددة:',
-    'أجاب بعد صمت:',
-    'قاطعتها قائلة:',
-    'همست:',
-    'قالت بلهجة حازمة:',
-    'تساءلت في دهشة:',
-    'ردّت بهدوء:'
-  ],
-
-  beginnings: [
-    'لم يكن ذلك اليوم عاديًا.',
-    'بدأ كل شيء حين...',
-    'ما زلت أذكر تلك اللحظة جيدًا.',
-    'في صباح بدا مألوفًا، حدث ما لم يكن في الحسبان.',
-    'لم تتوقع أن يتغير كل شيء بسبب موقف واحد.',
-    'قبل أن تصل، كانت تظن أن الأمر بسيط.'
-  ],
-
-  transitions: [
-    'بعد لحظات...',
-    'في الوقت نفسه...',
-    'لم تمضِ دقائق حتى...',
-    'بعد ذلك...',
-    'مع مرور الوقت...',
-    'فجأة...',
-    'وقبل أن تتمكن من التفكير...',
-    'عندها أدركت أن...'
-  ]
-};
-
-function showStoryWords(){
-  const category = document.getElementById('storyLexiconCategory').value;
-  const result = document.getElementById('storyLexiconResult');
-
-  if(!category){
-    result.innerHTML = 'اختاري مجالًا لتظهر لكِ لآلئ لغوية مناسبة ✨';
-    return;
-  }
-
-  result.innerHTML =
-    '<b>لآلئ مقترحة:</b><br>' +
-    storyLexicon[category]
-      .map(word => '• ' + word)
-      .join('<br>');
-}
-  function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
+const prompts=['ماذا لو وجدت الشخصية شيئًا لا يخصها؟','ما السر الذي تخشى الشخصية أن يعرفه الآخرون؟','ماذا لو وصلت رسالة إلى الشخص الخطأ؟','ما الشيء الذي تريده الشخصية بشدة، لكنها لا تستطيع طلبه؟','ما قرار صغير يمكن أن يغيّر يوم الشخصية كله؟','ما المكان المألوف الذي يمكن أن يبدو مختلفًا تمامًا في وقت غير معتاد؟'];
+function newPrompt(){document.getElementById('ideaPrompt').textContent=prompts[Math.floor(Math.random()*prompts.length)]}
+function downloadStory(){const title=document.getElementById('title').value.trim()||'قصتي في سمط',text=document.getElementById('story').value;const b=new Blob([title+'\n\n'+text],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=title.replace(/[\\/:*?"<>|]/g,'_')+'.txt';a.click();URL.revokeObjectURL(a.href)}
 load();go(step);count();
-</script>
-<script src="firebase-config.js"></script>
-<script type="module">
-  import {
-    initializeApp
-  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
-
-import {
-  getDatabase,
-  ref,
-  push,
-  update,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.13.0/firebase-database.js";
-
-  const storyFirebaseApp = initializeApp(window.SIMT_FIREBASE_CONFIG);
-  const storyAuth = getAuth(storyFirebaseApp);
-  const storyDatabase = getDatabase(storyFirebaseApp);
-
-  let storyActiveUser = null;
-
-  onAuthStateChanged(storyAuth, (user) => {
-    storyActiveUser = user || null;
-  });
-
-async function saveStoryToAccount() {
-  if (!storyActiveUser) {
-    alert("سجّلي الدخول أولًا حتى يتم حفظ قصتك في أعمالك.");
-    return;
-  }
-
-  const storyTitle =
-    document.getElementById("title")?.value.trim() || "قصة بلا عنوان";
-
-  const storyText =
-    document.getElementById("story")?.value.trim() || "";
-
-  if (!storyText) {
-    alert("اكتبي قصتك أولًا قبل الحفظ.");
-    return;
-  }
-
-  try {
-    const storageKey = `simt_current_story_id_${storyActiveUser.uid}`;
-    let currentStoryId = localStorage.getItem(storageKey);
-
-    if (currentStoryId) {
-      await update(
-        ref(
-          storyDatabase,
-          `students/${storyActiveUser.uid}/stories/${currentStoryId}`
-        ),
-        {
-          title: storyTitle,
-          story: storyText,
-          updatedAt: serverTimestamp()
-        }
-      );
-
-      alert("✨ تم تحديث قصتك في أعمالك");
-    } else {
-      const newStoryRef = push(
-        ref(
-          storyDatabase,
-          `students/${storyActiveUser.uid}/stories`
-        )
-      );
-
-      currentStoryId = newStoryRef.key;
-
-      await update(newStoryRef, {
-        title: storyTitle,
-        story: storyText,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
-      });
-
-      localStorage.setItem(storageKey, currentStoryId);
-
-      alert("✨ تم حفظ قصتك في أعمالك");
-    }
-  } catch (error) {
-    console.error(error);
-    alert("تعذّر حفظ القصة الآن. حاولي مرة أخرى.");
-  }
-}
-  window.saveStoryToAccount = saveStoryToAccount;
 </script>
 </body></html>
