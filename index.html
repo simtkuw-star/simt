@@ -3107,8 +3107,7 @@
         <a href="#student-guide">دليل الطالبة</a>
         <a href="#academy">معسكر سِمْط</a>
         <a href="#training">تدريب فوري</a>
-<a href="/article.html">✍️ المقال</a>
-        <a href="story.html">📖 القصة القصيرة</a>    
+        <a href="#editor">محرر الكتابة</a>
         <a href="#lexicon">المعجم</a>
         <a href="#magazine">المجلة</a>
       </div>
@@ -3337,8 +3336,8 @@
 
     <section id="editor">
       <div class="shell">
-        <div class="section-title"><h2>محرر الكتابة الإبداعية</h2></div>
-        <p class="section-lead">مساحة هادئة للكتابة، تراقب عدد الكلمات والحروف وتغير مستوى الطالبة حسب طول النص.</p>
+        <div class="section-title"><h2>رحلة كتابة المقال</h2></div>
+        <p class="section-lead">من فكرة واضحة إلى مقال يحمل صوتك وأثرك.</p>
 
         <div class="writer-studio">
           <aside class="toolbox">
@@ -5774,7 +5773,10 @@
     });
 
     markVisit();
-
+    const loggedName = localStorage.getItem("simtLoggedInName");
+    if (loggedName && localStorage.getItem("simtLoggedIn") === "true") {
+      setLoggedIn(loggedName);
+    }
   </script>
   <script>
     if ("serviceWorker" in navigator) {
@@ -5785,5 +5787,7 @@
       });
     }
   </script>
-<script type="module" src="simt-firebase.js?v=32"></script></body>
+  <script src="article-journey.js?v=1"></script>
+  <script type="module" src="simt-firebase.js?v=31"></script>
+</body>
 </html>
