@@ -42,11 +42,26 @@
   .aj-utility{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:14px}
   .aj-utility[hidden]{display:none}
   .aj-utility button,.aj-utility a{background:transparent;border:0;color:#0f1a2b;text-decoration:underline;cursor:pointer;font:inherit;padding:8px}
-  .aj-helper{border:1px solid #d4c5ac;padding:0;border-radius:8px;width:min(1040px,94vw);max-height:88vh;color:#0f1a2b}
+  .aj-helper{position:fixed;inset:0 auto 0 0;margin:0;border:0;border-right:1px solid #d4c5ac;padding:0;border-radius:0;width:min(420px,94vw);height:100dvh;max-height:100dvh;color:#0f1a2b;box-shadow:12px 0 40px rgba(15,26,43,.16);overflow-y:auto}
   .aj-helper::backdrop{background:rgba(15,26,43,.45)}
   .aj-helper-head{position:sticky;top:0;background:white;z-index:2;padding:16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dfd5c4}
   .aj-helper-head button{width:40px;height:40px;background:white;border:1px solid #dfd5c4;font-size:26px;cursor:pointer;border-radius:6px}
   .aj-helper-body{padding:22px}.aj-helper-body>section{padding:0}.aj-helper-body .shell{width:100%;max-width:100%}
+  .aj-helper .lexicon-grid,.aj-helper .suggestion-grid{display:block}
+  .aj-helper .smart-writing,.aj-helper .section-title,.aj-helper .section-lead{display:none}
+  .aj-helper .lexicon-card,.aj-helper .idea-lab{padding:0;border:0;box-shadow:none;background:white;margin-bottom:28px;min-width:0}
+  .aj-helper h3{font-size:20px;line-height:1.6}.aj-helper h4{font-size:17px}
+  .aj-helper p,.aj-helper li,.aj-helper input,.aj-helper button{font-size:15px}
+  .aj-helper .lexicon-heading,.aj-helper .search-row{display:flex;flex-wrap:wrap;gap:10px}
+  .aj-helper .search-row input{width:100%;min-width:0;flex:1 1 180px}
+  .aj-helper .result-box{padding:14px;overflow-wrap:anywhere}
+  .aj-helper .mini-actions{display:flex;flex-wrap:wrap;gap:10px}
+  .aj-floating-tools{position:fixed;left:22px;bottom:22px;display:grid;gap:10px;z-index:25}
+  .aj-floating-tools[hidden]{display:none}
+  .aj-floating-tools button{border:0;border-radius:999px;background:#0f1a2b;color:white;padding:12px 18px;font:inherit;font-size:15px;line-height:1.5;cursor:pointer;box-shadow:0 5px 18px rgba(15,26,43,.16)}
+  .aj-floating-tools button:hover{background:#26374a}.aj-floating-tools button:focus-visible{outline:3px solid #c89d5c;outline-offset:3px}
+  body.aj-writing main{padding-bottom:150px}
+  @media(max-width:600px){.aj-floating-tools{left:12px;bottom:max(12px,env(safe-area-inset-bottom))}.aj-floating-tools button{font-size:14px;padding:10px 16px}}
   .aj-help{margin-top:18px;font-size:14px;color:#55606c;line-height:1.9}.aj-help summary{cursor:pointer;color:#0f1a2b}
   .aj-work{max-width:1100px;margin:auto}.aj-work h2{font-size:30px}.aj-work .student-result-card{margin-top:24px}
   .aj-work a{display:inline-block;margin:12px 0;color:#0f1a2b;text-decoration:underline}
@@ -127,7 +142,7 @@
   start.innerHTML='<img src="logo-simt.png" alt="سِمْط"><h3>ماذا تودّين أن تكتبي اليوم؟</h3><div class="aj-start-actions"><button type="button" id="aj-new">ابدئي مقالًا جديدًا</button><button type="button" id="aj-resume">كمّلي مقالك</button></div><p class="aj-status" role="status"></p>';
   journey.before(start);
   const utility = document.createElement('div'); utility.className='aj-utility';
-  utility.innerHTML='<button type="button" id="aj-home">بداية الرحلة</button><div><button type="button" id="aj-dictionary">المعجم</button><button type="button" id="aj-ideas">أحتاج فكرة</button><a href="#training">أتدرّب</a><a href="#my-work">أعمالي</a><a href="#">حسابي</a></div>';
+  utility.innerHTML='<button type="button" id="aj-home">بداية الرحلة</button><div><a href="#training">أتدرّب</a><a href="#my-work">أعمالي</a><a href="#">حسابي</a></div>';
   start.before(utility);
   function enter(n){start.hidden=true;journey.hidden=false;utility.hidden=false;show(n);}
   function welcome(){start.hidden=false;journey.hidden=true;utility.hidden=true;}
@@ -154,6 +169,11 @@
   const dialog=document.createElement('dialog');dialog.className='aj-helper';dialog.setAttribute('aria-labelledby','aj-dialog-title');
   dialog.innerHTML='<div class="aj-helper-head"><h3 id="aj-dialog-title"></h3><button type="button" aria-label="إغلاق">×</button></div><div class="aj-helper-body"></div>';
   document.body.append(dialog);
+  dialog.id='aj-side-panel';
+  const floatingTools=document.createElement('div');floatingTools.className='aj-floating-tools';floatingTools.hidden=true;
+  floatingTools.setAttribute('aria-label','أدوات كتابة المقال');
+  floatingTools.innerHTML='<button type="button" id="aj-dictionary" aria-haspopup="dialog" aria-controls="aj-side-panel">معجم سِمْط</button><button type="button" id="aj-ideas" aria-haspopup="dialog" aria-controls="aj-side-panel">أحتاج فكرة</button>';
+  document.body.append(floatingTools);
   let restore=null,opener=null;
   function closeHelper(){if(restore){restore();restore=null;}if(dialog.open)dialog.close();}
   dialog.querySelector('button').onclick=closeHelper;
@@ -165,8 +185,11 @@
     restore=()=>{marker.replaceWith(node);node.classList.toggle('aj-route-hidden',routeHidden);};
     opener=button;dialog.querySelector('h3').textContent=title;dialog.querySelector('.aj-helper-body').append(node);dialog.showModal();
   }
-  utility.querySelector('#aj-dictionary').onclick=e=>openHelper(document.getElementById('lexicon'),'معجم سِمْط',e.currentTarget);
-  utility.querySelector('#aj-ideas').onclick=e=>openHelper(document.querySelector('.idea-lab'),'فكرة للمقال',e.currentTarget);
+  floatingTools.querySelector('#aj-dictionary').onclick=e=>openHelper(document.getElementById('lexicon'),'معجم سِمْط',e.currentTarget);
+  floatingTools.querySelector('#aj-ideas').onclick=e=>{
+    openHelper(document.querySelector('.idea-lab'),'أحتاج فكرة',e.currentTarget);
+    document.getElementById('newPrompt')?.click();
+  };
   // Existing insertion controls continue writing to the same editor.
   ['sendPrompt','sendTrainingToEditor','insertWordExample','insertTopicOpening','insertSmartSentence'].forEach(id=>{
     document.getElementById(id)?.addEventListener('click',()=>{closeHelper();enter(5);location.hash='editor';route();});
@@ -176,6 +199,8 @@
     closeHelper();
     const target=location.hash.slice(1),focused=focusRoutes.has(target);
     document.body.classList.toggle('aj-focused',focused);
+    document.body.classList.toggle('aj-writing',target==='editor');
+    floatingTools.hidden=target!=='editor';
     document.querySelectorAll('.nav-links a').forEach(link=>{
       if(link.hash===location.hash)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
     });
